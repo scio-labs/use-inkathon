@@ -2,7 +2,7 @@
   "name": "@scio-labs/use-inkathon",
   "author": "Scio Labs <hello@scio.xyz> (https://scio.xyz)",
   "version": "0.0.1-alpha.0",
-  "description": "React Hooks abstracting polkadot.js for working with contracts on Substrate.",
+  "description": "Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.",
   "homepage": "https://scio.xyz",
   "repository": {
     "type": "git",

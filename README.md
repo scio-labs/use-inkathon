@@ -4,7 +4,7 @@
 ![React](https://img.shields.io/badge/React-red)
 [![Scio Labs](https://img.shields.io/badge/Scio%20Labs-We%20are%20hiring-black)](https://scio.xyz)
 
-This repository contains a simple Typescript package with React Hooks abstracting some functionality by polkadot.js for working with contracts on Substrate based networks.
+Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.
 
 It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz) and on [AZERO Domains](https://azero.domains).
 
@@ -36,7 +36,7 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 </UseInkathonProvider>
 ```
 
-1. Use the `useInkathon` hook everywhere underneath to access all the exposed properties below.
+1. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
 
 ```ts
 const {
