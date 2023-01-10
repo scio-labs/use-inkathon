@@ -3,7 +3,8 @@
   "author": "Scio Labs <hello@scio.xyz> (https://scio.xyz)",
   "version": "0.0.1-alpha.2",
   "description": "Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.",
-  "homepage": "https://scio.xyz",
+  "homepage": "https://inkathon.xyz",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scio-labs/use-inkathon"
