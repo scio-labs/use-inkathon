@@ -11,6 +11,9 @@
   "bugs": {
     "url": "https://github.com/scio-labs/use-inkathon/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
