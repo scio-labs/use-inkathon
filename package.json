@@ -6,7 +6,7 @@
   "homepage": "https://scio.xyz",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scio-labs/substrate-hooks.git"
+    "url": "git+https://github.com/scio-labs/use-inkathon"
   },
   "bugs": {
     "url": "https://github.com/scio-labs/use-inkathon/issues"
