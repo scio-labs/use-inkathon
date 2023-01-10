@@ -1,0 +1,18 @@
+{
+  "files.exclude": {
+    "**/node_modules/": true,
+    "**/package-lock.json": true
+  },
+  "search.exclude": {
+    "docs": true
+  },
+  "search.useIgnoreFiles": true,
+  "search.useGlobalIgnoreFiles": true,
+  "search.useParentIgnoreFiles": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true,
+    "source.fixAll.eslint": true
+  }
+}
