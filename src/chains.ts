@@ -17,13 +17,9 @@ export const development: SubstrateChain = {
   network: 'development',
   name: 'Local Development',
   rpcUrls: ['ws://127.0.0.1:9944'],
-  explorerUrls: [
-    'https://polkadot.js.org/apps/#/explorer?rpc=ws://127.0.0.1:9944',
-  ],
+  explorerUrls: ['https://polkadot.js.org/apps/#/explorer?rpc=ws://127.0.0.1:9944'],
   testnet: true,
-  faucetUrls: [
-    'https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944',
-  ],
+  faucetUrls: ['https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944'],
 }
 
 export const alephzeroTestnet: SubstrateChain = {
@@ -86,10 +82,7 @@ export const shiden: SubstrateChain = {
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
   name: 'Shibuya',
-  rpcUrls: [
-    'wss://shibuya.public.blastapi.io',
-    'wss://shibuya-rpc.dwellir.com',
-  ],
+  rpcUrls: ['wss://shibuya.public.blastapi.io', 'wss://shibuya-rpc.dwellir.com'],
   testnet: true,
   faucetUrls: ['https://docs.astar.network/docs/quickstart/faucet'],
   explorerUrls: ['https://shibuya.subscan.io/'],
@@ -109,3 +102,10 @@ export const allSubstrateChains: SubstrateChain[] = [
   shiden,
   shibuya,
 ]
+
+/**
+ * Returns chain (if existent) for given identifier (`network` field).
+ */
+export const getSubstrateChain = (networkId: string): SubstrateChain | undefined => {
+  return allSubstrateChains.find((chain) => chain.network.toLowerCase() === networkId.toLowerCase())
+}
