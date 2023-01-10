@@ -1,4 +1,4 @@
-# `useInkathon` – React Hooks for Substrate & ink!
+# useInkathon – React Hooks for Substrate & ink!
 
 ![Typescript](https://img.shields.io/badge/Typescript-blue)
 ![React](https://img.shields.io/badge/React-red)
