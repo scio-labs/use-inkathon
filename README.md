@@ -1,4 +1,4 @@
-# Substrate React Hooks by Scio Labs
+# `useInkathon` – React Hooks for Substrate & ink!
 
 ![Typescript](https://img.shields.io/badge/Typescript-blue)
 ![React](https://img.shields.io/badge/React-red)
@@ -8,7 +8,9 @@ Typesafe React Hooks abstracting functionality by polkadot.js for working with S
 
 It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz) and on [AZERO Domains](https://azero.domains).
 
-📃 **Documentation:** https://scio-labs.github.io/use-inkathon/
+## Documentation 📃
+
+https://scio-labs.github.io/use-inkathon/
 
 ## Disclaimer 🚨
 
@@ -36,7 +38,7 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 </UseInkathonProvider>
 ```
 
-1. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
+2. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
 
 ```ts
 const {
