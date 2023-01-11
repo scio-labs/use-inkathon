@@ -8,13 +8,21 @@ Typesafe React Hooks abstracting functionality by polkadot.js for working with S
 
 It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz) and on [AZERO Domains](https://azero.domains).
 
+## Disclaimer 🚨
+
+This package is under development and not ready for production use yet.
+
 ## Documentation 📃
 
 https://scio-labs.github.io/use-inkathon/
 
-## Disclaimer 🚨
+## Features ✨
 
-This package is under development and not ready for production use yet.
+- Wrapper for polkadot.js (wallet connection, account switching, etc.) that saves you 100+ lines of code
+- Easy-to-use React Hooks (i.e. `useInkathon`)
+- Constants/Definitions for Substrate-based chains & wallets
+- Makes polkadot.js compatible with server-side environments (i.e. Next.js)
+- 🔜 Soon: contract object instantiation hooks, balance & native token hooks, weightsv2 helpers, …
 
 ## Getting Started
 
