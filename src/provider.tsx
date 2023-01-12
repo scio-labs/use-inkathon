@@ -51,6 +51,7 @@ export interface UseInkathonProviderProps extends PropsWithChildren {
   defaultChain: SubstrateChain
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
+  onConnectError?: (e?: Error) => void
 }
 export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   children,
@@ -58,6 +59,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   defaultChain,
   connectOnInit,
   deployments: _deployments,
+  onConnectError,
 }) => {
   const [activeChain, setActiveChain] = useState<SubstrateChain>(defaultChain)
   const [api, setApi] = useState<ApiPromise>()
@@ -102,7 +104,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       // Initialize web3 extension
       const extensions = await web3Enable(appName)
       if (!extensions?.length) {
-        throw new Error('No Substrate-compatible extension detected.')
+        throw new Error('No Substrate-compatible extension detected')
       }
 
       // Query & keep listening to web3 accounts
@@ -112,11 +114,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         setAccount(injectedAccounts?.length ? injectedAccounts[0] : undefined)
       })
       setUnsubscribeAccounts(unsubscribe)
-    } catch (e) {
+    } catch (e: any) {
       console.error(e)
-      throw new Error(
-        'Error while fetching accounts with polkadot/extension-dapp.',
-      )
+      onConnectError?.(e)
     } finally {
       setIsLoading(false)
     }
