@@ -10,7 +10,7 @@ It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz)
 
 ## Disclaimer 🚨
 
-This package is under development and not ready for production use yet.
+This package is under development and not ready for production use yet. See the [open issues](https://github.com/scio-labs/use-inkathon/issues).
 
 ## Documentation 📃
 
