@@ -168,3 +168,4 @@ fabric.properties
 
 # Local builds
 /*.tgz
+/package
