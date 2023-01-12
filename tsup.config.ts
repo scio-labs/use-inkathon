@@ -9,7 +9,7 @@ export default defineConfig((options) => {
     minify: !options.watch,
     treeshake: true,
     dts: true,
-    format: ['cjs', 'esm'],
+    format: ['esm'],
     external: ['react'],
   }
 })

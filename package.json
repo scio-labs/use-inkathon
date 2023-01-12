@@ -15,6 +15,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -31,13 +32,13 @@
     "prepare": "husky install"
   },
   "peerDependencies": {
+    "react": ">= 18",
+    "react-dom": ">= 18",
     "@polkadot/api": ">= 9",
     "@polkadot/api-contract": ">= 9",
     "@polkadot/extension-dapp": ">= 0.44",
     "@polkadot/extension-inject": ">= 0.44",
-    "@polkadot/types": ">= 9",
-    "react": ">= 18",
-    "react-dom": ">= 18"
+    "@polkadot/types": ">= 9"
   },
   "devDependencies": {
     "@types/node": "^16.18.11",
@@ -52,7 +53,7 @@
     "prettier": "^2.8.2",
     "release-it": "^15.6.0",
     "tsup": "^6.5.0",
-    "typedoc": "^0.23.24",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "typedoc": "^0.23.24"
   }
 }
