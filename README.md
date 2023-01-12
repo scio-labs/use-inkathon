@@ -1,4 +1,4 @@
-# useInkathon – React Hooks for Substrate & ink!
+# `useInkathon` – React Hooks for Substrate & ink!
 
 ![Typescript](https://img.shields.io/badge/Typescript-blue)
 ![React](https://img.shields.io/badge/React-red)
@@ -18,11 +18,15 @@ https://scio-labs.github.io/use-inkathon/
 
 ## Features ✨
 
-- Wrapper for polkadot.js (wallet connection, account switching, etc.) that saves you 100+ lines of code
-- Easy-to-use React Hooks (i.e. `useInkathon`)
+- Wrapper for polkadot.js (wallet connection, account switching, etc.) that **saves you 100+ lines of code**
+- Easy-to-use React Hooks:
+  - [`useInkathon`](https://scio-labs.github.io/use-inkathon/functions/useInkathon.html) – Main Hook responsible for connection, account management, etc.
+  - [`useBalance`](https://scio-labs.github.io/use-inkathon/functions/useBalance.html) – Fetches the native token balance of a given wallet
+  - [`useContract`](https://scio-labs.github.io/use-inkathon/functions/useContract.html) – Instantiates a polkadot.js `ContractPromise` for given abi & address
+  - [`useRegisteredContract`](https://scio-labs.github.io/use-inkathon/functions/useRegisteredContract.html) – Instantiates a contract _with only one single identifier_ (read more about the contract registry concept below)
 - Constants/Definitions for Substrate-based chains & wallets
 - Makes polkadot.js compatible with server-side environments (i.e. Next.js)
-- 🔜 Soon: contract object instantiation hooks, balance & native token hooks, weightsv2 helpers, …
+- Works multichain with live & dynamic chain-switching out-of-the-box
 
 ## Getting Started
 
@@ -49,20 +53,44 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 2. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
 
 ```ts
-const {
-  activeChain,
-  setActiveChain,
-  api,
-  provider,
-  connect,
-  disconnect,
-  isLoading,
-  accounts,
-  account,
-  isConnected,
-  signer,
-  setAccount,
-} = useInkathon()
+const { api, activeChain, connect, account, … } = useInkathon()
+```
+
+## The Contract Registry Concept 🌟
+
+Define metadata once and create `ContractPromise`s everywhere with just a single identifier:
+
+```ts
+const { contract } = useRegisteredContract('greeter')
+```
+
+This works by defining typesafe contract metadata objects ([example](https://github.com/scio-labs/inkathon/blob/main/packages/frontend/src/deployments/deployments.ts)) which are passed to the `UseInkathonProvider` provider ([example](https://github.com/scio-labs/inkathon/blob/main/packages/frontend/src/pages/_app.tsx)).
+
+```ts
+import { alephzeroTestnet, SubstrateDeployment } from '@scio-labs/use-inkathon'
+
+export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
+  return [
+    {
+      contractId: 'greeter',
+      networkId: alephzeroTestnet.network,
+      abi: await import(
+        `@inkathon/contracts/greeter/deployments/metadata.json`
+      ),
+      address: '5HPwzKmJ6wgs18BEcLdH5P3mULnfnowvRzBtFcgQcwTLVwFc',
+    },
+  ]
+}
+```
+
+```tsx
+<UseInkathonProvider
+  appName="INK!athon"
+  defaultChain={env.defaultChain}
+  deployments={getDeployments()}
+>
+  <Component {...pageProps} />
+</UseInkathonProvider>
 ```
 
 ## Package Development
