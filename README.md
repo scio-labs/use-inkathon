@@ -8,6 +8,8 @@ Typesafe React Hooks abstracting functionality by polkadot.js for working with S
 
 It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz) and on [AZERO Domains](https://azero.domains).
 
+By [Dennis Zoma](https://zoma.dev) 💫 & [Scio Labs](https://scio.xyz) 🪐
+
 ## Disclaimer 🚨
 
 This package is under development and not ready for production use yet. See the [open issues](https://github.com/scio-labs/use-inkathon/issues).
