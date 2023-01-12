@@ -6,6 +6,7 @@ specifiers:
   '@polkadot/extension-dapp': '>= 0.44'
   '@polkadot/extension-inject': '>= 0.44'
   '@polkadot/types': '>= 9'
+  '@polkadot/util': '>= 10'
   '@types/node': ^16.18.11
   '@types/react': ^18.0.26
   '@typescript-eslint/eslint-plugin': ^5.48.1
@@ -29,6 +30,7 @@ dependencies:
   '@polkadot/extension-dapp': 0.44.8_vwcic5zv7hj6lnkxcijo4ldqpy
   '@polkadot/extension-inject': 0.44.8_@polkadot+api@9.11.1
   '@polkadot/types': 9.11.1
+  '@polkadot/util': 10.2.3
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 

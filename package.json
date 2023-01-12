@@ -38,7 +38,8 @@
     "@polkadot/api-contract": ">= 9",
     "@polkadot/extension-dapp": ">= 0.44",
     "@polkadot/extension-inject": ">= 0.44",
-    "@polkadot/types": ">= 9"
+    "@polkadot/types": ">= 9",
+    "@polkadot/util": ">= 10"
   },
   "devDependencies": {
     "@types/node": "^16.18.11",
