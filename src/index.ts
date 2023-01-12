@@ -1,3 +1,6 @@
 export * from './chains'
+export * from './helpers'
+export * from './hooks'
 export * from './provider'
+export * from './registry'
 export * from './wallets'

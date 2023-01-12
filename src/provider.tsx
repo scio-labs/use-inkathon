@@ -1,6 +1,10 @@
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
-import { InjectedAccountWithMeta, Unsubcall } from '@polkadot/extension-inject/types'
+import {
+  InjectedAccountWithMeta,
+  Unsubcall,
+} from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
+import { registerDeployments, SubstrateDeployment } from '@registry'
 import {
   createContext,
   Dispatch,
@@ -9,7 +13,7 @@ import {
   SetStateAction,
   useContext,
   useEffect,
-  useState
+  useState,
 } from 'react'
 import { SubstrateChain } from './chains'
 
@@ -26,8 +30,10 @@ export type UseInkathonProviderContextType = {
   isConnected?: boolean
   signer?: Signer
   setAccount?: Dispatch<SetStateAction<InjectedAccountWithMeta | undefined>>
+  deployments?: SubstrateDeployment[]
 }
-export const UseInkathonProviderContext = createContext<UseInkathonProviderContextType>({})
+export const UseInkathonProviderContext =
+  createContext<UseInkathonProviderContextType>({})
 
 /**
  * Primary useInkathon hook that exposes `UseInkathonProviderContext`.
@@ -41,15 +47,17 @@ export const useInkathon = () => {
  * (see documentation) to use `useInkathon` and other hooks anywhere.
  */
 export interface UseInkathonProviderProps extends PropsWithChildren {
-  connectOnInit?: boolean
   appName: string
   defaultChain: SubstrateChain
+  connectOnInit?: boolean
+  deployments?: Promise<SubstrateDeployment[]>
 }
 export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   children,
-  connectOnInit,
   appName,
   defaultChain,
+  connectOnInit,
+  deployments: _deployments,
 }) => {
   const [activeChain, setActiveChain] = useState<SubstrateChain>(defaultChain)
   const [api, setApi] = useState<ApiPromise>()
@@ -59,6 +67,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [signer, setSigner] = useState<Signer>()
   const [isLoading, setIsLoading] = useState<boolean>()
   const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
+  const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
+
+  // Register given deployments
+  useEffect(() => {
+    if (_deployments) registerDeployments(setDeployments, _deployments)
+  }, [])
 
   const initialize = async () => {
     // Initialize polkadot-js/api
@@ -81,7 +95,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     setIsLoading(true)
     try {
       // Dynamically import polkadot/extension-dapp (hydration error otherwise)
-      const { web3AccountsSubscribe, web3Enable } = await import('@polkadot/extension-dapp')
+      const { web3AccountsSubscribe, web3Enable } = await import(
+        '@polkadot/extension-dapp'
+      )
 
       // Initialize web3 extension
       const extensions = await web3Enable(appName)
@@ -98,7 +114,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setUnsubscribeAccounts(unsubscribe)
     } catch (e) {
       console.error(e)
-      throw new Error('Error while fetching accounts with polkadot/extension-dapp.')
+      throw new Error(
+        'Error while fetching accounts with polkadot/extension-dapp.',
+      )
     } finally {
       setIsLoading(false)
     }
@@ -154,6 +172,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         isConnected: !!account,
         signer,
         setAccount,
+        deployments,
       }}
     >
       {children}
