@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "tsup && pnpm typedoc",
-    "typedoc": "typedoc src/index.ts",
+    "typedoc": "typedoc src/index.ts --titleLink \"https://github.com/scio-labs/use-inkathon\"",
     "dev": "tsup --watch",
     "lint": "prettier . --check && pnpm eslint",
     "lint:fix": "prettier . --write && pnpm eslint --fix",

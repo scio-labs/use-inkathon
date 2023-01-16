@@ -106,13 +106,14 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Update signer when account changes
-  const udpateSigner = async (account: InjectedAccountWithMeta) => {
+  const udpateSigner = async () => {
     if (!account?.meta?.source) {
       setSigner(undefined)
       ;(api as any)?.setSigner(undefined)
       return
     }
     try {
+      await api?.isReadyOrError
       // NOTE: Dynamic import  to prevent hydration error in SSR environments
       const { web3FromSource } = await import('@polkadot/extension-dapp')
       const injector = await web3FromSource(account.meta.source)
@@ -124,6 +125,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       ;(api as any)?.setSigner(undefined)
     }
   }
+  useEffect(() => {
+    udpateSigner()
+  }, [account])
 
   // Updates account list and active account
   const updateAccounts = (injectedAccounts: InjectedAccountWithMeta[]) => {
@@ -136,7 +140,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     setAccount((account) => {
       if (accountsAreEqual(account, newAccount)) return account
       setIsConnected(!!newAccount)
-      udpateSigner(newAccount)
       return newAccount
     })
   }
