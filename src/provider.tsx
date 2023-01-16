@@ -160,12 +160,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       }
 
       // Query & keep listening to injected accounts
-      // const accounts = await web3Accounts()
-      // updateAccounts(accounts)
-      // if (!accounts?.length) setError(UseInkathonError.NoAccountInjected)
-      // setIsConnecting(false)
-
-      // Keep listening to injected accounts
       unsubscribeAccounts?.()
       const unsubscribe = await web3AccountsSubscribe(updateAccounts)
       setUnsubscribeAccounts(unsubscribe)
