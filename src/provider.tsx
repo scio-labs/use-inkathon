@@ -179,8 +179,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Disconnect
   const disconnect = () => {
     setIsConnected(false)
-    setAccounts([])
-    setAccount(undefined)
+    updateAccounts([])
     unsubscribeAccounts?.()
     setUnsubscribeAccounts(undefined)
   }
