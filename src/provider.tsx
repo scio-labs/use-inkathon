@@ -18,10 +18,14 @@ import {
 } from 'react'
 import { SubstrateChain } from './chains'
 
-export enum UseInkathonError {
+export enum UseInkathonErrorCode {
   InitializationError,
   NoSubstrateExtensionDetected,
   NoAccountInjected,
+}
+export interface UseInkathonError {
+  code: UseInkathonErrorCode
+  message: string
 }
 export type UseInkathonProviderContextType = {
   isConnecting?: boolean
@@ -97,8 +101,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       // Optionally connect after initialization
       if (connectOnInit) await connect()
     } catch (e) {
-      console.error('Error while initializing polkado-js/api:', e)
-      setError(UseInkathonError.InitializationError)
+      const message = 'Error while initializing polkado.js api'
+      console.error(message, e)
+      setError({ code: UseInkathonErrorCode.InitializationError, message })
       setIsConnecting(false)
       setApi(undefined)
       setProvider(undefined)
@@ -158,8 +163,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       // Initialize web3 extension
       const extensions = await web3Enable(appName)
       if (!extensions?.length) {
-        setError(UseInkathonError.NoSubstrateExtensionDetected)
-        throw new Error('No Substrate-compatible extension detected')
+        const message = 'No Substrate-compatible extension detected'
+        setError({
+          code: UseInkathonErrorCode.NoSubstrateExtensionDetected,
+          message,
+        })
+        throw new Error(message)
       }
 
       // Query & keep listening to injected accounts
