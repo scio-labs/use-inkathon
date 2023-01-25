@@ -6,9 +6,9 @@
 
 Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.
 
-It can be seen in action in the [inkathon.xyz boilerplate](https://inkathon.xyz) and on [AZERO Domains](https://azero.domains).
+By [Dennis Zoma](https://zoma.dev) & [Scio Labs](https://scio.xyz)
 
-By [Dennis Zoma](https://zoma.dev) 💫 & [Scio Labs](https://scio.xyz) 🪐
+➡️ **See it in action within the [ink!athon boilerplate](https://inkathon.xyz)!** ⬅️
 
 ## Disclaimer 🚨
 
@@ -26,6 +26,7 @@ https://scio-labs.github.io/use-inkathon/
   - [`useBalance`](https://scio-labs.github.io/use-inkathon/functions/useBalance.html) – Fetches the native token balance of a given wallet
   - [`useContract`](https://scio-labs.github.io/use-inkathon/functions/useContract.html) – Instantiates a polkadot.js `ContractPromise` for given abi & address
   - [`useRegisteredContract`](https://scio-labs.github.io/use-inkathon/functions/useRegisteredContract.html) – Instantiates a contract _with only one single identifier_ (read more about the contract registry concept below)
+- Contract Interaction Helper Functions: Call mutating ([`contractTx`](https://scio-labs.github.io/use-inkathon/functions/contractTx.html)) and non-mutating ([`contractQuery`](https://scio-labs.github.io/use-inkathon/functions/contractQuery.html)) contract functions with automatic upfront gas estimation.
 - Constants/Definitions for Substrate-based chains & wallets
 - Makes polkadot.js compatible with server-side environments (i.e. Next.js)
 - Works multichain with live & dynamic chain-switching out-of-the-box
@@ -47,7 +48,7 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 ```
 
 ```tsx
-<UseInkathonProvider appName="INK!athon" defaultChain={development}>
+<UseInkathonProvider appName="ink!athon" defaultChain={development}>
   <Component {...pageProps} />
 </UseInkathonProvider>
 ```
@@ -87,7 +88,7 @@ export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
 
 ```tsx
 <UseInkathonProvider
-  appName="INK!athon"
+  appName="ink!athon"
   defaultChain={env.defaultChain}
   deployments={getDeployments()}
 >
@@ -118,8 +119,8 @@ When locally importing it into other projects, this does not yet work with `pnpm
 pnpm pack
 
 # 2. Add it as a dependency in your other project
-pnpm add ../use-inkathon/scio-labs-use-inkathon-0.0.1-alpha.0.tgz
-# This results in a package.json entry like: `"@scio-labs/use-inkathon": "file:..//scio-labs-use-inkathon-0.0.1-alpha.0.tgz"`
+pnpm add ../use-inkathon/scio-labs-use-inkathon-0.0.1-alpha.X.tgz
+# This results in a package.json entry like: `"@scio-labs/use-inkathon": "file:..//scio-labs-use-inkathon-0.0.1-alpha.X.tgz"`
 ```
 
 ## Package Release
