@@ -6,6 +6,7 @@ import {
 } from '@polkadot/api-contract/types'
 import { Callback, ISubmittableResult } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
+import { getMaxGasLimit } from './getGasLimit'
 
 /**
  * Performs a dry run for the given contract method and arguments.
@@ -38,7 +39,7 @@ export const contractCallDryRun = async (
 }
 
 /**
- * Calls a given non-mutating contract method (query) with upfront gas estimation.
+ * Calls a given non-mutating contract method (query) with maximum possible gas limit.
  */
 export const contractQuery = async (
   api: ApiPromise,
@@ -48,24 +49,12 @@ export const contractQuery = async (
   options = {} as ContractOptions,
   args = [] as unknown[],
 ): Promise<ContractCallOutcome> => {
-  // Dry run
-  delete options.gasLimit
-  const { gasRequired } = await contractCallDryRun(
-    api,
-    userAddress,
-    contract,
-    method,
-    options,
-    args,
-  )
+  // HACK: This should be possible by setting the `gasLimit` to null or -1 in the future.
+  const gasLimit = getMaxGasLimit(api)
 
   // Call actual query/tx
   const queryFn = contract.query[stringCamelCase(method)]
-  return await queryFn(
-    userAddress,
-    { ...options, gasLimit: gasRequired },
-    ...args,
-  )
+  return await queryFn(userAddress, { ...options, gasLimit }, ...args)
 }
 
 /**
