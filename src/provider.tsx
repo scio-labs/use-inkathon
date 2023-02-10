@@ -2,7 +2,7 @@ import { accountArraysAreEqual, accountsAreEqual } from '@helpers'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import {
   InjectedAccountWithMeta,
-  Unsubcall,
+  Unsubcall
 } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { registerDeployments, SubstrateDeployment } from '@registry'
@@ -14,7 +14,7 @@ import {
   SetStateAction,
   useContext,
   useEffect,
-  useState,
+  useState
 } from 'react'
 import { SubstrateChain } from './chains'
 
@@ -97,9 +97,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setProvider(provider)
       const api = await ApiPromise.create({ provider })
       setApi(api)
-
-      // Optionally connect after initialization
-      if (connectOnInit) await connect()
     } catch (e) {
       const message = 'Error while initializing polkado.js api'
       console.error(message, e)
@@ -109,6 +106,16 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setProvider(undefined)
     }
   }
+
+  // (Re-)connect on init 
+  const connectWhenReady = async () => {
+    if (isConnected) return
+    await api?.isReady
+    await connect()
+  }
+  useEffect(() => {
+    if (connectOnInit) connectWhenReady()
+  }, [connectOnInit])
 
   // Update signer when account changes
   const udpateSigner = async () => {
