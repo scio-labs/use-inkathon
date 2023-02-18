@@ -95,7 +95,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     try {
       const provider = new WsProvider(activeChain.rpcUrls[0])
       setProvider(provider)
-      const api = await ApiPromise.create({ provider })
+      const api = await ApiPromise.create({ provider, noInitWarn: true })
       setApi(api)
 
       // Optionally force connection after initialization
