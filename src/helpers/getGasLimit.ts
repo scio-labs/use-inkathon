@@ -24,5 +24,5 @@ export const getGasLimit = (
  * Helper function that returns the maximum possible gas limit Weights V2 object.
  */
 export const getMaxGasLimit = (api: ApiPromise) => {
-  return getGasLimit(api, new BN(1_000_000_000), new BN(5_000_000_000_000))
+  return getGasLimit(api, new BN(1_000_000_000_000), new BN(5_000_000_000_000))
 }
