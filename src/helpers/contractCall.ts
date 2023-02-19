@@ -4,7 +4,11 @@ import {
   ContractCallOutcome,
   ContractOptions,
 } from '@polkadot/api-contract/types'
-import { Callback, ISubmittableResult } from '@polkadot/types/types'
+import {
+  Callback,
+  IKeyringPair,
+  ISubmittableResult,
+} from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
 import { getMaxGasLimit } from './getGasLimit'
 
@@ -14,7 +18,7 @@ import { getMaxGasLimit } from './getGasLimit'
  */
 export const contractCallDryRun = async (
   api: ApiPromise,
-  userAddress: string,
+  account: IKeyringPair | string,
   contract: ContractPromise,
   method: string,
   options = {} as ContractOptions,
@@ -25,9 +29,10 @@ export const contractCallDryRun = async (
     throw new Error(`"${method}" not found in Contract`)
   }
 
+  const address = (account as IKeyringPair)?.address || account
   const { value, gasLimit, storageDepositLimit } = options
   const result = await api.call.contractsApi.call<ContractCallOutcome>(
-    userAddress,
+    address,
     contract.address,
     value ?? new BN(0),
     gasLimit ?? null,
@@ -43,7 +48,7 @@ export const contractCallDryRun = async (
  */
 export const contractQuery = async (
   api: ApiPromise,
-  userAddress: string,
+  address: string,
   contract: ContractPromise,
   method: string,
   options = {} as ContractOptions,
@@ -54,7 +59,7 @@ export const contractQuery = async (
 
   // Call actual query/tx
   const queryFn = contract.query[stringCamelCase(method)]
-  return await queryFn(userAddress, { ...options, gasLimit }, ...args)
+  return await queryFn(address, { ...options, gasLimit }, ...args)
 }
 
 /**
@@ -62,7 +67,7 @@ export const contractQuery = async (
  */
 export const contractTx = async (
   api: ApiPromise,
-  userAddress: string,
+  account: IKeyringPair | string,
   contract: ContractPromise,
   method: string,
   options = {} as ContractOptions,
@@ -74,7 +79,7 @@ export const contractTx = async (
   delete options.gasLimit
   const { gasRequired } = await contractCallDryRun(
     api,
-    userAddress,
+    account,
     contract,
     method,
     options,
@@ -84,7 +89,7 @@ export const contractTx = async (
   // Call actual query/tx
   const txFn = contract.tx[stringCamelCase(method)]
   return await txFn({ ...options, gasLimit: gasRequired }, ...args).signAndSend(
-    userAddress,
+    account,
     statusCb,
   )
 }
