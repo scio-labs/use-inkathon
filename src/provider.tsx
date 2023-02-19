@@ -38,9 +38,9 @@ export type UseInkathonProviderContextType = {
   connect?: () => Promise<void>
   disconnect?: () => void
   accounts?: InjectedAccountWithMeta[]
-  account?: InjectedAccountWithMeta
+  activeAccount?: InjectedAccountWithMeta
   signer?: Signer
-  setAccount?: Dispatch<SetStateAction<InjectedAccountWithMeta | undefined>>
+  setActiveAccount?: Dispatch<SetStateAction<InjectedAccountWithMeta | undefined>>
   deployments?: SubstrateDeployment[]
 }
 export const UseInkathonProviderContext =
