@@ -38,9 +38,11 @@ export type UseInkathonProviderContextType = {
   connect?: () => Promise<void>
   disconnect?: () => void
   accounts?: InjectedAccountWithMeta[]
-  account?: InjectedAccountWithMeta
-  signer?: Signer
-  setAccount?: Dispatch<SetStateAction<InjectedAccountWithMeta | undefined>>
+  activeAccount?: InjectedAccountWithMeta
+  activeSigner?: Signer
+  setActiveAccount?: Dispatch<
+    SetStateAction<InjectedAccountWithMeta | undefined>
+  >
   deployments?: SubstrateDeployment[]
 }
 export const UseInkathonProviderContext =
@@ -77,8 +79,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [api, setApi] = useState<ApiPromise>()
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([])
-  const [account, setAccount] = useState<InjectedAccountWithMeta>()
-  const [signer, setSigner] = useState<Signer>()
+  const [activeAccount, setActiveAccount] = useState<InjectedAccountWithMeta>()
+  const [activeSigner, setActiveSigner] = useState<Signer>()
   const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
   const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
 
@@ -112,8 +114,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Update signer when account changes
   const udpateSigner = async () => {
-    if (!account?.meta?.source) {
-      setSigner(undefined)
+    if (!activeAccount?.meta?.source) {
+      setActiveSigner(undefined)
       api?.setSigner(undefined as any)
       return
     }
@@ -121,18 +123,18 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       await api?.isReadyOrError
       // NOTE: Dynamic import  to prevent hydration error in SSR environments
       const { web3FromSource } = await import('@polkadot/extension-dapp')
-      const injector = await web3FromSource(account.meta.source)
-      setSigner(injector?.signer)
+      const injector = await web3FromSource(activeAccount.meta.source)
+      setActiveSigner(injector?.signer)
       api?.setSigner(injector?.signer)
     } catch (e) {
       console.error('Error while getting signer:', e)
-      setSigner(undefined)
+      setActiveSigner(undefined)
       api?.setSigner(undefined as any)
     }
   }
   useEffect(() => {
     udpateSigner()
-  }, [account])
+  }, [activeAccount])
 
   // Updates account list and active account
   const updateAccounts = (injectedAccounts: InjectedAccountWithMeta[]) => {
@@ -142,7 +144,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       if (accountArraysAreEqual(accounts, newAccounts)) return accounts
       return newAccounts
     })
-    setAccount((account) => {
+    setActiveAccount((account) => {
       if (accountsAreEqual(account, newAccount)) return account
       setIsConnected(!!newAccount)
       return newAccount
@@ -211,9 +213,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         connect,
         disconnect,
         accounts,
-        account,
-        signer,
-        setAccount,
+        activeAccount,
+        activeSigner,
+        setActiveAccount,
         deployments,
       }}
     >

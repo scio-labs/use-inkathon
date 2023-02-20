@@ -56,7 +56,7 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 2. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
 
 ```ts
-const { api, activeChain, connect, account, … } = useInkathon()
+const { api, connect, activeChain, activeAccount, … } = useInkathon()
 ```
 
 ## The Contract Registry Concept 🌟
