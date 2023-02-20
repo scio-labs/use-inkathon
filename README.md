@@ -43,11 +43,9 @@ Use it:
 
 1. Wrap it around your app or parent component:
 
-```ts
-import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
-```
-
 ```tsx
+// import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
+
 <UseInkathonProvider appName="ink!athon" defaultChain={development}>
   <Component {...pageProps} />
 </UseInkathonProvider>
@@ -56,6 +54,8 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 2. Use the `useInkathon` hook everywhere underneath to access [all the exposed properties](https://scio-labs.github.io/use-inkathon/types/UseInkathonProviderContextType.html) below.
 
 ```ts
+import { useInkathon } from '@scio-labs/use-inkathon'
+
 const { api, connect, activeChain, activeAccount, … } = useInkathon()
 ```
 
@@ -89,12 +89,14 @@ export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
 ```tsx
 <UseInkathonProvider
   appName="ink!athon"
-  defaultChain={env.defaultChain}
+  defaultChain={alephzeroTestnet}
   deployments={getDeployments()}
 >
   <Component {...pageProps} />
 </UseInkathonProvider>
 ```
+
+---
 
 ## Package Development
 
@@ -112,15 +114,17 @@ pnpm dev
 pnpm build
 ```
 
-When locally importing it into other projects, this does not yet work with `pnpm link`, unfortunately. A local build package has to be generated and imported like:
+**Heads up**, when locally importing a development version of this package into other projects: Unfortunately, this does not yet work w/o generating a local packages `.tgz`-build every time. Otherwise, polkadot.js thinks it's installed twice with two different versions.
 
 ```bash
-# 1. Generate a .tgz package of the build (w/o node_modules)
-pnpm pack
+# 1. [THIS PACKAGE] Generate a .tgz package of the build
+pnpm tsup && pnpm pack
 
-# 2. Add it as a dependency in your other project
+# 2. [OTHER PROJECT] Add it as a dependency in your other project
+#    NOTE: This results in a package.json entry like: `"@scio-labs/use-inkathon": "file:../scio-labs-use-inkathon-0.0.1-alpha.X.tgz"`
 pnpm add ../use-inkathon/scio-labs-use-inkathon-0.0.1-alpha.X.tgz
-# This results in a package.json entry like: `"@scio-labs/use-inkathon": "file:..//scio-labs-use-inkathon-0.0.1-alpha.X.tgz"`
+# 3. [OTHER PROJECT] Subsequent updates can be done via
+pnpm update @scio-labs/use-inkathon
 ```
 
 ## Package Release
