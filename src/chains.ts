@@ -91,7 +91,7 @@ export const shibuya: SubstrateChain = {
     'wss://shibuya-rpc.dwellir.com',
   ],
   testnet: true,
-  faucetUrls: ['https://docs.astar.network/docs/quickstart/faucet'],
+  faucetUrls: ['https://docs.astar.network/docs/build/environment/faucet'],
   explorerUrls: ['https://shibuya.subscan.io'],
 }
 
