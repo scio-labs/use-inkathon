@@ -11,11 +11,11 @@ export const useContract = (
   abi?: string | Record<string, unknown> | Abi,
   address?: string | AccountId,
 ) => {
-  const { api } = useInkathon()
+  const { api, isConnecting } = useInkathon()
   const [contract, setContract] = useState<ContractPromise | undefined>()
 
   const initialize = async () => {
-    if (!api || !abi || !address) {
+    if (isConnecting || !api || !abi || !address) {
       setContract(undefined)
       return
     }
@@ -24,9 +24,10 @@ export const useContract = (
   }
   useEffect(() => {
     initialize()
-  }, [api, abi, address])
+  }, [api, isConnecting, abi, address])
 
   return {
     contract,
+    address,
   }
 }
