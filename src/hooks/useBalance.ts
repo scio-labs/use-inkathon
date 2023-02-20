@@ -1,5 +1,5 @@
 import { AccountId } from '@polkadot/types/interfaces'
-import { BN, formatBalance } from '@polkadot/util'
+import { BN } from '@polkadot/util'
 import { useInkathon } from '@provider'
 import { useEffect, useState } from 'react'
 
@@ -28,12 +28,12 @@ export const useBalance = (address?: string | AccountId) => {
     const result: any = await api.query.system.account(address)
     const data: any = result?.data
     const balance = data?.reserved?.add?.(data?.free)
-    const balanceFormatted = formatBalance(balance, {
-      decimals: tokenDecimals,
-      forceUnit: '-',
-      withUnit: false,
-    }).split('.')[0]
-
+    const balanceNormalized =
+      balance?.div?.(new BN(10).pow(new BN(tokenDecimals - 2))).toNumber() / 100
+    const balanceFormatted = balanceNormalized.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
     setBalance(balance)
     setBalanceFormatted(`${balanceFormatted} ${tokenSymbol}`)
     setTokenSymbol(tokenSymbol)
