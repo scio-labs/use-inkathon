@@ -11,6 +11,7 @@ export const useBalance = (address?: string | AccountId) => {
   const [balance, setBalance] = useState<BN>()
   const [balanceFormatted, setBalanceFormatted] = useState<string>()
   const [tokenSymbol, setTokenSymbol] = useState<string>()
+  const [tokenDecimals, setTokenDecimals] = useState<number>()
 
   const update = async () => {
     if (!api || !address) {
@@ -23,11 +24,12 @@ export const useBalance = (address?: string | AccountId) => {
     const properties =
       ((await api.rpc.system.properties())?.toHuman() as any) || {}
     const tokenSymbol = properties?.tokenSymbol?.[0] || 'UNIT'
+    const tokenDecimals = properties?.tokenDecimals?.[0] || 12
     const result: any = await api.query.system.account(address)
     const data: any = result?.data
     const balance = data?.reserved?.add?.(data?.free)
     const balanceFormatted = formatBalance(balance, {
-      decimals: 12,
+      decimals: tokenDecimals,
       forceUnit: '-',
       withUnit: false,
     }).split('.')[0]
@@ -35,6 +37,7 @@ export const useBalance = (address?: string | AccountId) => {
     setBalance(balance)
     setBalanceFormatted(`${balanceFormatted} ${tokenSymbol}`)
     setTokenSymbol(tokenSymbol)
+    setTokenDecimals(tokenDecimals)
   }
   useEffect(() => {
     update()
@@ -44,5 +47,6 @@ export const useBalance = (address?: string | AccountId) => {
     balance,
     balanceFormatted,
     tokenSymbol,
+    tokenDecimals,
   }
 }
