@@ -23,13 +23,12 @@ export const registerDeployment = (
 ) => {
   setDeployments((deployments) => {
     // Check if deployment already exists & remove
-    const idx = deployments.findIndex(({ contractId, networkId }) => {
-      return (
+    const idx = deployments.findIndex(
+      ({ contractId, networkId }) =>
         contractId.toLowerCase() === deployment.contractId.toLowerCase() &&
-        networkId.toLowerCase() === deployment.networkId.toLowerCase()
-      )
-    })
-    if (idx) deployments.splice(idx, 1)
+        networkId.toLowerCase() === deployment.networkId.toLowerCase(),
+    )
+    if (idx >= 0) deployments.splice(idx, 1)
 
     // Add new deployment
     return [...deployments, deployment]
