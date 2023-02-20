@@ -86,12 +86,9 @@ export const shiden: SubstrateChain = {
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
   name: 'Shibuya',
-  rpcUrls: [
-    'wss://shibuya.public.blastapi.io',
-    'wss://shibuya-rpc.dwellir.com',
-  ],
+  rpcUrls: ['wss://shibuya-rpc.dwellir.com'],
   testnet: true,
-  faucetUrls: ['https://docs.astar.network/docs/build/environment/faucet'],
+  faucetUrls: ['https://portal.astar.network/#/shibuya-testnet/assets'],
   explorerUrls: ['https://shibuya.subscan.io'],
 }
 
