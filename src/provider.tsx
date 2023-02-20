@@ -18,6 +18,9 @@ import {
 } from 'react'
 import { SubstrateChain } from './chains'
 
+/**
+ * Helper Types
+ */
 export enum UseInkathonErrorCode {
   InitializationError,
   NoSubstrateExtensionDetected,
@@ -27,12 +30,16 @@ export interface UseInkathonError {
   code: UseInkathonErrorCode
   message: string
 }
+
+/**
+ * UseInkathon Context Type
+ */
 export type UseInkathonProviderContextType = {
   isConnecting?: boolean
   isConnected?: boolean
   error?: UseInkathonError
   activeChain?: SubstrateChain
-  setActiveChain?: Dispatch<SetStateAction<SubstrateChain>>
+  switchActiveChain?: (chain: SubstrateChain) => Promise<void>
   api?: ApiPromise
   provider?: WsProvider | HttpProvider
   connect?: () => Promise<void>
@@ -90,18 +97,22 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async () => {
+  const initialize = async (autoConnect: boolean, chain: SubstrateChain) => {
     setIsConnected(false)
+    setIsConnecting(autoConnect)
     setError(undefined)
 
     try {
-      const provider = new WsProvider(activeChain.rpcUrls[0])
+      const provider = new WsProvider(chain.rpcUrls[0])
       setProvider(provider)
       const api = await ApiPromise.create({ provider, noInitWarn: true })
       setApi(api)
 
+      // Update active chain if switching
+      if (activeChain.network !== chain.network) setActiveChain(chain)
+
       // Optionally force connection after initialization
-      if (connectOnInit) await connect()
+      if (autoConnect) await connect()
     } catch (e) {
       const message = 'Error while initializing polkado.js api'
       console.error(message, e)
@@ -139,7 +150,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Updates account list and active account
   const updateAccounts = (injectedAccounts: InjectedAccountWithMeta[]) => {
     const newAccounts = injectedAccounts || []
-    const newAccount = newAccounts?.[0]
+    // Find active account in new accounts or fallback to first account
+    const newAccount =
+      newAccounts.find((a) => accountsAreEqual(a, activeAccount)) ||
+      newAccounts?.[0]
+
+    // Update accounts and active account
     setAccounts((accounts) => {
       if (accountArraysAreEqual(accounts, newAccounts)) return accounts
       return newAccounts
@@ -194,11 +210,17 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Initialze
   useEffect(() => {
-    initialize()
+    initialize(!!connectOnInit, defaultChain)
     return () => {
       unsubscribeAccounts?.()
     }
-  }, [activeChain?.network])
+  }, [])
+
+  // Switch active chain
+  const switchActiveChain = async (chain: SubstrateChain) => {
+    disconnect()
+    await initialize(true, chain)
+  }
 
   return (
     <UseInkathonProviderContext.Provider
@@ -207,7 +229,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         isConnected,
         error,
         activeChain,
-        setActiveChain,
+        switchActiveChain,
         api,
         provider,
         connect,
