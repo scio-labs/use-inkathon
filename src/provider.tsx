@@ -79,6 +79,17 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   connectOnInit,
   deployments: _deployments,
 }) => {
+  // Check if default chain was provided
+  if (
+    !defaultChain ||
+    (typeof defaultChain === 'string' &&
+      getSubstrateChain(defaultChain) === undefined)
+  ) {
+    throw new Error(
+      'None or invalid `defaultChain` provided with `UseInkathonProvider`. Forgot to set environment variable?',
+    )
+  }
+
   // Setup state variables
   const [isConnecting, setIsConnecting] = useState(connectOnInit)
   const [isConnected, setIsConnected] = useState(false)
