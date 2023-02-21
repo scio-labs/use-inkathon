@@ -16,7 +16,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { SubstrateChain } from './chains'
+import { getSubstrateChain, SubstrateChain } from './chains'
 
 /**
  * Helper Types
@@ -68,7 +68,7 @@ export const useInkathon = () => {
  */
 export interface UseInkathonProviderProps extends PropsWithChildren {
   appName: string
-  defaultChain: SubstrateChain
+  defaultChain: SubstrateChain | SubstrateChain['network']
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
 }
@@ -79,10 +79,15 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   connectOnInit,
   deployments: _deployments,
 }) => {
+  // Setup state variables
   const [isConnecting, setIsConnecting] = useState(connectOnInit)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<UseInkathonError | undefined>()
-  const [activeChain, setActiveChain] = useState<SubstrateChain>(defaultChain)
+  const [activeChain, setActiveChain] = useState<SubstrateChain>(
+    (typeof defaultChain === 'string'
+      ? getSubstrateChain(defaultChain)
+      : defaultChain) as SubstrateChain,
+  )
   const [api, setApi] = useState<ApiPromise>()
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([])
@@ -97,12 +102,16 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async (autoConnect: boolean, chain: SubstrateChain) => {
+  const initialize = async (
+    autoConnect: boolean,
+    newChain?: SubstrateChain,
+  ) => {
     setIsConnected(false)
     setIsConnecting(autoConnect)
     setError(undefined)
 
     try {
+      const chain = newChain || activeChain
       const provider = new WsProvider(chain.rpcUrls[0])
       setProvider(provider)
       const api = await ApiPromise.create({ provider, noInitWarn: true })
@@ -210,7 +219,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Initialze
   useEffect(() => {
-    initialize(!!connectOnInit, defaultChain)
+    initialize(!!connectOnInit)
     return () => {
       unsubscribeAccounts?.()
     }
