@@ -90,9 +90,9 @@ export const allSubstrateChains: SubstrateChain[] = [
  * Returns chain (if existent) for given identifier (`network` field).
  */
 export const getSubstrateChain = (
-  networkId: string,
+  networkId?: string,
 ): SubstrateChain | undefined => {
   return allSubstrateChains.find(
-    (chain) => chain.network.toLowerCase() === networkId.toLowerCase(),
+    (chain) => chain.network.toLowerCase() === (networkId || '').toLowerCase(),
   )
 }
