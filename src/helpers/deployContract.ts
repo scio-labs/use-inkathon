@@ -3,8 +3,8 @@ import { CodePromise } from '@polkadot/api-contract'
 import { ContractOptions } from '@polkadot/api-contract/types'
 import { EventRecord } from '@polkadot/types/interfaces'
 import { IKeyringPair } from '@polkadot/types/types'
-import { BN, stringCamelCase } from '@polkadot/util'
-import { getGasLimit } from './getGasLimit'
+import { stringCamelCase } from '@polkadot/util'
+import { getMaxGasLimit } from './getGasLimit'
 
 /**
  * Uploads & instantiates a contract on-chain.
@@ -21,11 +21,7 @@ export const deployContract = async (
   return new Promise<{ address: string; hash: string }>(
     async (resolve, reject) => {
       const code = new CodePromise(api, abi, wasm)
-      const gasLimit = getGasLimit(
-        api,
-        new BN(100_000_000_000),
-        new BN(5_000_000_000_000),
-      )
+      const gasLimit = getMaxGasLimit(api)
       const constructorFn = code.tx[stringCamelCase(constructorMethod)]
       const unsub = await constructorFn(
         { gasLimit, ...options },

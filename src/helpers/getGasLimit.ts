@@ -1,6 +1,6 @@
 import { ApiPromise } from '@polkadot/api'
 import type { WeightV2 } from '@polkadot/types/interfaces'
-import { BN } from '@polkadot/util'
+import { BN, bnToBn } from '@polkadot/util'
 
 /**
  * Helper function that returns Weights V2 `gasLimit` object.
@@ -10,9 +10,8 @@ export const getGasLimit = (
   _refTime: string | BN,
   _proofSize: string | BN,
 ) => {
-  const refTime = typeof _refTime == 'string' ? new BN(_refTime) : _refTime
-  const proofSize =
-    typeof _proofSize == 'string' ? new BN(_proofSize) : _proofSize
+  const refTime = bnToBn(_refTime)
+  const proofSize = bnToBn(_proofSize)
 
   return api.registry.createType('WeightV2', {
     refTime,
@@ -21,8 +20,23 @@ export const getGasLimit = (
 }
 
 /**
- * Helper function that returns the maximum possible gas limit Weights V2 object.
+ * Helper function that returns the maximum gas limit Weights V2 object
+ * for an extrinsiv based on the api chain constants.
+ * NOTE: It's reduced by a given factor (defaults to 80%) to avoid storage exhaust.
  */
-export const getMaxGasLimit = (api: ApiPromise) => {
-  return getGasLimit(api, new BN(1_000_000_000_000), new BN(5_000_000_000_000))
+export const getMaxGasLimit = (api: ApiPromise, reductionFactor = 0.8) => {
+  const blockWeights = api.consts.system.blockWeights.toPrimitive() as any
+  const maxExtrinsic = blockWeights?.perClass?.normal?.maxExtrinsic
+  const maxRefTime = maxExtrinsic?.refTime
+    ? bnToBn(maxExtrinsic.refTime)
+        .mul(new BN(reductionFactor * 100))
+        .div(new BN(100))
+    : new BN(0)
+  const maxProofSize = maxExtrinsic?.proofSize
+    ? bnToBn(maxExtrinsic.proofSize)
+        .mul(new BN(reductionFactor * 100))
+        .div(new BN(100))
+    : new BN(0)
+
+  return getGasLimit(api, maxRefTime, maxProofSize)
 }
