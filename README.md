@@ -6,9 +6,13 @@
 
 Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.
 
-By [Dennis Zoma](https://zoma.dev) & [Scio Labs](https://scio.xyz)
+By [Dennis Zoma](https://zoma.dev) & [Scio Labs](https://scio.xyz) 🪄
 
-➡️ **See it in action within the [ink!athon boilerplate](https://inkathon.xyz)!** ⬅️
+Join our [Telegram Group](https://t.me/inkathon) 💬
+
+## Live in Action 🚢
+
+**See this library live & in action within our [ink!athon dApp boilerplate](https://inkathon.xyz)!**
 
 ## Disclaimer 🚨
 
