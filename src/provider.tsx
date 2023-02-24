@@ -53,13 +53,18 @@ export type UseInkathonProviderContextType = {
   deployments?: SubstrateDeployment[]
 }
 export const UseInkathonProviderContext =
-  createContext<UseInkathonProviderContextType>({})
+  createContext<UseInkathonProviderContextType | null>(null)
 
 /**
  * Primary useInkathon hook that exposes `UseInkathonProviderContext`.
  */
 export const useInkathon = () => {
-  return useContext(UseInkathonProviderContext)
+  const context = useContext(UseInkathonProviderContext)
+
+  if (!context)
+    throw new Error('useInkathon must be used within a UseInkathonProvider')
+
+  return context
 }
 
 /**
