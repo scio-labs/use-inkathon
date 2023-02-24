@@ -1,5 +1,6 @@
 import { accountArraysAreEqual, accountsAreEqual } from '@helpers'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
+import { ApiOptions } from '@polkadot/api/types'
 import {
   InjectedAccountWithMeta,
   Unsubcall,
@@ -76,6 +77,7 @@ export interface UseInkathonProviderProps extends PropsWithChildren {
   defaultChain: SubstrateChain | SubstrateChain['network']
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
+  apiOptions?: ApiOptions
 }
 export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   children,
@@ -83,6 +85,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   defaultChain,
   connectOnInit,
   deployments: _deployments,
+  apiOptions,
 }) => {
   // Check if default chain was provided
   if (
@@ -130,7 +133,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       const chain = newChain || activeChain
       const provider = new WsProvider(chain.rpcUrls[0])
       setProvider(provider)
-      const api = await ApiPromise.create({ provider, noInitWarn: true })
+      const api = await ApiPromise.create({
+        provider,
+        noInitWarn: true,
+        throwOnConnect: true,
+        ...apiOptions,
+      })
       setApi(api)
 
       // Update active chain if switching
@@ -227,6 +235,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Disconnect
   const disconnect = () => {
+    api?.disconnect()
     setIsConnected(false)
     updateAccounts([])
     unsubscribeAccounts?.()
