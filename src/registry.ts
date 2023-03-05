@@ -1,4 +1,5 @@
-import { Abi } from '@polkadot/api-contract'
+import { ApiPromise } from '@polkadot/api'
+import { Abi, ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { Dispatch, SetStateAction } from 'react'
 
@@ -62,4 +63,20 @@ export const getDeployment = (
       deployment.networkId.toLowerCase() === (networkId || '').toLowerCase()
     )
   })
+}
+
+/**
+ * Takes the first matching deployment from the given `deployments` array
+ * with an equal `contractId` and `networkId` and creates a `ContractPromise`.
+ */
+export const getDeploymentContract = (
+  api: ApiPromise,
+  deployments: SubstrateDeployment[],
+  contractId: string,
+  networkId: string,
+) => {
+  if (!api) return undefined
+  const deployment = getDeployment(deployments || [], contractId, networkId)
+  if (!deployment) return undefined
+  return new ContractPromise(api, deployment?.abi, deployment?.address)
 }
