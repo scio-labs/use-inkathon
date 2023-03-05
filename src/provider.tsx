@@ -1,4 +1,5 @@
 import { accountArraysAreEqual, accountsAreEqual } from '@helpers'
+import { initPolkadotJs } from '@helpers/initPolkadotJs'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
 import {
@@ -131,14 +132,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
     try {
       const chain = newChain || activeChain
-      const provider = new WsProvider(chain.rpcUrls[0])
-      setProvider(provider)
-      const api = await ApiPromise.create({
-        provider,
+      const { api, provider } = await initPolkadotJs(chain, {
         noInitWarn: true,
         throwOnConnect: true,
         ...apiOptions,
       })
+      setProvider(provider)
       setApi(api)
 
       // Update active chain if switching
