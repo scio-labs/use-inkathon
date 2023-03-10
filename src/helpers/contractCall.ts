@@ -10,6 +10,7 @@ import {
   ISubmittableResult,
 } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
+import { getAbiMessage } from './getAbiMessage'
 import { getMaxGasLimit } from './getGasLimit'
 
 /**
@@ -24,11 +25,7 @@ export const contractCallDryRun = async (
   options = {} as ContractOptions,
   args = [] as unknown[],
 ): Promise<ContractCallOutcome> => {
-  const abiMessage = contract.abi.messages.find((m) => m.method === method)
-  if (!abiMessage) {
-    throw new Error(`"${method}" not found in Contract`)
-  }
-
+  const abiMessage = getAbiMessage(contract, method)
   const address = (account as IKeyringPair)?.address || account
   const { value, gasLimit, storageDepositLimit } = options
   const result = await api.call.contractsApi.call<ContractCallOutcome>(
