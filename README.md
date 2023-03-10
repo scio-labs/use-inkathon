@@ -128,6 +128,7 @@ pnpm tsup && pnpm pack
 #    NOTE: This results in a package.json entry like: `"@scio-labs/use-inkathon": "file:../scio-labs-use-inkathon-0.0.1-alpha.X.tgz"`
 pnpm add ../use-inkathon/scio-labs-use-inkathon-0.0.1-alpha.X.tgz
 # 3. [OTHER PROJECT] Subsequent updates can be done via
+#    TIP: Add `--offline` flag for faster package updates
 pnpm update @scio-labs/use-inkathon
 ```
 
