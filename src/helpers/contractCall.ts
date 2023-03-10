@@ -4,12 +4,14 @@ import {
   ContractCallOutcome,
   ContractOptions,
 } from '@polkadot/api-contract/types'
+import { EventRecord } from '@polkadot/types/interfaces'
 import {
   Callback,
   IKeyringPair,
   ISubmittableResult,
 } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
+import { decodeOutput } from './decodeOutput'
 import { getAbiMessage } from './getAbiMessage'
 import { getMaxGasLimit } from './getGasLimit'
 
@@ -60,8 +62,15 @@ export const contractQuery = async (
 }
 
 /**
- * Calls a given mutating contract method (tx) with upfront gas estimation.
+ * Calls a given mutating contract method (tx) and wraps it in a promise.
+ * Before, a dry run is performed to determine the required gas & potential errors.
  */
+export type ContractTxResult = {
+  dryResult: ContractCallOutcome
+  result?: ISubmittableResult
+  errorMessage?: string
+  errorEvent?: EventRecord
+}
 export const contractTx = async (
   api: ApiPromise,
   account: IKeyringPair | string,
@@ -69,12 +78,11 @@ export const contractTx = async (
   method: string,
   options = {} as ContractOptions,
   args = [] as unknown[],
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  statusCb = (() => {}) as Callback<ISubmittableResult>,
-) => {
-  // Dry run
+  statusCb?: Callback<ISubmittableResult>,
+): Promise<ContractTxResult> => {
+  // Dry run to determine required gas and potential errors
   delete options.gasLimit
-  const { gasRequired } = await contractCallDryRun(
+  const dryResult = await contractCallDryRun(
     api,
     account,
     contract,
@@ -82,11 +90,40 @@ export const contractTx = async (
     options,
     args,
   )
+  const { decodedOutput, isError } = decodeOutput(dryResult, contract, method)
+  if (isError)
+    return Promise.reject({
+      dryResult,
+      errorMessage: decodedOutput,
+    })
 
-  // Call actual query/tx
-  const txFn = contract.tx[stringCamelCase(method)]
-  return await txFn({ ...options, gasLimit: gasRequired }, ...args).signAndSend(
-    account,
-    statusCb,
-  )
+  // Call actual query/tx & wrap it in a promise
+  const gasLimit = dryResult.gasRequired
+  return new Promise(async (resolve, reject) => {
+    const tx = contract.tx[stringCamelCase(method)](
+      { ...options, gasLimit },
+      ...args,
+    )
+    const unsub = await tx.signAndSend(account, (result) => {
+      statusCb?.(result)
+      const isInBlock = result?.status?.isInBlock
+      if (!isInBlock) return
+      const errorEvent = result?.events.find(
+        ({ event: { method } }: any) => method === 'ExtrinsicFailed',
+      )
+      if (isInBlock && errorEvent) {
+        // Reject if `ExtrinsicFailed` event was found
+        reject({
+          dryResult,
+          errorMessage: decodedOutput || 'ExtrinsicFailed',
+          errorEvent,
+        })
+        unsub?.()
+      } else if (isInBlock) {
+        // Otherwise resolve succesfully if transaction is in block
+        resolve({ dryResult, result })
+        unsub?.()
+      }
+    })
+  })
 }
