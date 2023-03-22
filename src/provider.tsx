@@ -157,27 +157,29 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Update signer when account changes
   const udpateSigner = async () => {
-    if (!activeAccount?.meta?.source) {
+    await api?.isReadyOrError
+    if (!activeAccount?.meta?.source || !api) {
       setActiveSigner(undefined)
       api?.setSigner(undefined as any)
       return
     }
+
     try {
-      await api?.isReadyOrError
       // NOTE: Dynamic import  to prevent hydration error in SSR environments
       const { web3FromSource } = await import('@polkadot/extension-dapp')
       const injector = await web3FromSource(activeAccount.meta.source)
-      setActiveSigner(injector?.signer)
-      api?.setSigner(injector?.signer)
+      const signer = injector?.signer
+      setActiveSigner(signer)
+      api.setSigner(signer)
     } catch (e) {
-      console.error('Error while getting signer:', e)
+      console.error('Error while setting signer:', e)
       setActiveSigner(undefined)
-      api?.setSigner(undefined as any)
+      api.setSigner(undefined as any)
     }
   }
   useEffect(() => {
     udpateSigner()
-  }, [activeAccount])
+  }, [api, activeAccount])
 
   // Updates account list and active account
   const updateAccounts = (injectedAccounts: InjectedAccountWithMeta[]) => {
@@ -188,15 +190,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       newAccounts?.[0]
 
     // Update accounts and active account
-    setAccounts((accounts) => {
-      if (accountArraysAreEqual(accounts, newAccounts)) return accounts
-      return newAccounts
-    })
-    setActiveAccount((account) => {
-      if (accountsAreEqual(account, newAccount)) return account
-      setIsConnected(!!newAccount)
-      return newAccount
-    })
+    if (!accountArraysAreEqual(accounts, newAccounts)) {
+      setAccounts(() => newAccounts)
+    }
+    if (!accountsAreEqual(activeAccount, newAccount)) {
+      setActiveAccount(() => newAccount)
+    }
+    setIsConnected(!!newAccount)
   }
 
   // Connect to injected wallets via polkadot-js/extension-dapp
