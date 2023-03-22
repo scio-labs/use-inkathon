@@ -68,7 +68,7 @@ export const contractQuery = async (
 export type ContractTxResult = {
   dryResult: ContractCallOutcome
   result?: ISubmittableResult
-  errorMessage?: string
+  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed'
   errorEvent?: EventRecord
 }
 export const contractTx = async (
@@ -104,26 +104,31 @@ export const contractTx = async (
       { ...options, gasLimit },
       ...args,
     )
-    const unsub = await tx.signAndSend(account, (result) => {
-      statusCb?.(result)
-      const isInBlock = result?.status?.isInBlock
-      if (!isInBlock) return
-      const errorEvent = result?.events.find(
-        ({ event: { method } }: any) => method === 'ExtrinsicFailed',
-      )
-      if (isInBlock && errorEvent) {
-        // Reject if `ExtrinsicFailed` event was found
-        reject({
-          dryResult,
-          errorMessage: decodedOutput || 'ExtrinsicFailed',
-          errorEvent,
-        })
-        unsub?.()
-      } else if (isInBlock) {
-        // Otherwise resolve succesfully if transaction is in block
-        resolve({ dryResult, result })
-        unsub?.()
-      }
-    })
+    try {
+      const unsub = await tx.signAndSend(account, (result) => {
+        statusCb?.(result)
+        const isInBlock = result?.status?.isInBlock
+        if (!isInBlock) return
+        const errorEvent = result?.events.find(
+          ({ event: { method } }: any) => method === 'ExtrinsicFailed',
+        )
+        if (isInBlock && errorEvent) {
+          // Reject if `ExtrinsicFailed` event was found
+          reject({
+            dryResult,
+            errorMessage: decodedOutput || 'ExtrinsicFailed',
+            errorEvent,
+          })
+          unsub?.()
+        } else if (isInBlock) {
+          // Otherwise resolve succesfully if transaction is in block
+          resolve({ dryResult, result })
+          unsub?.()
+        }
+      })
+    } catch (e) {
+      // Reject if user cancelled with `UserCancelled`
+      reject({ errorMessage: 'UserCancelled' })
+    }
   })
 }
