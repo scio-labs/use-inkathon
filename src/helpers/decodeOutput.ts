@@ -33,6 +33,7 @@ function getReturnTypeName(type: TypeDef | null | undefined) {
 
 /**
  * Decodes & unwraps outputs and errors of a given result, contract, and method.
+ * Parsed error message can be found in `decodedOutput` if `isError` is true.
  * SOURCE: https://github.com/paritytech/contracts-ui (GPL-3.0-only)
  */
 export function decodeOutput(
@@ -40,11 +41,14 @@ export function decodeOutput(
   contract: ContractPromise,
   method: string,
 ): {
+  output: any
   decodedOutput: string
   isError: boolean
 } {
+  let output
   let decodedOutput = ''
   let isError = true
+
   if (result.isOk) {
     const flags = result.asOk.flags.toHuman()
     isError = flags.includes('Revert')
@@ -55,26 +59,27 @@ export function decodeOutput(
     const r = returnType
       ? registry.createTypeUnsafe(returnTypeName, [result.asOk.data]).toHuman()
       : '()'
-    const o = isOk(r) ? r.Ok : isErr(r) ? r.Err : r
+    output = isOk(r) ? r.Ok : isErr(r) ? r.Err : r
 
-    const errorText = isErr(o)
-      ? typeof o.Err === 'object'
-        ? JSON.stringify(o.Err, null, 2)
-        : o.Err?.toString() ?? 'Error'
-      : o !== 'Ok'
-      ? o?.toString() || 'Error'
+    const errorText = isErr(output)
+      ? typeof output.Err === 'object'
+        ? JSON.stringify(output.Err, null, 2)
+        : output.Err?.toString() ?? 'Error'
+      : output !== 'Ok'
+      ? output?.toString() || 'Error'
       : 'Error'
 
     const okText = isOk(r)
-      ? typeof o === 'object'
-        ? JSON.stringify(o, null, '\t')
-        : o?.toString() ?? '()'
-      : JSON.stringify(o, null, '\t') ?? '()'
+      ? typeof output === 'object'
+        ? JSON.stringify(output, null, '\t')
+        : output?.toString() ?? '()'
+      : JSON.stringify(output, null, '\t') ?? '()'
 
     decodedOutput = isError ? errorText : okText
   }
 
   return {
+    output,
     decodedOutput,
     isError,
   }

@@ -68,7 +68,7 @@ export const contractQuery = async (
 export type ContractTxResult = {
   dryResult: ContractCallOutcome
   result?: ISubmittableResult
-  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed'
+  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed' | 'Error'
   errorEvent?: EventRecord
 }
 export const contractTx = async (
@@ -90,11 +90,11 @@ export const contractTx = async (
     options,
     args,
   )
-  const { decodedOutput, isError } = decodeOutput(dryResult, contract, method)
+  const { isError, decodedOutput } = decodeOutput(dryResult, contract, method)
   if (isError)
     return Promise.reject({
       dryResult,
-      errorMessage: decodedOutput,
+      errorMessage: decodedOutput || 'Error',
     })
 
   // Call actual query/tx & wrap it in a promise
@@ -116,7 +116,7 @@ export const contractTx = async (
           // Reject if `ExtrinsicFailed` event was found
           reject({
             dryResult,
-            errorMessage: decodedOutput || 'ExtrinsicFailed',
+            errorMessage: decodeOutput || 'ExtrinsicFailed',
             errorEvent,
           })
           unsub?.()
