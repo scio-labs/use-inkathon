@@ -112,6 +112,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([])
   const [activeAccount, setActiveAccount] = useState<InjectedAccountWithMeta>()
+  const [latestActiveAccount, setLatestActiveAccount] =
+    useState<InjectedAccountWithMeta>()
   const [activeSigner, setActiveSigner] = useState<Signer>()
   const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
   const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
@@ -122,17 +124,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async (
-    autoConnect: boolean,
-    newChain?: SubstrateChain,
-  ) => {
+  const initialize = async (chain?: SubstrateChain) => {
     setIsConnected(false)
-    setIsConnecting(autoConnect)
     setError(undefined)
 
     try {
-      const chain = newChain || activeChain
-      const { api, provider } = await initPolkadotJs(chain, {
+      const _chain = chain || activeChain
+      const { api, provider } = await initPolkadotJs(_chain, {
         noInitWarn: true,
         throwOnConnect: true,
         ...apiOptions,
@@ -141,12 +139,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setApi(api)
 
       // Update active chain if switching
-      if (activeChain.network !== chain.network) setActiveChain(chain)
-
-      // Optionally force connection after initialization
-      if (autoConnect) await connect()
+      if (activeChain.network !== _chain.network) setActiveChain(_chain)
     } catch (e) {
-      const message = 'Error while initializing polkado.js api'
+      const message = 'Error while initializing polkadot.js api'
       console.error(message, e)
       setError({ code: UseInkathonErrorCode.InitializationError, message })
       setIsConnecting(false)
@@ -186,7 +181,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     const newAccounts = injectedAccounts || []
     // Find active account in new accounts or fallback to first account
     const newAccount =
-      newAccounts.find((a) => accountsAreEqual(a, activeAccount)) ||
+      newAccounts.find((a) => accountsAreEqual(a, latestActiveAccount)) ||
       newAccounts?.[0]
 
     // Update accounts and active account
@@ -198,12 +193,26 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
     setIsConnected(!!newAccount)
   }
+  useEffect(() => {
+    if (
+      activeAccount &&
+      !accountsAreEqual(activeAccount, latestActiveAccount)
+    ) {
+      setLatestActiveAccount(() => activeAccount)
+    }
+  }, [activeAccount])
 
   // Connect to injected wallets via polkadot-js/extension-dapp
-  const connect = async () => {
+  const connect = async (chain?: SubstrateChain) => {
     setError(undefined)
     setIsConnecting(true)
     setIsConnected(false)
+
+    // Make sure api is initialized & connected to provider
+    if (!api?.isConnected || (chain && chain.network !== activeChain.network)) {
+      await initialize(chain)
+    }
+
     try {
       // NOTE: Dynamic import  to prevent hydration error in SSR environments
       const { web3AccountsSubscribe, web3Enable } = await import(
@@ -236,6 +245,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const disconnect = () => {
     api?.disconnect()
     setIsConnected(false)
+    setIsConnecting(false)
     updateAccounts([])
     unsubscribeAccounts?.()
     setUnsubscribeAccounts(undefined)
@@ -243,7 +253,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Initialze
   useEffect(() => {
-    initialize(!!connectOnInit)
+    connectOnInit ? connect() : initialize()
     return () => {
       unsubscribeAccounts?.()
     }
@@ -252,7 +262,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Switch active chain
   const switchActiveChain = async (chain: SubstrateChain) => {
     disconnect()
-    await initialize(true, chain)
+    await connect(chain)
   }
 
   return (
