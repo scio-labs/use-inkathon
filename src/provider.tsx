@@ -242,8 +242,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Disconnect
-  const disconnect = () => {
-    api?.disconnect()
+  const disconnect = async () => {
+    await api?.disconnect()
     setIsConnected(false)
     setIsConnecting(false)
     updateAccounts([])
@@ -261,7 +261,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Switch active chain
   const switchActiveChain = async (chain: SubstrateChain) => {
-    disconnect()
     await connect(chain)
   }
 
