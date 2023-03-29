@@ -14,6 +14,8 @@ export interface SubstrateChain {
 /**
  * Defined Substrate Chain Constants
  */
+
+/// Local Development Network
 export const development: SubstrateChain = {
   network: 'development',
   name: 'Local Development',
@@ -27,6 +29,8 @@ export const development: SubstrateChain = {
     'https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944',
   ],
 }
+
+/// Testnets
 
 export const alephzeroTestnet: SubstrateChain = {
   network: 'alephzero-testnet',
@@ -47,23 +51,6 @@ export const rococo: SubstrateChain = {
   explorerUrls: ['https://rococo.subscan.io'],
 }
 
-export const astar: SubstrateChain = {
-  network: 'astar',
-  name: 'Astar',
-  ss58Prefix: 5,
-  rpcUrls: ['wss://astar-rpc.dwellir.com'],
-  faucetUrls: [],
-  explorerUrls: ['https://astar.subscan.io'],
-}
-
-export const shiden: SubstrateChain = {
-  network: 'shiden',
-  name: 'Shiden',
-  ss58Prefix: 5,
-  rpcUrls: ['wss://shiden-rpc.dwellir.com'],
-  explorerUrls: ['https://shiden.subscan.io'],
-}
-
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
   name: 'Shibuya Testnet',
@@ -74,6 +61,35 @@ export const shibuya: SubstrateChain = {
   explorerUrls: ['https://shibuya.subscan.io'],
 }
 
+/// Canary Networks (Kusama)
+
+export const shiden: SubstrateChain = {
+  network: 'shiden',
+  name: 'Shiden',
+  ss58Prefix: 5,
+  rpcUrls: ['wss://shiden-rpc.dwellir.com'],
+  explorerUrls: ['https://shiden.subscan.io'],
+}
+
+/// Mainnets
+
+export const alephzero: SubstrateChain = {
+  network: 'alephzero',
+  name: 'Aleph Zero',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://ws.azero.dev'],
+  explorerUrls: ['https://azero.dev/?rpc=wss%3A%2F%2Fws.azero.dev'],
+}
+
+export const astar: SubstrateChain = {
+  network: 'astar',
+  name: 'Astar',
+  ss58Prefix: 5,
+  rpcUrls: ['wss://astar-rpc.dwellir.com'],
+  faucetUrls: [],
+  explorerUrls: ['https://astar.subscan.io'],
+}
+
 /**
  * Exporting all chains separately
  */
@@ -81,9 +97,10 @@ export const allSubstrateChains: SubstrateChain[] = [
   development,
   alephzeroTestnet,
   rococo,
-  astar,
-  shiden,
   shibuya,
+  shiden,
+  alephzero,
+  astar,
 ]
 
 /**
