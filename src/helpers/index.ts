@@ -8,5 +8,6 @@ export * from './getAbiMessage'
 export * from './getBalance'
 export * from './getGasLimit'
 export * from './initPolkadotJs'
+export * from './transferBalance'
 export * from './unwrapResult'
 // @endindex
