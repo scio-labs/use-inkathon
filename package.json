@@ -15,6 +15,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "engines": {
+    "node": ">=16 <=18",
+    "pnpm": "8"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
@@ -42,19 +46,19 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.15.10",
-    "@types/react": "^18.0.29",
-    "@typescript-eslint/eslint-plugin": "^5.56.0",
-    "@typescript-eslint/parser": "^5.56.0",
-    "eslint": "^8.36.0",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.34",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
-    "lint-staged": "^13.2.0",
+    "lint-staged": "^13.2.1",
     "prettier": "^2.8.7",
-    "release-it": "^15.9.3",
+    "release-it": "^15.10.1",
     "tsup": "^6.7.0",
-    "typedoc": "^0.23.28",
-    "typescript": "^4.9.5"
+    "typedoc": "^0.24.1",
+    "typescript": "^5.0.4"
   }
 }
