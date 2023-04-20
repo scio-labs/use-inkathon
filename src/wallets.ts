@@ -1,3 +1,8 @@
+import {
+  InjectedExtension,
+  InjectedWindow,
+} from '@polkadot/extension-inject/types'
+
 /**
  * Substrate Wallet Type(s)
  */
@@ -41,7 +46,7 @@ export const polkadotjs: SubstrateWallet = {
 }
 
 export const subwallet: SubstrateWallet = {
-  id: 'subwallet',
+  id: 'subwallet-js',
   name: 'SubWallet',
   platforms: [SubstrateWalletPlatform.Browser],
   urls: {
@@ -95,9 +100,9 @@ export const nova: SubstrateWallet = {
  * Exporting all wallets separately
  */
 export const allSubstrateWallets: SubstrateWallet[] = [
-  polkadotjs,
   subwallet,
   talisman,
+  polkadotjs,
   nova,
 ]
 
@@ -108,4 +113,43 @@ export const getSubstrateWallet = (id: string): SubstrateWallet | undefined => {
   return allSubstrateWallets.find(
     (wallet) => wallet.id.toLowerCase() === id.toLowerCase(),
   )
+}
+
+/*
+ * Returns `true` if wallet is installed, `false` if not, and
+ * `undefined` if the environment is not a client browser.
+ */
+export const isWalletInstalled = (wallet: SubstrateWallet) => {
+  try {
+    if (typeof window === 'undefined') return undefined
+    const injectedWindow = window as Window & InjectedWindow
+    const injectedExtension = injectedWindow?.injectedWeb3?.[wallet.id]
+    return !!injectedExtension
+  } catch (e) {
+    return undefined
+  }
+}
+
+/**
+ * Enables the given wallet (if existent) and returns the injected extension.
+ */
+export const enableWallet = async (
+  wallet: SubstrateWallet,
+  appName: string,
+) => {
+  if (!isWalletInstalled(wallet)) return undefined
+
+  try {
+    if (typeof window === 'undefined') return undefined
+    const injectedWindow = window as Window & InjectedWindow
+    const injectedWindowProvider = injectedWindow?.injectedWeb3?.[wallet.id]
+    const injectedExtension: InjectedExtension = {
+      ...(await injectedWindowProvider?.enable(appName)),
+      name: wallet.id,
+      version: injectedWindowProvider.version,
+    }
+    return injectedExtension
+  } catch (e) {
+    return undefined
+  }
 }
