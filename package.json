@@ -38,7 +38,6 @@
   "peerDependencies": {
     "@polkadot/api": ">=9.14.0",
     "@polkadot/api-contract": ">=9.14.0",
-    "@polkadot/extension-dapp": ">=0.44.0",
     "@polkadot/extension-inject": ">=0.44.0",
     "@polkadot/types": ">=9.14.0",
     "@polkadot/util": ">=10.4.0",

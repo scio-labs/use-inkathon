@@ -127,7 +127,8 @@ export const contractTx = async (
         }
       })
     } catch (e) {
-      // Reject if user cancelled with `UserCancelled`
+      console.error('Error while performing transaction:', e)
+      // Assume transaction was cancelled by user
       reject({ errorMessage: 'UserCancelled' })
     }
   })

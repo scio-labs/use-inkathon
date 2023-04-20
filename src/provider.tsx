@@ -3,22 +3,30 @@ import { initPolkadotJs } from '@helpers/initPolkadotJs'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
 import {
-  InjectedAccountWithMeta,
+  InjectedAccount,
+  InjectedExtension,
   Unsubcall,
 } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
-import { registerDeployments, SubstrateDeployment } from '@registry'
+import { SubstrateDeployment, registerDeployments } from '@registry'
 import {
-  createContext,
+  SubstrateWallet,
+  allSubstrateWallets,
+  enableWallet,
+  getSubstrateWallet,
+  isWalletInstalled,
+} from '@wallets'
+import {
   Dispatch,
   FC,
   PropsWithChildren,
   SetStateAction,
+  createContext,
   useContext,
   useEffect,
   useState,
 } from 'react'
-import { getSubstrateChain, SubstrateChain } from './chains'
+import { SubstrateChain, getSubstrateChain } from './chains'
 
 /**
  * Helper Types
@@ -44,14 +52,13 @@ export type UseInkathonProviderContextType = {
   switchActiveChain?: (chain: SubstrateChain) => Promise<void>
   api?: ApiPromise
   provider?: WsProvider | HttpProvider
-  connect?: () => Promise<void>
+  connect?: (chain?: SubstrateChain, wallet?: SubstrateWallet) => Promise<void>
   disconnect?: () => void
-  accounts?: InjectedAccountWithMeta[]
-  activeAccount?: InjectedAccountWithMeta
+  accounts?: InjectedAccount[]
+  activeAccount?: InjectedAccount
+  activeExtension?: InjectedExtension
   activeSigner?: Signer
-  setActiveAccount?: Dispatch<
-    SetStateAction<InjectedAccountWithMeta | undefined>
-  >
+  setActiveAccount?: Dispatch<SetStateAction<InjectedAccount | undefined>>
   deployments?: SubstrateDeployment[]
 }
 export const UseInkathonProviderContext =
@@ -110,10 +117,11 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   )
   const [api, setApi] = useState<ApiPromise>()
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
-  const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([])
-  const [activeAccount, setActiveAccount] = useState<InjectedAccountWithMeta>()
+  const [accounts, setAccounts] = useState<InjectedAccount[]>([])
+  const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
+  const [activeExtension, setActiveExtension] = useState<InjectedExtension>()
   const [latestActiveAccount, setLatestActiveAccount] =
-    useState<InjectedAccountWithMeta>()
+    useState<InjectedAccount>()
   const [activeSigner, setActiveSigner] = useState<Signer>()
   const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
   const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
@@ -150,34 +158,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
   }
 
-  // Update signer when account changes
-  const udpateSigner = async () => {
-    await api?.isReadyOrError
-    if (!activeAccount?.meta?.source || !api) {
-      setActiveSigner(undefined)
-      api?.setSigner(undefined as any)
-      return
-    }
-
-    try {
-      // NOTE: Dynamic import  to prevent hydration error in SSR environments
-      const { web3FromSource } = await import('@polkadot/extension-dapp')
-      const injector = await web3FromSource(activeAccount.meta.source)
-      const signer = injector?.signer
-      setActiveSigner(signer)
-      api.setSigner(signer)
-    } catch (e) {
-      console.error('Error while setting signer:', e)
-      setActiveSigner(undefined)
-      api.setSigner(undefined as any)
-    }
-  }
-  useEffect(() => {
-    udpateSigner()
-  }, [api, activeAccount])
-
   // Updates account list and active account
-  const updateAccounts = (injectedAccounts: InjectedAccountWithMeta[]) => {
+  const updateAccounts = (injectedAccounts: InjectedAccount[]) => {
     const newAccounts = injectedAccounts || []
     // Find active account in new accounts or fallback to first account
     const newAccount =
@@ -202,8 +184,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
   }, [activeAccount])
 
-  // Connect to injected wallets via polkadot-js/extension-dapp
-  const connect = async (chain?: SubstrateChain) => {
+  // Connect to injected wallet
+  const connect = async (chain?: SubstrateChain, wallet?: SubstrateWallet) => {
     setError(undefined)
     setIsConnecting(true)
     setIsConnected(false)
@@ -214,14 +196,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
 
     try {
-      // NOTE: Dynamic import  to prevent hydration error in SSR environments
-      const { web3AccountsSubscribe, web3Enable } = await import(
-        '@polkadot/extension-dapp'
-      )
-
-      // Initialize web3 extension
-      const extensions = await web3Enable(appName)
-      if (!extensions?.length) {
+      // Determine installed wallets
+      const wallets = allSubstrateWallets.filter((w) => isWalletInstalled(w))
+      if (!wallets?.length) {
         const message = 'No Substrate-compatible extension detected'
         setError({
           code: UseInkathonErrorCode.NoSubstrateExtensionDetected,
@@ -230,16 +207,33 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         throw new Error(message)
       }
 
+      // Determine wallet to use
+      const preferredWallet = wallet && wallets.find((w) => w.id === wallet.id)
+      const _wallet = preferredWallet || wallets[0]
+
+      // Enable wallet
+      const extension = await enableWallet(_wallet, appName)
+      const signer = extension?.signer as Signer
+      setActiveExtension(extension)
+      setActiveSigner(signer)
+
       // Query & keep listening to injected accounts
       unsubscribeAccounts?.()
-      const unsubscribe = await web3AccountsSubscribe(updateAccounts)
+      const unsubscribe = extension?.accounts.subscribe(updateAccounts)
       setUnsubscribeAccounts(unsubscribe)
     } catch (e: any) {
       console.error('Error while connecting wallet:', e)
+      setActiveExtension(undefined)
+      setActiveSigner(undefined)
     } finally {
       setIsConnecting(false)
     }
   }
+
+  // Keep active signer up to date
+  useEffect(() => {
+    api?.setSigner(activeSigner as Signer)
+  }, [api, activeSigner])
 
   // Disconnect
   const disconnect = async () => {
@@ -249,6 +243,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     updateAccounts([])
     unsubscribeAccounts?.()
     setUnsubscribeAccounts(undefined)
+    setActiveExtension(undefined)
   }
 
   // Initialze
@@ -261,7 +256,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Switch active chain
   const switchActiveChain = async (chain: SubstrateChain) => {
-    await connect(chain)
+    const activeWallet =
+      activeExtension && getSubstrateWallet(activeExtension.name)
+    await connect(chain, activeWallet)
   }
 
   return (
@@ -278,6 +275,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         disconnect,
         accounts,
         activeAccount,
+        activeExtension,
         activeSigner,
         setActiveAccount,
         deployments,
