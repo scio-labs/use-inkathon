@@ -1,7 +1,6 @@
 import { ApiPromise } from '@polkadot/api'
 import { AccountId } from '@polkadot/types/interfaces'
-import { BN } from '@polkadot/util'
-import { formatBalanceToFixed } from './formatBalance'
+import { BN, formatBalance } from '@polkadot/util'
 
 /**
  * Returns the native token balance of the given `address`.
@@ -29,11 +28,9 @@ export const getBalance = async (
   const balance = reservedBalance.add(freeBalance)
 
   // Format the balance
-  const balanceFormatted = formatBalanceToFixed(
-    balance,
-    tokenDecimals,
-    fractionDigits,
-  )
+  const balanceFormatted = formatBalance(balance, {
+    decimals: tokenDecimals,
+  })
 
   return {
     freeBalance,
