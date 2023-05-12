@@ -45,6 +45,8 @@ export interface UseInkathonError {
  * UseInkathon Context Type
  */
 export type UseInkathonProviderContextType = {
+  isInitializing?: boolean
+  isInitialized?: boolean
   isConnecting?: boolean
   isConnected?: boolean
   error?: UseInkathonError
@@ -107,6 +109,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Setup state variables
+  const [isInitializing, setIsInitializing] = useState(true)
+  const [isInitialized, setIsInitialized] = useState(false)
   const [isConnecting, setIsConnecting] = useState(connectOnInit)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<UseInkathonError | undefined>()
@@ -133,6 +137,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Initialize polkadot-js/api
   const initialize = async (chain?: SubstrateChain) => {
+    setIsInitialized(!!api?.isConnected)
+    setIsInitializing(true)
     setIsConnected(false)
     setError(undefined)
 
@@ -145,6 +151,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       })
       setProvider(provider)
       setApi(api)
+      setIsInitialized(true)
 
       // Update active chain if switching
       if (activeChain.network !== _chain.network) setActiveChain(_chain)
@@ -152,9 +159,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       const message = 'Error while initializing polkadot.js api'
       console.error(message, e)
       setError({ code: UseInkathonErrorCode.InitializationError, message })
+      setIsConnected(false)
       setIsConnecting(false)
+      setIsInitialized(false)
       setApi(undefined)
       setProvider(undefined)
+    } finally {
+      setIsInitializing(false)
     }
   }
 
@@ -188,7 +199,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const connect = async (chain?: SubstrateChain, wallet?: SubstrateWallet) => {
     setError(undefined)
     setIsConnecting(true)
-    setIsConnected(false)
+    setIsConnected(!!activeAccount)
 
     // Make sure api is initialized & connected to provider
     if (!api?.isConnected || (chain && chain.network !== activeChain.network)) {
@@ -264,6 +275,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   return (
     <UseInkathonProviderContext.Provider
       value={{
+        isInitializing,
+        isInitialized,
         isConnecting,
         isConnected,
         error,
