@@ -236,6 +236,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       console.error('Error while connecting wallet:', e)
       setActiveExtension(undefined)
       setActiveSigner(undefined)
+      setIsConnected(false)
     } finally {
       setIsConnecting(false)
     }
@@ -247,10 +248,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [api, activeSigner])
 
   // Disconnect
-  const disconnect = async () => {
-    await api?.disconnect()
+  const disconnect = async (disconnectApi?: boolean) => {
+    if (disconnectApi) {
+      await api?.disconnect()
+      setIsInitialized(false)
+    }
     setIsConnected(false)
-    setIsConnecting(false)
     updateAccounts([])
     unsubscribeAccounts?.()
     setUnsubscribeAccounts(undefined)
