@@ -7,19 +7,25 @@ import { BN, formatBalance } from '@polkadot/util'
  */
 export const getBalance = async (
   api: ApiPromise,
-  address: string | AccountId,
-  fractionDigits = 2,
+  address: string | AccountId | undefined,
 ): Promise<{
-  freeBalance: BN
-  reservedBalance: BN
-  balance: BN
-  balanceFormatted: string
-  tokenSymbol: string
   tokenDecimals: number
+  tokenSymbol: string
+  freeBalance?: BN
+  reservedBalance?: BN
+  balance?: BN
+  balanceFormatted?: string
 }> => {
   // Get the token decimals and symbol
   const tokenDecimals = api.registry.chainDecimals?.[0] || 12
   const tokenSymbol = api.registry.chainTokens?.[0] || 'Unit'
+
+  if (!address) {
+    return {
+      tokenDecimals,
+      tokenSymbol,
+    }
+  }
 
   // Get the balance
   const result: any = await api.query.system.account(address)

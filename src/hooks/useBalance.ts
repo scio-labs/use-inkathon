@@ -7,10 +7,7 @@ import { useEffect, useState } from 'react'
 /**
  * Hook that returns the native token balance of the given `address`.
  */
-export const useBalance = (
-  address?: string | AccountId,
-  fractionDigits = 2,
-) => {
+export const useBalance = (address?: string | AccountId) => {
   const { api } = useInkathon()
   const [freeBalance, setFreeBalance] = useState<BN>()
   const [reservedBalance, setReservedBalance] = useState<BN>()
@@ -21,7 +18,7 @@ export const useBalance = (
 
   useEffect(() => {
     ;(async () => {
-      if (!api || !address) {
+      if (!api) {
         setFreeBalance(undefined)
         setReservedBalance(undefined)
         setBalance(undefined)
@@ -31,16 +28,19 @@ export const useBalance = (
         return
       }
 
-      const result = await getBalance(api, address, fractionDigits)
+      const result = await getBalance(api, address)
 
       setFreeBalance(result.freeBalance)
       setReservedBalance(result.reservedBalance)
       setBalance(result.balance)
-      setBalanceFormatted(`${result.balanceFormatted} ${result.tokenSymbol}`)
+      setBalanceFormatted(
+        result.balanceFormatted &&
+          `${result.balanceFormatted} ${result.tokenSymbol}`,
+      )
       setTokenSymbol(result.tokenSymbol)
       setTokenDecimals(result.tokenDecimals)
     })()
-  }, [api, address, fractionDigits])
+  }, [api, address])
 
   return {
     freeBalance,
