@@ -54,13 +54,18 @@ export type UseInkathonProviderContextType = {
   switchActiveChain?: (chain: SubstrateChain) => Promise<void>
   api?: ApiPromise
   provider?: WsProvider | HttpProvider
-  connect?: (chain?: SubstrateChain, wallet?: SubstrateWallet) => Promise<void>
+  connect?: (
+    chain?: SubstrateChain,
+    wallet?: SubstrateWallet,
+    lastActiveAccountAddress?: string,
+  ) => Promise<void>
   disconnect?: () => void
   accounts?: InjectedAccount[]
   activeAccount?: InjectedAccount
   activeExtension?: InjectedExtension
   activeSigner?: Signer
   setActiveAccount?: Dispatch<SetStateAction<InjectedAccount | undefined>>
+  lastActiveAccount?: InjectedAccount
   deployments?: SubstrateDeployment[]
 }
 export const UseInkathonProviderContext =
@@ -124,8 +129,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [accounts, setAccounts] = useState<InjectedAccount[]>([])
   const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
   const [activeExtension, setActiveExtension] = useState<InjectedExtension>()
-  const [latestActiveAccount, setLatestActiveAccount] =
-    useState<InjectedAccount>()
+  const [lastActiveAccount, setLastActiveAccount] = useState<InjectedAccount>()
   const [activeSigner, setActiveSigner] = useState<Signer>()
   const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
   const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
@@ -170,11 +174,17 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Updates account list and active account
-  const updateAccounts = (injectedAccounts: InjectedAccount[]) => {
+  const updateAccounts = (
+    injectedAccounts: InjectedAccount[],
+    lastActiveAccountAddress?: string,
+  ) => {
     const newAccounts = injectedAccounts || []
-    // Find active account in new accounts or fallback to first account
+    // Find active account in new accounts or fallback to latest account
+    const _lastAccount = lastActiveAccountAddress
+      ? { address: lastActiveAccountAddress }
+      : lastActiveAccount
     const newAccount =
-      newAccounts.find((a) => accountsAreEqual(a, latestActiveAccount)) ||
+      newAccounts.find((a) => accountsAreEqual(a, _lastAccount)) ||
       newAccounts?.[0]
 
     // Update accounts and active account
@@ -187,16 +197,17 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     setIsConnected(!!newAccount)
   }
   useEffect(() => {
-    if (
-      activeAccount &&
-      !accountsAreEqual(activeAccount, latestActiveAccount)
-    ) {
-      setLatestActiveAccount(() => activeAccount)
+    if (activeAccount && !accountsAreEqual(activeAccount, lastActiveAccount)) {
+      setLastActiveAccount(() => activeAccount)
     }
   }, [activeAccount])
 
   // Connect to injected wallet
-  const connect = async (chain?: SubstrateChain, wallet?: SubstrateWallet) => {
+  const connect = async (
+    chain?: SubstrateChain,
+    wallet?: SubstrateWallet,
+    lastActiveAccountAddress?: string,
+  ) => {
     setError(undefined)
     setIsConnecting(true)
     setIsConnected(!!activeAccount)
@@ -230,7 +241,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
       // Query & keep listening to injected accounts
       unsubscribeAccounts?.()
-      const unsubscribe = extension?.accounts.subscribe(updateAccounts)
+      const unsubscribe = extension?.accounts.subscribe((accounts) => {
+        updateAccounts(accounts, lastActiveAccountAddress)
+      })
       setUnsubscribeAccounts(unsubscribe)
     } catch (e: any) {
       console.error('Error while connecting wallet:', e)
@@ -294,6 +307,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         activeExtension,
         activeSigner,
         setActiveAccount,
+        lastActiveAccount,
         deployments,
       }}
     >
