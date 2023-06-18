@@ -264,7 +264,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const disconnect = async (disconnectApi?: boolean) => {
     if (disconnectApi) {
       await api?.disconnect()
-      setIsInitialized(false)
+      return
     }
     setIsConnected(false)
     updateAccounts([])
@@ -272,6 +272,18 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     setUnsubscribeAccounts(undefined)
     setActiveExtension(undefined)
   }
+
+  // API Disconnection listener
+  useEffect(() => {
+    const handler = () => {
+      disconnect()
+      setIsInitialized(false)
+    }
+    api?.on('disconnected', handler)
+    return () => {
+      api?.off('disconnected', handler)
+    }
+  }, [api])
 
   // Initialze
   useEffect(() => {
