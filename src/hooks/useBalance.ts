@@ -1,4 +1,4 @@
-import { getBalance } from '@helpers/getBalance'
+import { BalanceData, getBalance, watchBalance } from '@helpers/getBalance'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
 import { useInkathon } from '@provider'
@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 /**
  * Hook that returns the native token balance of the given `address`.
  */
-export const useBalance = (address?: string | AccountId) => {
+export const useBalance = (address?: string | AccountId, watch?: boolean) => {
   const { api } = useInkathon()
   const [freeBalance, setFreeBalance] = useState<BN>()
   const [reservedBalance, setReservedBalance] = useState<BN>()
@@ -15,31 +15,37 @@ export const useBalance = (address?: string | AccountId) => {
   const [balanceFormatted, setBalanceFormatted] = useState<string>()
   const [tokenSymbol, setTokenSymbol] = useState<string>()
   const [tokenDecimals, setTokenDecimals] = useState<number>()
+  const [unsubscribes, setUnsubscribes] = useState<(VoidFunction | null)[]>([])
 
   useEffect(() => {
-    ;(async () => {
-      if (!api) {
-        setFreeBalance(undefined)
-        setReservedBalance(undefined)
-        setBalance(undefined)
-        setBalanceFormatted(undefined)
-        setTokenSymbol(undefined)
-        setTokenDecimals(undefined)
-        return
-      }
-
-      const result = await getBalance(api, address)
-
-      setFreeBalance(result.freeBalance)
-      setReservedBalance(result.reservedBalance)
-      setBalance(result.balance)
+    const updateBalanceData = (data: BalanceData) => {
+      setFreeBalance(data.freeBalance)
+      setReservedBalance(data.reservedBalance)
+      setBalance(data.balance)
       setBalanceFormatted(
-        result.balanceFormatted &&
-          `${result.balanceFormatted} ${result.tokenSymbol}`,
+        data.balanceFormatted && `${data.balanceFormatted} ${data.tokenSymbol}`,
       )
-      setTokenSymbol(result.tokenSymbol)
-      setTokenDecimals(result.tokenDecimals)
-    })()
+      setTokenSymbol(data.tokenSymbol)
+      setTokenDecimals(data.tokenDecimals)
+    }
+
+    if (!api) {
+      updateBalanceData({} as BalanceData)
+      return
+    }
+
+    if (watch) {
+      watchBalance(api, address, updateBalanceData).then((unsubscribe) => {
+        setUnsubscribes((prev) => [...prev, unsubscribe])
+      })
+    } else {
+      getBalance(api, address).then(updateBalanceData)
+    }
+
+    return () => {
+      unsubscribes.forEach((unsubscribe) => unsubscribe?.())
+      setUnsubscribes(() => [])
+    }
   }, [api, address])
 
   return {
