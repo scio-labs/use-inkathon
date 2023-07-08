@@ -100,29 +100,58 @@ export const contractTx = async (
   // Call actual query/tx & wrap it in a promise
   const gasLimit = dryResult.gasRequired
   return new Promise(async (resolve, reject) => {
-    const tx = contract.tx[stringCamelCase(method)](
-      { ...options, gasLimit },
-      ...args,
-    )
     try {
-      const unsub = await tx.signAndSend(account, (result) => {
+      const isDevelopment =
+        (api.runtimeChain || '').toLowerCase() === 'development'
+          ? 'isInBlock'
+          : 'isFinalized'
+      const finalStatus = isDevelopment ? 'isInBlock' : 'isFinalized'
+      const asFinalStatus = isDevelopment ? 'asInBlock' : 'asFinalized'
+
+      const tx = contract.tx[stringCamelCase(method)](
+        { ...options, gasLimit },
+        ...args,
+      )
+
+      const unsub = await tx.signAndSend(account, async (result) => {
         statusCb?.(result)
-        const isInBlock = result?.status?.isInBlock
-        if (!isInBlock) return
-        const errorEvent = result?.events.find(
-          ({ event: { method } }: any) => method === 'ExtrinsicFailed',
+
+        const isFinalized = result?.status?.[finalStatus]
+        if (!isFinalized) return
+
+        // Determine extrinsic and block info
+        const extrinsicHash = result.txHash.toHex()
+        const extrinsicIndex = result.txIndex
+        const blockHash = result.status[asFinalStatus].toHex()
+
+        const errorEvent = result?.events.find(({ event }) =>
+          api.events.system.ExtrinsicFailed.is(event),
         )
-        if (isInBlock && errorEvent) {
+        if (errorEvent) {
           // Reject if `ExtrinsicFailed` event was found
           reject({
             dryResult,
             errorMessage: decodeOutput || 'ExtrinsicFailed',
             errorEvent,
+            extrinsicHash,
+            extrinsicIndex,
+            blockHash,
           })
           unsub?.()
-        } else if (isInBlock) {
-          // Otherwise resolve succesfully if transaction is in block
-          resolve({ dryResult, result })
+        } else {
+          // Resolve succesfully otherwise
+          const successEvent = result?.events.find(({ event }) =>
+            api.events.system.ExtrinsicSuccess.is(event),
+          )
+
+          resolve({
+            dryResult,
+            result,
+            successEvent,
+            extrinsicHash,
+            extrinsicIndex,
+            blockHash,
+          })
           unsub?.()
         }
       })
