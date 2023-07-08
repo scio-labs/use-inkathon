@@ -1,3 +1,4 @@
+import { BalanceFormatterOptions } from '@helpers'
 import { BalanceData, getBalance, watchBalance } from '@helpers/getBalance'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
@@ -7,7 +8,11 @@ import { useEffect, useState } from 'react'
 /**
  * Hook that returns the native token balance of the given `address`.
  */
-export const useBalance = (address?: string | AccountId, watch?: boolean) => {
+export const useBalance = (
+  address?: string | AccountId,
+  watch?: boolean,
+  formatterOptions?: BalanceFormatterOptions,
+) => {
   const { api } = useInkathon()
   const [freeBalance, setFreeBalance] = useState<BN>()
   const [reservedBalance, setReservedBalance] = useState<BN>()
@@ -22,9 +27,7 @@ export const useBalance = (address?: string | AccountId, watch?: boolean) => {
       setFreeBalance(data.freeBalance)
       setReservedBalance(data.reservedBalance)
       setBalance(data.balance)
-      setBalanceFormatted(
-        data.balanceFormatted && `${data.balanceFormatted} ${data.tokenSymbol}`,
-      )
+      setBalanceFormatted(data.balanceFormatted)
       setTokenSymbol(data.tokenSymbol)
       setTokenDecimals(data.tokenDecimals)
     }
@@ -35,11 +38,13 @@ export const useBalance = (address?: string | AccountId, watch?: boolean) => {
     }
 
     if (watch) {
-      watchBalance(api, address, updateBalanceData).then((unsubscribe) => {
-        setUnsubscribes((prev) => [...prev, unsubscribe])
-      })
+      watchBalance(api, address, updateBalanceData, formatterOptions).then(
+        (unsubscribe) => {
+          setUnsubscribes((prev) => [...prev, unsubscribe])
+        },
+      )
     } else {
-      getBalance(api, address).then(updateBalanceData)
+      getBalance(api, address, formatterOptions).then(updateBalanceData)
     }
 
     return () => {

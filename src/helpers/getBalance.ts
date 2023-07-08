@@ -1,6 +1,7 @@
 import { ApiPromise } from '@polkadot/api'
 import { AccountId } from '@polkadot/types/interfaces'
-import { BN, formatBalance } from '@polkadot/util'
+import { BN } from '@polkadot/util'
+import { BalanceFormatterOptions, formatBalance } from './formatBalance'
 
 export type BalanceData = {
   tokenDecimals: number
@@ -17,6 +18,7 @@ export type BalanceData = {
 export const getBalance = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
+  formatterOptions?: BalanceFormatterOptions,
 ): Promise<BalanceData> => {
   if (!address) {
     const { tokenDecimals, tokenSymbol } = parseBalanceData(api)
@@ -28,7 +30,7 @@ export const getBalance = async (
 
   // Query the chain and parse data
   const result: any = await api.query.system.account(address)
-  const balanceData = parseBalanceData(api, result?.data)
+  const balanceData = parseBalanceData(api, result?.data, formatterOptions)
 
   return balanceData
 }
@@ -41,6 +43,7 @@ export const watchBalance = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
   callback: (data: BalanceData) => void,
+  formatterOptions?: BalanceFormatterOptions,
 ): Promise<VoidFunction | null> => {
   const { tokenDecimals, tokenSymbol } = parseBalanceData(api)
   if (!address) {
@@ -55,7 +58,7 @@ export const watchBalance = async (
   const unsubscribe: any = await api.query.system.account(
     address,
     ({ data }: any) => {
-      const balanceData = parseBalanceData(api, data)
+      const balanceData = parseBalanceData(api, data, formatterOptions)
       callback(balanceData)
     },
   )
@@ -65,7 +68,11 @@ export const watchBalance = async (
 /**
  * Helper to parse the fetched balance data.
  */
-const parseBalanceData = (api: ApiPromise, data?: any): BalanceData => {
+const parseBalanceData = (
+  api: ApiPromise,
+  data?: any,
+  formatterOptions?: BalanceFormatterOptions,
+): BalanceData => {
   // Get the token decimals and symbol
   const tokenDecimals = api.registry.chainDecimals?.[0] || 12
   const tokenSymbol = api.registry.chainTokens?.[0] || 'Unit'
@@ -76,9 +83,7 @@ const parseBalanceData = (api: ApiPromise, data?: any): BalanceData => {
   const balance = reservedBalance.add(freeBalance)
 
   // Format the balance
-  const balanceFormatted = formatBalance(balance, {
-    decimals: tokenDecimals,
-  })
+  const balanceFormatted = formatBalance(api, balance, formatterOptions)
 
   return {
     tokenDecimals,
