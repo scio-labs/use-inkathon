@@ -10,9 +10,10 @@ import {
   IKeyringPair,
   ISubmittableResult,
 } from '@polkadot/types/types'
-import { BN, stringCamelCase } from '@polkadot/util'
+import { BN, bnToBn, stringCamelCase } from '@polkadot/util'
 import { decodeOutput } from './decodeOutput'
 import { getAbiMessage } from './getAbiMessage'
+import { getBalance } from './getBalance'
 import { getMaxGasLimit } from './getGasLimit'
 
 /**
@@ -68,8 +69,17 @@ export const contractQuery = async (
 export type ContractTxResult = {
   dryResult: ContractCallOutcome
   result?: ISubmittableResult
-  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed' | 'Error'
+  errorMessage?:
+    | string
+    | 'UserCancelled'
+    | 'ExtrinsicFailed'
+    | 'TokenBelowMinimum'
+    | 'Error'
   errorEvent?: EventRecord
+  successEvent?: EventRecord
+  extrinsicHash?: string
+  extrinsicIndex?: number
+  blockHash?: string
 }
 export const contractTx = async (
   api: ApiPromise,
@@ -80,6 +90,18 @@ export const contractTx = async (
   args = [] as unknown[],
   statusCb?: Callback<ISubmittableResult>,
 ): Promise<ContractTxResult> => {
+  // Check if account has sufficient balance
+  const accountAddress = typeof account === 'string' ? account : account.address
+  const { freeBalance } = await getBalance(api, accountAddress)
+  const hasZeroBalance = !freeBalance || freeBalance.isZero()
+  const hasBalanceBelowPassedValue =
+    options?.value && freeBalance && freeBalance.lte(bnToBn(options.value))
+  if (hasZeroBalance || hasBalanceBelowPassedValue) {
+    return Promise.reject({
+      errorMessage: 'TokenBelowMinimum',
+    })
+  }
+
   // Dry run to determine required gas and potential errors
   delete options.gasLimit
   const dryResult = await contractCallDryRun(
@@ -155,10 +177,27 @@ export const contractTx = async (
           unsub?.()
         }
       })
-    } catch (e) {
-      console.error('Error while performing transaction:', e)
-      // Assume transaction was cancelled by user
-      reject({ errorMessage: 'UserCancelled' })
+    } catch (e: any) {
+      let errorMessage = 'Error'
+
+      if (e?.message?.match(/user reject request/i)) {
+        errorMessage = 'UserCancelled'
+      }
+
+      const errorText = e?.toString?.()
+      const rpcErrorCode =
+        errorText && typeof errorText === 'string'
+          ? errorText.match(/RpcError: (\d+):/i)?.[1]
+          : null
+      switch (rpcErrorCode) {
+        case '1010':
+          errorMessage = 'TokenBelowMinimum'
+          break
+        default:
+          break
+      }
+
+      reject({ errorMessage })
     }
   })
 }

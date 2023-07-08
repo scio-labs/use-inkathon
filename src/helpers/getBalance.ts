@@ -18,8 +18,8 @@ export const getBalance = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
 ): Promise<BalanceData> => {
-  const { tokenDecimals, tokenSymbol } = parseBalanceData(api)
   if (!address) {
+    const { tokenDecimals, tokenSymbol } = parseBalanceData(api)
     return {
       tokenDecimals,
       tokenSymbol,

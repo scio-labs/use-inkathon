@@ -76,6 +76,21 @@ export function decodeOutput(
       : JSON.stringify(output, null, '\t') ?? '()'
 
     decodedOutput = isError ? errorText : okText
+  } else if (result.isErr) {
+    output = result.toHuman()
+
+    let errorText
+    if (
+      isErr(output) &&
+      typeof output.Err === 'object' &&
+      Object.keys(output.Err || {}).length &&
+      typeof Object.values(output.Err || {})[0] === 'string'
+    ) {
+      const [errorKey, errorValue] = Object.entries(output.Err || {})[0]
+      errorText = `${errorKey}${errorValue}`
+    }
+
+    decodedOutput = errorText || 'Error'
   }
 
   return {
