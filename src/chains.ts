@@ -6,9 +6,14 @@ export interface SubstrateChain {
   name: string
   rpcUrls: [string, ...string[]]
   ss58Prefix?: number
-  explorerUrls?: string[]
+  explorerUrls?: Partial<Record<SubstrateExplorer, string>>
   testnet?: boolean
   faucetUrls?: string[]
+}
+
+export enum SubstrateExplorer {
+  Subscan = 'subscan',
+  PolkadotJs = 'polkadotjs',
 }
 
 /**
@@ -21,9 +26,11 @@ export const development: SubstrateChain = {
   name: 'Local Development',
   ss58Prefix: 42,
   rpcUrls: ['ws://127.0.0.1:9944'],
-  explorerUrls: [
-    'https://polkadot.js.org/apps/#/explorer?rpc=ws://127.0.0.1:9944',
-  ],
+  explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
+      'ws://127.0.0.1:9944',
+    )}/#/explorer`,
+  },
   testnet: true,
   faucetUrls: [
     'https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944',
@@ -37,7 +44,11 @@ export const alephzeroTestnet: SubstrateChain = {
   name: 'Aleph Zero Testnet',
   ss58Prefix: 42,
   rpcUrls: ['wss://ws.test.azero.dev'],
-  explorerUrls: ['https://azero.dev/?rpc=wss%3A%2F%2Fws.test.azero.dev'],
+  explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://test.azero.dev/?rpc=${encodeURIComponent(
+      'wss://ws.test.azero.dev',
+    )}/#/explorer`,
+  },
   testnet: true,
   faucetUrls: ['https://faucet.test.azero.dev'],
 }
@@ -46,19 +57,23 @@ export const rococo: SubstrateChain = {
   network: 'rococo',
   name: 'Rococo',
   rpcUrls: ['wss://rococo-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
+  },
   testnet: true,
   faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
-  explorerUrls: ['https://rococo.subscan.io'],
 }
 
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
   name: 'Shibuya Testnet',
-  testnet: true,
   ss58Prefix: 5,
   rpcUrls: ['wss://shibuya-rpc.dwellir.com'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://shibuya.subscan.io`,
+  },
+  testnet: true,
   faucetUrls: ['https://portal.astar.network/#/shibuya-testnet/assets'],
-  explorerUrls: ['https://shibuya.subscan.io'],
 }
 
 /// Canary Networks (Kusama)
@@ -68,7 +83,9 @@ export const shiden: SubstrateChain = {
   name: 'Shiden',
   ss58Prefix: 5,
   rpcUrls: ['wss://shiden-rpc.dwellir.com'],
-  explorerUrls: ['https://shiden.subscan.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://shiden.subscan.io`,
+  },
 }
 
 /// Mainnets
@@ -78,7 +95,12 @@ export const alephzero: SubstrateChain = {
   name: 'Aleph Zero',
   ss58Prefix: 42,
   rpcUrls: ['wss://ws.azero.dev'],
-  explorerUrls: ['https://azero.dev/?rpc=wss%3A%2F%2Fws.azero.dev'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://alephzero.subscan.io`,
+    [SubstrateExplorer.PolkadotJs]: `https://azero.dev/?rpc=${encodeURIComponent(
+      'wss://ws.azero.dev',
+    )}/#/explorer`,
+  },
 }
 
 export const astar: SubstrateChain = {
@@ -86,8 +108,10 @@ export const astar: SubstrateChain = {
   name: 'Astar',
   ss58Prefix: 5,
   rpcUrls: ['wss://astar-rpc.dwellir.com'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://astar.subscan.io`,
+  },
   faucetUrls: [],
-  explorerUrls: ['https://astar.subscan.io'],
 }
 
 /**
