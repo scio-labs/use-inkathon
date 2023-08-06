@@ -96,6 +96,23 @@ export const nova: SubstrateWallet = {
   ],
 }
 
+export const alephzeroSigner: SubstrateWallet = {
+  id: 'aleph-zero-signer',
+  name: 'Aleph Zero Signer',
+  platforms: [SubstrateWalletPlatform.Browser],
+  urls: {
+    website: 'https://alephzero.org/signer',
+    chromeExtension:
+      'https://chrome.google.com/webstore/detail/opbinaebpmphpefcimknblieddamhmol',
+    firefoxExtension:
+      'https://addons.mozilla.org/en-US/firefox/addon/aleph-zero-signer/',
+  },
+  logoUrls: [
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/aleph-zero-signer@128w.png',
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/aleph-zero-signer@512w.png',
+  ],
+}
+
 /**
  * Exporting all wallets separately
  */
@@ -104,6 +121,7 @@ export const allSubstrateWallets: SubstrateWallet[] = [
   talisman,
   polkadotjs,
   nova,
+  alephzeroSigner,
 ]
 
 /**
