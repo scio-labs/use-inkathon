@@ -142,6 +142,13 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
     const injectedExtension = injectedWindow?.injectedWeb3?.[wallet.id]
+
+    // Special case for Nova Wallet
+    const novaIsInstalled = !!(injectedWindow as any).walletExtension
+      ?.isNovaWallet
+    if (novaIsInstalled && wallet.id === polkadotjs.id) return false
+    if (novaIsInstalled && wallet.id === nova.id) return true
+
     return !!injectedExtension
   } catch (e) {
     return undefined
@@ -160,7 +167,10 @@ export const enableWallet = async (
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
-    const injectedWindowProvider = injectedWindow?.injectedWeb3?.[wallet.id]
+    const injectedWindowProvider =
+      injectedWindow?.injectedWeb3?.[
+        wallet.id === nova.id ? polkadotjs.id : wallet.id
+      ]
     const injectedExtension: InjectedExtension = {
       ...(await injectedWindowProvider?.enable(appName)),
       name: wallet.id,
