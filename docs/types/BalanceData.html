@@ -15,7 +15,7 @@
 <li><a href="../modules.html">@scio-labs/use-inkathon</a></li>
 <li><a href="BalanceData.html">BalanceData</a></li></ul>
 <h1>Type alias BalanceData</h1></div>
-<div class="tsd-signature"><span class="tsd-kind-type-alias">Balance<wbr/>Data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">balance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">balanceFormatted</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">freeBalance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">reservedBalance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">tokenDecimals</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">tokenSymbol</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></div>
+<div class="tsd-signature"><span class="tsd-kind-type-alias">Balance<wbr/>Data</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">balance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">balanceFormatted</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">freeBalance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">reducibleBalance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">reservedBalance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">tokenDecimals</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">tokenSymbol</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></div>
 <div class="tsd-type-declaration">
 <h4>Type declaration</h4>
 <ul class="tsd-parameters">
@@ -26,13 +26,15 @@
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-property">free<wbr/>Balance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span></h5></li>
 <li class="tsd-parameter">
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-property">reducible<wbr/>Balance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span></h5></li>
+<li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-property">reserved<wbr/>Balance</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type ">BN</span></h5></li>
 <li class="tsd-parameter">
 <h5><span class="tsd-kind-property">token<wbr/>Decimals</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5></li>
 <li class="tsd-parameter">
 <h5><span class="tsd-kind-property">token<wbr/>Symbol</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/scio-labs/use-inkathon/blob/c46d605/src/helpers/getBalance.ts#L6">src/helpers/getBalance.ts:6</a></li></ul></aside></div>
+<li>Defined in <a href="https://github.com/scio-labs/use-inkathon/blob/c7c45a8/src/helpers/getBalance.ts#L6">src/helpers/getBalance.ts:6</a></li></ul></aside></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
