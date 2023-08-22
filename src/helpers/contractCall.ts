@@ -92,10 +92,12 @@ export const contractTx = async (
 ): Promise<ContractTxResult> => {
   // Check if account has sufficient balance
   const accountAddress = typeof account === 'string' ? account : account.address
-  const { freeBalance } = await getBalance(api, accountAddress)
-  const hasZeroBalance = !freeBalance || freeBalance.isZero()
+  const { reducibleBalance } = await getBalance(api, accountAddress)
+  const hasZeroBalance = !reducibleBalance || reducibleBalance.isZero()
   const hasBalanceBelowPassedValue =
-    options?.value && freeBalance && freeBalance.lte(bnToBn(options.value))
+    options?.value &&
+    reducibleBalance &&
+    reducibleBalance.lte(bnToBn(options.value))
   if (hasZeroBalance || hasBalanceBelowPassedValue) {
     return Promise.reject({
       errorMessage: 'TokenBelowMinimum',

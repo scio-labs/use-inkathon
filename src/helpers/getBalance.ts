@@ -8,6 +8,7 @@ export type BalanceData = {
   tokenSymbol: string
   freeBalance?: BN
   reservedBalance?: BN
+  reducibleBalance?: BN
   balance?: BN
   balanceFormatted?: string
 }
@@ -82,6 +83,15 @@ const parseBalanceData = (
   const reservedBalance: BN = new BN(data?.reserved || 0)
   const balance = reservedBalance.add(freeBalance)
 
+  // Calculate the reducible balance (see: https://substrate.stackexchange.com/a/3009/3470)
+  const miscFrozenBalance: BN = new BN(data?.miscFrozen || 0)
+  const feeFrozenBalance: BN = new BN(data?.feeFrozen || 0)
+  const reducibleBalance = freeBalance.sub(
+    miscFrozenBalance.gt(feeFrozenBalance)
+      ? miscFrozenBalance
+      : feeFrozenBalance,
+  )
+
   // Format the balance
   const balanceFormatted = formatBalance(api, balance, formatterOptions)
 
@@ -90,6 +100,7 @@ const parseBalanceData = (
     tokenSymbol,
     freeBalance,
     reservedBalance,
+    reducibleBalance,
     balance,
     balanceFormatted,
   }
