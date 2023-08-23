@@ -139,6 +139,7 @@ export const allSubstrateWallets: SubstrateWallet[] = [
   polkadotjs,
   nova,
   alephzeroSigner,
+  nightly,
 ]
 
 /**
