@@ -1,4 +1,5 @@
 import {
+  Injected,
   InjectedExtension,
   InjectedWindow,
 } from '@polkadot/extension-inject/types'
@@ -187,8 +188,9 @@ export const enableWallet = async (
       injectedWindow?.injectedWeb3?.[
         wallet.id === nova.id ? polkadotjs.id : wallet.id
       ]
+    const injected: Injected = await injectedWindowProvider?.enable(appName)
     const injectedExtension: InjectedExtension = {
-      ...(await injectedWindowProvider?.enable(appName)),
+      ...injected,
       name: wallet.id,
       version: injectedWindowProvider.version,
     }

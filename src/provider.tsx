@@ -15,6 +15,7 @@ import {
   enableWallet,
   getSubstrateWallet,
   isWalletInstalled,
+  nightly,
 } from '@wallets'
 import {
   Dispatch,
@@ -238,6 +239,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       const signer = extension?.signer as Signer
       setActiveExtension(extension)
       setActiveSigner(signer)
+
+      // NOTE: Special handling for Nightly Wallet
+      if (extension?.name === nightly.id) {
+        const accounts = (extension?.accounts as any)?.activeAccounts
+        if (accounts?.length) updateAccounts(accounts, lastActiveAccountAddress)
+        else throw new Error('No injected account found')
+      }
 
       // Query & keep listening to injected accounts
       unsubscribeAccounts?.()
