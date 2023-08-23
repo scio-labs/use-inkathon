@@ -113,6 +113,23 @@ export const alephzeroSigner: SubstrateWallet = {
   ],
 }
 
+export const nightly: SubstrateWallet = {
+  id: 'Nightly',
+  name: 'Nightly Wallet',
+  platforms: [SubstrateWalletPlatform.Browser],
+  urls: {
+    website: 'https://wallet.nightly.app',
+    chromeExtension:
+      'https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa',
+    firefoxExtension:
+      'https://addons.mozilla.org/en-GB/firefox/addon/nightly-app/',
+  },
+  logoUrls: [
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightly@128w.png',
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightly@512w.png',
+  ],
+}
+
 /**
  * Exporting all wallets separately
  */
@@ -128,9 +145,7 @@ export const allSubstrateWallets: SubstrateWallet[] = [
  * Returns wallet (if existent) for given identifier (`id` field).
  */
 export const getSubstrateWallet = (id: string): SubstrateWallet | undefined => {
-  return allSubstrateWallets.find(
-    (wallet) => wallet.id.toLowerCase() === id.toLowerCase(),
-  )
+  return allSubstrateWallets.find((wallet) => wallet.id === id)
 }
 
 /*
