@@ -7,8 +7,11 @@ export type BalanceData = {
   tokenDecimals: number
   tokenSymbol: string
   freeBalance?: BN
+  freeBalanceFormatted?: string
   reservedBalance?: BN
+  reservedBalanceFormatted?: string
   reducibleBalance?: BN
+  reducibleBalanceFormatted?: string
   balance?: BN
   balanceFormatted?: string
 }
@@ -56,13 +59,10 @@ export const watchBalance = async (
   }
 
   // Query the chain, parse data, and call the callback
-  const unsubscribe: any = await api.query.system.account(
-    address,
-    ({ data }: any) => {
-      const balanceData = parseBalanceData(api, data, formatterOptions)
-      callback(balanceData)
-    },
-  )
+  const unsubscribe: any = await api.query.system.account(address, ({ data }: any) => {
+    const balanceData = parseBalanceData(api, data, formatterOptions)
+    callback(balanceData)
+  })
   return unsubscribe
 }
 
@@ -87,20 +87,24 @@ const parseBalanceData = (
   const miscFrozenBalance: BN = new BN(data?.miscFrozen || 0)
   const feeFrozenBalance: BN = new BN(data?.feeFrozen || 0)
   const reducibleBalance = freeBalance.sub(
-    miscFrozenBalance.gt(feeFrozenBalance)
-      ? miscFrozenBalance
-      : feeFrozenBalance,
+    miscFrozenBalance.gt(feeFrozenBalance) ? miscFrozenBalance : feeFrozenBalance,
   )
 
   // Format the balance
+  const freeBalanceFormatted = formatBalance(api, freeBalance, formatterOptions)
+  const reservedBalanceFormatted = formatBalance(api, reservedBalance, formatterOptions)
+  const reducibleBalanceFormatted = formatBalance(api, reducibleBalance, formatterOptions)
   const balanceFormatted = formatBalance(api, balance, formatterOptions)
 
   return {
     tokenDecimals,
     tokenSymbol,
     freeBalance,
+    freeBalanceFormatted,
     reservedBalance,
+    reservedBalanceFormatted,
     reducibleBalance,
+    reducibleBalanceFormatted,
     balance,
     balanceFormatted,
   }
