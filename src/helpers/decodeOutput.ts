@@ -15,15 +15,11 @@ interface ContractResultOk {
   Ok: AnyJson
 }
 
-function isErr(
-  o: ContractResultErr | ContractResultOk | AnyJson,
-): o is ContractResultErr {
+function isErr(o: ContractResultErr | ContractResultOk | AnyJson): o is ContractResultErr {
   return typeof o === 'object' && o !== null && 'Err' in o
 }
 
-function isOk(
-  o: ContractResultErr | ContractResultOk | AnyJson,
-): o is ContractResultOk {
+function isOk(o: ContractResultErr | ContractResultOk | AnyJson): o is ContractResultOk {
   return typeof o === 'object' && o !== null && 'Ok' in o
 }
 

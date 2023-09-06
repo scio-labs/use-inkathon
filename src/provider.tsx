@@ -2,11 +2,7 @@ import { accountArraysAreEqual, accountsAreEqual } from '@helpers'
 import { initPolkadotJs } from '@helpers/initPolkadotJs'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
-import {
-  InjectedAccount,
-  InjectedExtension,
-  Unsubcall,
-} from '@polkadot/extension-inject/types'
+import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { SubstrateDeployment, registerDeployments } from '@registry'
 import {
@@ -69,8 +65,7 @@ export type UseInkathonProviderContextType = {
   lastActiveAccount?: InjectedAccount
   deployments?: SubstrateDeployment[]
 }
-export const UseInkathonProviderContext =
-  createContext<UseInkathonProviderContextType | null>(null)
+export const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 
 /**
  * Primary useInkathon hook that exposes `UseInkathonProviderContext`.
@@ -78,8 +73,7 @@ export const UseInkathonProviderContext =
 export const useInkathon = () => {
   const context = useContext(UseInkathonProviderContext)
 
-  if (!context)
-    throw new Error('useInkathon must be used within a UseInkathonProvider')
+  if (!context) throw new Error('useInkathon must be used within a UseInkathonProvider')
 
   return context
 }
@@ -106,8 +100,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Check if default chain was provided
   if (
     !defaultChain ||
-    (typeof defaultChain === 'string' &&
-      getSubstrateChain(defaultChain) === undefined)
+    (typeof defaultChain === 'string' && getSubstrateChain(defaultChain) === undefined)
   ) {
     throw new Error(
       'None or invalid `defaultChain` provided with `UseInkathonProvider`. Forgot to set environment variable?',
@@ -185,8 +178,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       ? { address: lastActiveAccountAddress }
       : lastActiveAccount
     const newAccount =
-      newAccounts.find((a) => accountsAreEqual(a, _lastAccount)) ||
-      newAccounts?.[0]
+      newAccounts.find((a) => accountsAreEqual(a, _lastAccount)) || newAccounts?.[0]
 
     // Update accounts and active account
     if (!accountArraysAreEqual(accounts, newAccounts)) {
@@ -303,8 +295,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Switch active chain
   const switchActiveChain = async (chain: SubstrateChain) => {
-    const activeWallet =
-      activeExtension && getSubstrateWallet(activeExtension.name)
+    const activeWallet = activeExtension && getSubstrateWallet(activeExtension.name)
     await connect(chain, activeWallet)
   }
 

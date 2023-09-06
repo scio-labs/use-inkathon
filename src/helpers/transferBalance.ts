@@ -1,10 +1,6 @@
 import { ApiPromise } from '@polkadot/api'
 import { AccountId } from '@polkadot/types/interfaces'
-import {
-  Callback,
-  IKeyringPair,
-  ISubmittableResult,
-} from '@polkadot/types/types'
+import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN } from '@polkadot/util'
 
 /**

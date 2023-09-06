@@ -1,15 +1,8 @@
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
-import {
-  ContractCallOutcome,
-  ContractOptions,
-} from '@polkadot/api-contract/types'
+import { ContractCallOutcome, ContractOptions } from '@polkadot/api-contract/types'
 import { EventRecord } from '@polkadot/types/interfaces'
-import {
-  Callback,
-  IKeyringPair,
-  ISubmittableResult,
-} from '@polkadot/types/types'
+import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN, bnToBn, stringCamelCase } from '@polkadot/util'
 import { decodeOutput } from './decodeOutput'
 import { getAbiMessage } from './getAbiMessage'
@@ -69,12 +62,7 @@ export const contractQuery = async (
 export type ContractTxResult = {
   dryResult: ContractCallOutcome
   result?: ISubmittableResult
-  errorMessage?:
-    | string
-    | 'UserCancelled'
-    | 'ExtrinsicFailed'
-    | 'TokenBelowMinimum'
-    | 'Error'
+  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed' | 'TokenBelowMinimum' | 'Error'
   errorEvent?: EventRecord
   successEvent?: EventRecord
   extrinsicHash?: string
@@ -95,9 +83,7 @@ export const contractTx = async (
   const { reducibleBalance } = await getBalance(api, accountAddress)
   const hasZeroBalance = !reducibleBalance || reducibleBalance.isZero()
   const hasBalanceBelowPassedValue =
-    options?.value &&
-    reducibleBalance &&
-    reducibleBalance.lte(bnToBn(options.value))
+    options?.value && reducibleBalance && reducibleBalance.lte(bnToBn(options.value))
   if (hasZeroBalance || hasBalanceBelowPassedValue) {
     return Promise.reject({
       errorMessage: 'TokenBelowMinimum',
@@ -106,14 +92,7 @@ export const contractTx = async (
 
   // Dry run to determine required gas and potential errors
   delete options.gasLimit
-  const dryResult = await contractCallDryRun(
-    api,
-    account,
-    contract,
-    method,
-    options,
-    args,
-  )
+  const dryResult = await contractCallDryRun(api, account, contract, method, options, args)
   const { isError, decodedOutput } = decodeOutput(dryResult, contract, method)
   if (isError)
     return Promise.reject({
@@ -126,16 +105,11 @@ export const contractTx = async (
   return new Promise(async (resolve, reject) => {
     try {
       const isDevelopment =
-        (api.runtimeChain || '').toLowerCase() === 'development'
-          ? 'isInBlock'
-          : 'isFinalized'
+        (api.runtimeChain || '').toLowerCase() === 'development' ? 'isInBlock' : 'isFinalized'
       const finalStatus = isDevelopment ? 'isInBlock' : 'isFinalized'
       const asFinalStatus = isDevelopment ? 'asInBlock' : 'asFinalized'
 
-      const tx = contract.tx[stringCamelCase(method)](
-        { ...options, gasLimit },
-        ...args,
-      )
+      const tx = contract.tx[stringCamelCase(method)]({ ...options, gasLimit }, ...args)
 
       const unsub = await tx.signAndSend(account, async (result) => {
         statusCb?.(result)

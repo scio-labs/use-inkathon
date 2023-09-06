@@ -79,11 +79,7 @@ export const formatBalance = (
 /**
  * Helper function to convert a number (as string) to have fixed decimals.
  */
-const toFixed = (
-  value: string | number,
-  decimals: number,
-  removeTrailingZeros?: boolean,
-) => {
+const toFixed = (value: string | number, decimals: number, removeTrailingZeros?: boolean) => {
   const _value: string = typeof value === 'string' ? value : `${value}`
 
   let valueDecimals = _value.split('.')[1] || '0'

@@ -1,8 +1,4 @@
-import {
-  Injected,
-  InjectedExtension,
-  InjectedWindow,
-} from '@polkadot/extension-inject/types'
+import { Injected, InjectedExtension, InjectedWindow } from '@polkadot/extension-inject/types'
 
 /**
  * Substrate Wallet Type(s)
@@ -37,8 +33,7 @@ export const polkadotjs: SubstrateWallet = {
     website: 'https://polkadot.js.org/extension/',
     chromeExtension:
       'https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd',
-    firefoxExtension:
-      'https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/',
+    firefoxExtension: 'https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/polkadot@128w.png',
@@ -54,8 +49,7 @@ export const subwallet: SubstrateWallet = {
     website: 'https://subwallet.app/',
     chromeExtension:
       'https://chrome.google.com/webstore/detail/subwallet-polkadot-extens/onhogfjeacnfoofkfgppdlbmlmnplgbn',
-    firefoxExtension:
-      'https://addons.mozilla.org/en-US/firefox/addon/subwallet/',
+    firefoxExtension: 'https://addons.mozilla.org/en-US/firefox/addon/subwallet/',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/subwallet@128w.png',
@@ -71,8 +65,7 @@ export const talisman: SubstrateWallet = {
     website: 'https://www.talisman.xyz/',
     chromeExtension:
       'https://chrome.google.com/webstore/detail/talisman-polkadot-wallet/fijngjgcjhjmmpcmkeiomlglpeiijkld',
-    firefoxExtension:
-      'https://addons.mozilla.org/en-US/firefox/addon/talisman-wallet-extension/',
+    firefoxExtension: 'https://addons.mozilla.org/en-US/firefox/addon/talisman-wallet-extension/',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/talisman@128w.png',
@@ -86,10 +79,8 @@ export const nova: SubstrateWallet = {
   platforms: [SubstrateWalletPlatform.Android, SubstrateWalletPlatform.iOS],
   urls: {
     website: 'https://novawallet.io/',
-    androidApp:
-      'https://play.google.com/store/apps/details?id=io.novafoundation.nova.market',
-    iosApp:
-      'https://apps.apple.com/app/nova-polkadot-kusama-wallet/id1597119355',
+    androidApp: 'https://play.google.com/store/apps/details?id=io.novafoundation.nova.market',
+    iosApp: 'https://apps.apple.com/app/nova-polkadot-kusama-wallet/id1597119355',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nova@128w.png',
@@ -103,10 +94,8 @@ export const alephzeroSigner: SubstrateWallet = {
   platforms: [SubstrateWalletPlatform.Browser],
   urls: {
     website: 'https://alephzero.org/signer',
-    chromeExtension:
-      'https://chrome.google.com/webstore/detail/opbinaebpmphpefcimknblieddamhmol',
-    firefoxExtension:
-      'https://addons.mozilla.org/en-US/firefox/addon/aleph-zero-signer/',
+    chromeExtension: 'https://chrome.google.com/webstore/detail/opbinaebpmphpefcimknblieddamhmol',
+    firefoxExtension: 'https://addons.mozilla.org/en-US/firefox/addon/aleph-zero-signer/',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/aleph-zero-signer@128w.png',
@@ -122,8 +111,7 @@ export const nightly: SubstrateWallet = {
     website: 'https://wallet.nightly.app',
     chromeExtension:
       'https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa',
-    firefoxExtension:
-      'https://addons.mozilla.org/en-GB/firefox/addon/nightly-app/',
+    firefoxExtension: 'https://addons.mozilla.org/en-GB/firefox/addon/nightly-app/',
   },
   logoUrls: [
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightly@128w.png',
@@ -161,8 +149,7 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
     const injectedExtension = injectedWindow?.injectedWeb3?.[wallet.id]
 
     // Special case for Nova Wallet
-    const novaIsInstalled = !!(injectedWindow as any).walletExtension
-      ?.isNovaWallet
+    const novaIsInstalled = !!(injectedWindow as any).walletExtension?.isNovaWallet
     if (novaIsInstalled && wallet.id === polkadotjs.id) return false
     if (novaIsInstalled && wallet.id === nova.id) return true
 
@@ -175,19 +162,14 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
 /**
  * Enables the given wallet (if existent) and returns the injected extension.
  */
-export const enableWallet = async (
-  wallet: SubstrateWallet,
-  appName: string,
-) => {
+export const enableWallet = async (wallet: SubstrateWallet, appName: string) => {
   if (!isWalletInstalled(wallet)) return undefined
 
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
     const injectedWindowProvider =
-      injectedWindow?.injectedWeb3?.[
-        wallet.id === nova.id ? polkadotjs.id : wallet.id
-      ]
+      injectedWindow?.injectedWeb3?.[wallet.id === nova.id ? polkadotjs.id : wallet.id]
     const injected: Injected = await injectedWindowProvider?.enable(appName)
     const injectedExtension: InjectedExtension = {
       ...injected,

@@ -7,10 +7,7 @@ import { useContract } from './useContract'
  * the active api & chain as well as the given deployment contract id
  * which is looked up from the deployments registry.
  */
-export const useRegisteredContract = (
-  contractId: string,
-  networkId?: string,
-) => {
+export const useRegisteredContract = (contractId: string, networkId?: string) => {
   const { deployments, activeChain } = useInkathon()
   networkId = networkId || activeChain?.network || ''
   const deployment = getDeployment(deployments || [], contractId, networkId)

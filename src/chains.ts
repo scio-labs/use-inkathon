@@ -32,9 +32,7 @@ export const development: SubstrateChain = {
     )}/#/explorer`,
   },
   testnet: true,
-  faucetUrls: [
-    'https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944',
-  ],
+  faucetUrls: ['https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944'],
 }
 
 /// Testnets
@@ -130,9 +128,7 @@ export const allSubstrateChains: SubstrateChain[] = [
 /**
  * Returns chain (if existent) for given identifier (`network` field).
  */
-export const getSubstrateChain = (
-  networkId?: string,
-): SubstrateChain | undefined => {
+export const getSubstrateChain = (networkId?: string): SubstrateChain | undefined => {
   return allSubstrateChains.find(
     (chain) => chain.network.toLowerCase() === (networkId || '').toLowerCase(),
   )

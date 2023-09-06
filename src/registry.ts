@@ -43,9 +43,7 @@ export const registerDeployments = async (
   setDeployments: Dispatch<SetStateAction<SubstrateDeployment[]>>,
   deployments: Promise<SubstrateDeployment[]>,
 ) => {
-  ;(await deployments).forEach((deployment) =>
-    registerDeployment(setDeployments, deployment),
-  )
+  ;(await deployments).forEach((deployment) => registerDeployment(setDeployments, deployment))
 }
 
 /**

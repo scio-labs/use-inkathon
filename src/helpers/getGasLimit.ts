@@ -5,11 +5,7 @@ import { BN, bnToBn } from '@polkadot/util'
 /**
  * Helper function that returns Weights V2 `gasLimit` object.
  */
-export const getGasLimit = (
-  api: ApiPromise,
-  _refTime: string | BN,
-  _proofSize: string | BN,
-) => {
+export const getGasLimit = (api: ApiPromise, _refTime: string | BN, _proofSize: string | BN) => {
   const refTime = bnToBn(_refTime)
   const proofSize = bnToBn(_proofSize)
 

@@ -14,9 +14,7 @@ export const initPolkadotJs = async (
     throw new Error('Given chain has no RPC url defined')
   }
 
-  const provider = rpcUrl.startsWith('http')
-    ? new HttpProvider(rpcUrl)
-    : new WsProvider(rpcUrl)
+  const provider = rpcUrl.startsWith('http') ? new HttpProvider(rpcUrl) : new WsProvider(rpcUrl)
   const api = await ApiPromise.create({
     provider,
     ...options,
