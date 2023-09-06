@@ -7,11 +7,11 @@ export type PolkadotBalanceFormatterOptions = NonNullable<
 
 export type BalanceFormatterOptions = Omit<
   PolkadotBalanceFormatterOptions,
-  'forceUnit'
+  'forceUnit' | 'withZero'
 > & {
   forceUnit?: string | undefined | false
   fixedDecimals?: number
-  fixedIfNecessary?: boolean
+  removeTrailingZeros?: boolean
 }
 
 /**
@@ -30,7 +30,6 @@ export const formatBalance = (
   const _options: BalanceFormatterOptions = Object.assign(
     {
       decimals: tokenDecimals,
-      withZero: false,
       withUnit: true,
       forceUnit: '-',
     } satisfies BalanceFormatterOptions,
@@ -40,6 +39,7 @@ export const formatBalance = (
   let formattedBalance = polkadotFormatBalance(value, {
     ..._options,
     withUnit: false,
+    withZero: false,
   } as PolkadotBalanceFormatterOptions)
 
   // Convert to fixed decimals
@@ -51,16 +51,12 @@ export const formatBalance = (
       formattedBalance = formattedBalance.split(' ')[0]
     }
 
-    if (_options.fixedIfNecessary) {
-      formattedBalance = toFixedIfNecessary(
-        formattedBalance,
-        _options.fixedDecimals,
-      ).toString()
-    } else {
-      formattedBalance = parseFloat(formattedBalance)
-        .toFixed(_options.fixedDecimals)
-        .toString()
-    }
+    // Apply fixed decimals
+    formattedBalance = toFixed(
+      formattedBalance,
+      _options.fixedDecimals,
+      _options.removeTrailingZeros,
+    )
 
     if (siUnit) formattedBalance = `${formattedBalance} ${siUnit}`
   }
@@ -80,8 +76,25 @@ export const formatBalance = (
   return formattedBalance
 }
 
-// Source: https://stackoverflow.com/a/32229831/1381666
-const toFixedIfNecessary = (value: string | number, decimals: number) => {
+/**
+ * Helper function to convert a number (as string) to have fixed decimals.
+ */
+const toFixed = (
+  value: string | number,
+  decimals: number,
+  removeTrailingZeros?: boolean,
+) => {
   const _value: string = typeof value === 'string' ? value : `${value}`
-  return +parseFloat(_value).toFixed(decimals)
+
+  let valueDecimals = _value.split('.')[1] || '0'
+  valueDecimals = parseFloat(`0.${valueDecimals}`).toFixed(decimals)
+  if (removeTrailingZeros) {
+    valueDecimals = `${+valueDecimals}`
+  }
+
+  const formattedValue = valueDecimals.split('.')[1]
+    ? `${_value.split('.')[0]}.${valueDecimals.split('.')[1]}`
+    : _value.split('.')[0]
+
+  return formattedValue
 }
