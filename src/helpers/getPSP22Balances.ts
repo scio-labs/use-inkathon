@@ -17,6 +17,8 @@ export type PSP22BalanceData = {
   balanceFormatted?: string
 }
 
+export const PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL = 30000
+
 /**
  * Returns the PSP-22 token balances of the given `address`.
  */
@@ -116,41 +118,46 @@ export const watchPSP22Balances = async (
     return null
   }
 
-  const result: PSP22BalanceData[] = []
+  // Function to query the chain, parse data, and return promisified data
+  const fetchTokenBalances = async () =>
+    Promise.all(
+      Object.values(tokens).map(async ({ slug, decimals, symbol, iconPath }) => {
+        let balance = new BN(0)
 
-  // Query the chain, parse data, and call the callback
-  const unsubscribe: any = await Promise.all(
-    Object.values(tokens).map(async ({ slug, decimals, symbol, iconPath }) => {
-      let balance = new BN(0)
+        const contract = psp22ContractMap[slug]
+        const _balanceOf = await contract.query['psp22::balanceOf'](
+          address,
+          { gasLimit: getMaxGasLimit(api) },
+          address,
+        )
+        const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
 
-      const contract = psp22ContractMap[slug]
-      const _balanceOf = await contract.query['psp22::balanceOf'](
-        address,
-        { gasLimit: getMaxGasLimit(api) },
-        address,
-      )
-      const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
+        balance = new BN(
+          _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
+        )
 
-      balance = new BN(
-        _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
-      )
+        const data = {
+          tokenSlug: slug,
+          tokenDecimals: decimals,
+          tokenSymbol: symbol,
+          balance,
+          iconPath,
+        }
 
-      const data = {
-        tokenSlug: slug,
-        tokenDecimals: decimals,
-        tokenSymbol: symbol,
-        balance,
-        iconPath,
-      }
+        const psp22BalanceData = parsePSP22Balance(data, formatterOptions)
+        return psp22BalanceData
+      }),
+    )
 
-      const psp22BalanceData = parsePSP22Balance(data, formatterOptions)
-      result.push(psp22BalanceData)
-    }),
-  )
-
+  const result = await fetchTokenBalances()
   callback(result)
 
-  return unsubscribe
+  // Create intervalId which can be used to unsubscribe
+  const intervalId = setInterval(fetchTokenBalances, PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL)
+
+  return () => {
+    clearInterval(intervalId)
+  }
 }
 
 /**

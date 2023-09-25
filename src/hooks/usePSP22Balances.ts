@@ -20,7 +20,7 @@ export const usePSP22Balances = (
 
   useEffect(() => {
     const updateBalanceData = (data: PSP22BalanceData[]) => {
-      setBalanceData(() => data)
+      setBalanceData(() => [...data])
     }
 
     if (!api) {
