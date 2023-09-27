@@ -20,18 +20,17 @@ export const usePSP22Balances = (
 
   useEffect(() => {
     const updateBalanceData = (data: PSP22BalanceData[]) => {
-      setBalanceData(() => [...data])
+      setBalanceData(() => data)
     }
 
     if (!api) {
-      updateBalanceData([] as PSP22BalanceData[])
+      setBalanceData([] as PSP22BalanceData[])
       return
     }
 
     if (watch) {
-      watchPSP22Balances(api, address, updateBalanceData, formatterOptions).then((unsubscribe) => {
-        setUnsubscribes((prev) => [...prev, unsubscribe])
-      })
+      const unsubscribe = watchPSP22Balances(api, address, updateBalanceData, formatterOptions)
+      unsubscribe && setUnsubscribes((prev) => [...prev, unsubscribe])
     } else {
       getPSP22Balances(api, address, formatterOptions).then(updateBalanceData)
     }
