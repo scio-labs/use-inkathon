@@ -1,10 +1,9 @@
-import psp22Asset from '@PSP22Asset.json'
 import { _PSP22_ABI } from '@helpers/getAbi'
+import { psp22Asset as tokens } from '@helpers/getPSP22Asset'
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
-import { ChainAsset } from '@types'
 import { BalanceFormatterOptions, formatBalance } from './formatBalance'
 import { getMaxGasLimit } from './getGasLimit'
 
@@ -16,22 +15,20 @@ export type PSP22BalanceData = {
   balance?: BN
   balanceFormatted?: string
 }
+
 /**
  * Default refresh interval for the PSP-22 token balances.
  */
-
 export const PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL = 60000
 
 /**
  * Returns the PSP-22 token balances of the given `address`.
  */
-
 export const getPSP22Balances = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
   formatterOptions?: BalanceFormatterOptions,
 ): Promise<PSP22BalanceData[]> => {
-  const tokens = psp22Asset as Record<string, ChainAsset>
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
   Object.entries(tokens).forEach(([slug, tokenInfo]) => {
@@ -72,15 +69,18 @@ export const getPSP22Balances = async (
       )
 
       const data = {
-        tokenSlug: slug,
         tokenDecimals: decimals,
         tokenSymbol: symbol,
         balance,
-        iconPath,
       }
 
-      const psp22BalanceData = parsePSP22Balance(data, formatterOptions)
-      return psp22BalanceData
+      const balanceFormatted = parsePSP22Balance(data, formatterOptions)
+      return {
+        balanceFormatted,
+        tokenSlug: slug,
+        iconPath,
+        ...data,
+      }
     }),
   )
 
@@ -97,7 +97,6 @@ export const watchPSP22Balances = (
   callback: (data: PSP22BalanceData[]) => void,
   formatterOptions?: BalanceFormatterOptions,
 ): VoidFunction | null => {
-  const tokens = psp22Asset as Record<string, ChainAsset>
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
   Object.entries(tokens).forEach(([slug, tokenInfo]) => {
@@ -141,15 +140,18 @@ export const watchPSP22Balances = (
           )
 
           const data = {
-            tokenSlug: slug,
             tokenDecimals: decimals,
             tokenSymbol: symbol,
             balance,
-            iconPath,
           }
 
-          const psp22BalanceData = parsePSP22Balance(data, formatterOptions)
-          return psp22BalanceData
+          const balanceFormatted = parsePSP22Balance(data, formatterOptions)
+          return {
+            balanceFormatted,
+            tokenSlug: slug,
+            iconPath,
+            ...data,
+          }
         }),
       ),
     )
@@ -167,13 +169,12 @@ export const watchPSP22Balances = (
 /**
  * Helper to parse the fetched PSP22 token balance data.
  */
-
 export const parsePSP22Balance = (
-  data: PSP22BalanceData,
+  data: Omit<PSP22BalanceData, 'tokenSlug' | 'iconPath'>,
   formatterOptions?: BalanceFormatterOptions,
-): PSP22BalanceData => {
+): string => {
   // Destructure necessary fields
-  const { tokenSlug, tokenDecimals, tokenSymbol, balance, iconPath } = data
+  const { tokenDecimals, tokenSymbol, balance } = data
 
   // Format the balance
   const balanceFormatted: string = formatBalance(undefined, balance, formatterOptions, {
@@ -181,12 +182,5 @@ export const parsePSP22Balance = (
     tokenSymbol,
   })
 
-  return {
-    tokenSlug,
-    tokenDecimals,
-    tokenSymbol,
-    iconPath,
-    balance,
-    balanceFormatted,
-  }
+  return balanceFormatted
 }
