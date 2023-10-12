@@ -5,6 +5,7 @@
     "name": "Ink Whale Token",
     "symbol": "INW",
     "decimals": 12,
+    "assetType": "PSP22",
     "metadata": {
       "contractAddress": "5H4aCwLKUpVpct6XGJzDGPPXFockNKQU2JUVNgUw6BXEPzST"
     },
@@ -16,6 +17,7 @@
     "name": "Panorama Swap Token",
     "symbol": "PANX",
     "decimals": 12,
+    "assetType": "PSP22",
     "metadata": {
       "contractAddress": "5GSGAcvqpF5SuH2MhJ1YUdbLAbssCjeqCn2miMUCWUjnr5DQ"
     },

@@ -1,4 +1,4 @@
-import { _PSP22_ABI } from '@helpers/getAbi'
+import { psp22Abi } from '@helpers/getAbi'
 import { psp22Asset as tokens } from '@helpers/getPSP22Asset'
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
@@ -32,11 +32,7 @@ export const getPSP22Balances = async (
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
   Object.entries(tokens).forEach(([slug, tokenInfo]) => {
-    psp22ContractMap[slug] = new ContractPromise(
-      api,
-      _PSP22_ABI,
-      tokenInfo.metadata?.contractAddress,
-    )
+    psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
   })
 
   if (!address) {
@@ -100,11 +96,7 @@ export const watchPSP22Balances = (
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
   Object.entries(tokens).forEach(([slug, tokenInfo]) => {
-    psp22ContractMap[slug] = new ContractPromise(
-      api,
-      _PSP22_ABI,
-      tokenInfo.metadata?.contractAddress,
-    )
+    psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
   })
 
   if (!address) {
