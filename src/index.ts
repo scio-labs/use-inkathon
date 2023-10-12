@@ -4,5 +4,6 @@ export * from './helpers'
 export * from './hooks'
 export * from './provider'
 export * from './registry'
+export * from './types'
 export * from './wallets'
 // @endindex
