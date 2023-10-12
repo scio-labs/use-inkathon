@@ -14,6 +14,11 @@ export type BalanceFormatterOptions = Omit<
   removeTrailingZeros?: boolean
 }
 
+export type TokenData = {
+  tokenDecimals: number
+  tokenSymbol: string
+}
+
 /**
  * Improved & extended version of `formatBalance` from `@polkadot/util`.
  */
@@ -21,11 +26,12 @@ export const formatBalance = (
   api: ApiPromise | undefined,
   value?: BN,
   options?: BalanceFormatterOptions,
+  tokenData?: TokenData,
 ): string => {
   if (!value) return ''
 
-  const tokenDecimals = api?.registry?.chainDecimals?.[0] || 12
-  const tokenSymbol = api?.registry?.chainTokens?.[0] || 'Unit'
+  const tokenDecimals = api?.registry?.chainDecimals?.[0] || tokenData?.tokenDecimals || 12
+  const tokenSymbol = api?.registry?.chainTokens?.[0] || tokenData?.tokenSymbol || 'Unit'
 
   const _options: BalanceFormatterOptions = Object.assign(
     {

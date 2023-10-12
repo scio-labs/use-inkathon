@@ -1,0 +1,26 @@
+{
+  "aleph-zero-PSP22-INW-5H4aCwLKUpVpct6XGJzDGPPXFockNKQU2JUVNgUw6BXEPzST": {
+    "originChain": "aleph-zero",
+    "slug": "aleph-zero-PSP22-INW-5H4aCwLKUpVpct6XGJzDGPPXFockNKQU2JUVNgUw6BXEPzST",
+    "name": "Ink Whale Token",
+    "symbol": "INW",
+    "decimals": 12,
+    "assetType": "PSP22",
+    "metadata": {
+      "contractAddress": "5H4aCwLKUpVpct6XGJzDGPPXFockNKQU2JUVNgUw6BXEPzST"
+    },
+    "iconPath": "https://github.com/scio-labs/use-inkathon/raw/main/assets/asset-logos/inw.png"
+  },
+  "aleph-zero-PSP22-PANX-5GSGAcvqpF5SuH2MhJ1YUdbLAbssCjeqCn2miMUCWUjnr5DQ": {
+    "originChain": "aleph-zero",
+    "slug": "aleph-zero-PSP22-PANX-5GSGAcvqpF5SuH2MhJ1YUdbLAbssCjeqCn2miMUCWUjnr5DQ",
+    "name": "Panorama Swap Token",
+    "symbol": "PANX",
+    "decimals": 12,
+    "assetType": "PSP22",
+    "metadata": {
+      "contractAddress": "5GSGAcvqpF5SuH2MhJ1YUdbLAbssCjeqCn2miMUCWUjnr5DQ"
+    },
+    "iconPath": "https://github.com/scio-labs/use-inkathon/raw/main/assets/asset-logos/panx.png"
+  }
+}

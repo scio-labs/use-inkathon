@@ -17,7 +17,7 @@ export const getGasLimit = (api: ApiPromise, _refTime: string | BN, _proofSize: 
 
 /**
  * Helper function that returns the maximum gas limit Weights V2 object
- * for an extrinsiv based on the api chain constants.
+ * for an extrinsic based on the api chain constants.
  * NOTE: It's reduced by a given factor (defaults to 80%) to avoid storage exhaust.
  */
 export const getMaxGasLimit = (api: ApiPromise, reductionFactor = 0.8) => {
