@@ -1,5 +1,5 @@
+import { allPSP22Assets } from '@/assets'
 import { psp22Abi } from '@/helpers/getAbi'
-import { psp22Asset as tokens } from '@/helpers/getPSP22Asset'
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
@@ -31,12 +31,12 @@ export const getPSP22Balances = async (
 ): Promise<PSP22BalanceData[]> => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
-  Object.entries(tokens).forEach(([slug, tokenInfo]) => {
+  Object.entries(allPSP22Assets).forEach(([slug, tokenInfo]) => {
     psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
   })
 
   if (!address) {
-    const result = Object.values(tokens).map(({ slug, decimals, symbol, iconPath }) => {
+    const result = Object.values(allPSP22Assets).map(({ slug, decimals, symbol, iconPath }) => {
       return {
         tokenSlug: slug,
         tokenDecimals: decimals,
@@ -49,7 +49,7 @@ export const getPSP22Balances = async (
   }
 
   const result = await Promise.all(
-    Object.values(tokens).map(async ({ slug, decimals, symbol, iconPath }) => {
+    Object.values(allPSP22Assets).map(async ({ slug, decimals, symbol, iconPath }) => {
       let balance = new BN(0)
 
       const contract = psp22ContractMap[slug]
@@ -95,12 +95,12 @@ export const watchPSP22Balances = (
 ): VoidFunction | null => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
-  Object.entries(tokens).forEach(([slug, tokenInfo]) => {
+  Object.entries(allPSP22Assets).forEach(([slug, tokenInfo]) => {
     psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
   })
 
   if (!address) {
-    const result = Object.values(tokens).map(({ slug, decimals, symbol, iconPath }) => {
+    const result = Object.values(allPSP22Assets).map(({ slug, decimals, symbol, iconPath }) => {
       return {
         tokenSlug: slug,
         tokenDecimals: decimals,
@@ -116,7 +116,7 @@ export const watchPSP22Balances = (
   const fetchTokenBalances = async () =>
     callback(
       await Promise.all(
-        Object.values(tokens).map(async ({ slug, decimals, symbol, iconPath }) => {
+        Object.values(allPSP22Assets).map(async ({ slug, decimals, symbol, iconPath }) => {
           let balance = new BN(0)
 
           const contract = psp22ContractMap[slug]
