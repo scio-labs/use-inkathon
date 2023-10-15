@@ -1,7 +1,11 @@
-import { BalanceFormatterOptions } from '@helpers'
-import { PSP22BalanceData, getPSP22Balances, watchPSP22Balances } from '@helpers/getPSP22Balances'
+import {
+  BalanceFormatterOptions,
+  PSP22BalanceData,
+  getPSP22Balances,
+  watchPSP22Balances,
+} from '@/helpers'
+import { useInkathon } from '@/provider'
 import { AccountId } from '@polkadot/types/interfaces'
-import { useInkathon } from '@provider'
 import { useEffect, useState } from 'react'
 
 /**

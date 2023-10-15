@@ -1,5 +1,5 @@
-import { useInkathon } from '@provider'
-import { getDeployment } from '@registry'
+import { useInkathon } from '@/provider'
+import { getDeployment } from '@/registry'
 import { useContract } from './useContract'
 
 /**

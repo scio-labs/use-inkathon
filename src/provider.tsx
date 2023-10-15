@@ -1,86 +1,40 @@
-import { accountArraysAreEqual, accountsAreEqual } from '@helpers'
-import { initPolkadotJs } from '@helpers/initPolkadotJs'
-import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
-import { ApiOptions } from '@polkadot/api/types'
-import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
-import { Signer } from '@polkadot/types/types'
-import { SubstrateDeployment, registerDeployments } from '@registry'
+import { accountArraysAreEqual, accountsAreEqual, initPolkadotJs } from '@/helpers'
+import { registerDeployments } from '@/registry'
 import {
   SubstrateWallet,
+  UseInkathonError,
+  UseInkathonErrorCode,
+  UseInkathonProviderContextType,
+} from '@/types'
+import {
   allSubstrateWallets,
   enableWallet,
   getSubstrateWallet,
   isWalletInstalled,
   nightly,
-} from '@wallets'
-import {
-  Dispatch,
-  FC,
-  PropsWithChildren,
-  SetStateAction,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+} from '@/wallets'
+import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
+import { ApiOptions } from '@polkadot/api/types'
+import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
+import { Signer } from '@polkadot/types/types'
+import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { SubstrateChain, getSubstrateChain } from './chains'
+import { SubstrateDeployment } from './types/SubstrateDeployment'
 
-/**
- * Helper Types
- */
-export enum UseInkathonErrorCode {
-  InitializationError,
-  NoSubstrateExtensionDetected,
-  NoAccountInjected,
-}
-export interface UseInkathonError {
-  code: UseInkathonErrorCode
-  message: string
-}
-
-/**
- * UseInkathon Context Type
- */
-export type UseInkathonProviderContextType = {
-  isInitializing?: boolean
-  isInitialized?: boolean
-  isConnecting?: boolean
-  isConnected?: boolean
-  error?: UseInkathonError
-  activeChain?: SubstrateChain
-  switchActiveChain?: (chain: SubstrateChain) => Promise<void>
-  api?: ApiPromise
-  provider?: WsProvider | HttpProvider
-  connect?: (
-    chain?: SubstrateChain,
-    wallet?: SubstrateWallet,
-    lastActiveAccountAddress?: string,
-  ) => Promise<void>
-  disconnect?: () => void
-  accounts?: InjectedAccount[]
-  activeAccount?: InjectedAccount
-  activeExtension?: InjectedExtension
-  activeSigner?: Signer
-  setActiveAccount?: Dispatch<SetStateAction<InjectedAccount | undefined>>
-  lastActiveAccount?: InjectedAccount
-  deployments?: SubstrateDeployment[]
-}
-export const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
+const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 
 /**
  * Primary useInkathon hook that exposes `UseInkathonProviderContext`.
  */
 export const useInkathon = () => {
   const context = useContext(UseInkathonProviderContext)
-
   if (!context) throw new Error('useInkathon must be used within a UseInkathonProvider')
-
   return context
 }
 
 /**
- * Primary useInkathon provider that needs to be wrapped around the app
- * (see documentation) to use `useInkathon` and other hooks anywhere.
+ * Main provider that needs to be wrapped around the app (see README)
+ * to use `useInkathon` and other hooks anywhere.
  */
 export interface UseInkathonProviderProps extends PropsWithChildren {
   appName: string

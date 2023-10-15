@@ -1,17 +1,7 @@
+import { SubstrateDeployment } from '@/types/'
 import { ApiPromise } from '@polkadot/api'
-import { Abi, ContractPromise } from '@polkadot/api-contract'
-import { AccountId } from '@polkadot/types/interfaces'
+import { ContractPromise } from '@polkadot/api-contract'
 import { Dispatch, SetStateAction } from 'react'
-
-/**
- * Substrate Deployment
- */
-export interface SubstrateDeployment {
-  contractId: string
-  networkId: string
-  abi: string | Record<string, unknown> | Abi
-  address: string | AccountId
-}
 
 /**
  * Registering the given `deployment` with the given `setDeployments` dispatcher.

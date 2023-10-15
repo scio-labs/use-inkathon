@@ -1,5 +1,5 @@
-import { psp22Abi } from '@helpers/getAbi'
-import { psp22Asset as tokens } from '@helpers/getPSP22Asset'
+import { psp22Abi } from '@/helpers/getAbi'
+import { psp22Asset as tokens } from '@/helpers/getPSP22Asset'
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'

@@ -4,15 +4,16 @@
     "target": "es2016",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
-    "module": "ESNext",
+    "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
-      "@*": ["./src/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "exclude": ["dist", "docs"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.json"]
 }

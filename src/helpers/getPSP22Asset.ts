@@ -1,4 +1,7 @@
-import { ChainAsset } from '@types'
-// PSP22Asset.json is inspired by Subwallet's ChainAsset.json (https://github.com/Koniverse/SubWallet-ChainList/blob/master/packages/chain-list/src/data/ChainAsset.json)
-import PSP22_Asset from '../PSP22Asset.json'
+import { ChainAsset } from '@/types'
+import PSP22_Asset from '../data/PSP22_ASSETS.json'
+
+/**
+ * Acknowledgement: PSP22_Asset.json is inspired by Subwallet's `ChainAsset.json`
+ */
 export const psp22Asset = PSP22_Asset as Record<string, ChainAsset>

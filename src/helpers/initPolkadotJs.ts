@@ -1,4 +1,4 @@
-import { SubstrateChain } from '@chains'
+import { SubstrateChain } from '@/chains'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
 
