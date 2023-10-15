@@ -1,5 +1,7 @@
-LICENSE
 package-lock.json
+pnpm-lock.yaml
 node_modules
+LICENSE
 dist
 docs
+src/metadata

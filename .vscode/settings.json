@@ -1,18 +1,19 @@
 {
-  "files.exclude": {
-    "**/node_modules/": true,
-    "**/package-lock.json": true
-  },
   "search.exclude": {
+    "**/*.{jpg,jpeg,png,svg,webm,mp4,ttf,woff,woff2}": true,
     "docs": true
   },
   "search.useIgnoreFiles": true,
   "search.useGlobalIgnoreFiles": true,
   "search.useParentIgnoreFiles": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": true,
     "source.fixAll.eslint": true
-  }
+  },
+  "[javascriptreact][typescriptreact][javascript][typescript][markdown][html][css][scss][sass][json][jsonc][yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always"
 }
