@@ -1,6 +1,6 @@
+import { useInkathon } from '@/provider'
 import { Abi, ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
-import { useInkathon } from '@provider'
 import { useEffect, useState } from 'react'
 
 /**

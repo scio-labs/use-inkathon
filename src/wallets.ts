@@ -1,26 +1,5 @@
-import { Injected, InjectedExtension, InjectedWindow } from '@polkadot/extension-inject/types'
-
-/**
- * Substrate Wallet Type(s)
- */
-export interface SubstrateWallet {
-  id: string
-  name: string
-  platforms: [SubstrateWalletPlatform, ...SubstrateWalletPlatform[]]
-  urls: {
-    website: string
-    chromeExtension?: string
-    firefoxExtension?: string
-    iosApp?: string
-    androidApp?: string
-  }
-  logoUrls: [string, ...string[]]
-}
-export enum SubstrateWalletPlatform {
-  Browser = 'browser',
-  Android = 'android',
-  iOS = 'ios',
-}
+import { SubstrateWallet, SubstrateWalletPlatform } from '@/types'
+import { InjectedExtension, InjectedWindow } from '@polkadot/extension-inject/types'
 
 /**
  * Defined Substrate Wallet Constants
@@ -170,14 +149,18 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
     const injectedWindow = window as Window & InjectedWindow
     const injectedWindowProvider =
       injectedWindow?.injectedWeb3?.[wallet.id === nova.id ? polkadotjs.id : wallet.id]
-    const injected: Injected = await injectedWindowProvider?.enable(appName)
+    if (!injectedWindowProvider?.enable)
+      throw new Error('No according `InjectedWindowProvider` found.')
+
+    const injected = await injectedWindowProvider.enable(appName)
     const injectedExtension: InjectedExtension = {
       ...injected,
       name: wallet.id,
-      version: injectedWindowProvider.version,
+      version: injectedWindowProvider.version || '',
     }
     return injectedExtension
   } catch (e) {
+    console.error('Error while enabling wallet', e)
     return undefined
   }
 }

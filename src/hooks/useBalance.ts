@@ -1,7 +1,6 @@
-import { BalanceFormatterOptions } from '@helpers'
-import { BalanceData, getBalance, watchBalance } from '@helpers/getBalance'
+import { BalanceData, BalanceFormatterOptions, getBalance, watchBalance } from '@/helpers'
+import { useInkathon } from '@/provider'
 import { AccountId } from '@polkadot/types/interfaces'
-import { useInkathon } from '@provider'
 import { useEffect, useState } from 'react'
 
 /**
