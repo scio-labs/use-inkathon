@@ -41,8 +41,8 @@ jobs:
       - name: Create Release Pull Request
         uses: changesets/action@v1
         with:
-          title: 'chore(changeset): Bump package version'
-          commit: 'chore(changeset): Bump package version'
+          title: 'chore(changeset): Bump version & Update docs'
+          commit: 'chore(changeset): Bump version & Update docs'
           version: pnpm run changeset:version
           publish: pnpm run changeset:publish
         env:

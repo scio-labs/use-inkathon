@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "dev": "tsup --watch",
+    "type-check": "tsc --pretty --noEmit",
     "lint": "prettier . --check && pnpm eslint",
     "lint:fix": "prettier . --write && pnpm eslint --fix",
     "build": "tsup",
