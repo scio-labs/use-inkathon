@@ -35,7 +35,7 @@ Other projects include:
 ## Getting started 🚀
 
 > [!IMPORTANT]  
-> If you are looking for a boilerplate to start your dApp project from scratch, checkout the [ink!athon dApp boilerplate](https://inkathon.xyz) instead.
+> **If you are looking for a boilerplate to start your dApp project from scratch, checkout [ink!athon](https://inkathon.xyz).**
 
 1. Go to your existing project and install the package from the npm registry:
 
