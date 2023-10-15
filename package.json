@@ -32,6 +32,7 @@
     "type-check": "tsc --pretty --noEmit",
     "lint": "prettier . --check && pnpm eslint",
     "lint:fix": "prettier . --write && pnpm eslint --fix",
+    "lint:format": "prettier . --write",
     "build": "tsup",
     "typedoc": "typedoc src/index.ts --titleLink \"https://github.com/scio-labs/use-inkathon\"",
     "changeset:version": "pnpm run typedoc && changeset version",
