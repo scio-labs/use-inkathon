@@ -36,6 +36,17 @@
     "changeset:version": "pnpm run typedoc && changeset version",
     "changeset:publish": "pnpm run build && changeset publish"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "pnpm lint:fix"
+    ],
+    "*.{json,md,mdx,html,css,yml,yaml}": [
+      "pnpm lint:format"
+    ]
+  },
   "peerDependencies": {
     "@polkadot/api": ">=10",
     "@polkadot/api-contract": ">=10",
@@ -55,9 +66,9 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.2",
-    "husky": "^8.0.3",
     "lint-staged": "^15.0.1",
     "prettier": "^3.0.3",
+    "simple-git-hooks": "^2.9.0",
     "tsup": "^7.2.0",
     "typedoc": "^0.25.1",
     "typescript": "^5.2.2"
