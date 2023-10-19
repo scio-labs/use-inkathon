@@ -1,5 +1,6 @@
 import { SubstrateWallet, SubstrateWalletPlatform } from '@/types'
 import { InjectedExtension, InjectedWindow } from '@polkadot/extension-inject/types'
+import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 /**
  * Defined Substrate Wallet Constants
@@ -89,7 +90,7 @@ export const nightly: SubstrateWallet = {
   urls: {
     website: 'https://wallet.nightly.app',
     chromeExtension:
-      'https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa',
+      'https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa?hl=en',
     firefoxExtension: 'https://addons.mozilla.org/en-GB/firefox/addon/nightly-app/',
   },
   logoUrls: [
@@ -98,6 +99,22 @@ export const nightly: SubstrateWallet = {
   ],
 }
 
+export const nightlyConnect: SubstrateWallet = {
+  id: 'NightlyConnect',
+  name: 'Nightly Connect',
+  platforms: [
+    SubstrateWalletPlatform.Browser,
+    SubstrateWalletPlatform.Android,
+    SubstrateWalletPlatform.iOS,
+  ],
+  urls: {
+    website: 'https://connect.nightly.app/docs/',
+  },
+  logoUrls: [
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightlyConnect@128w.png',
+    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightlyConnect@512w.png',
+  ],
+}
 /**
  * Exporting all wallets separately
  */
@@ -108,6 +125,7 @@ export const allSubstrateWallets: SubstrateWallet[] = [
   nova,
   alephzeroSigner,
   nightly,
+  nightlyConnect,
 ]
 
 /**
@@ -132,6 +150,9 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
     if (novaIsInstalled && wallet.id === polkadotjs.id) return false
     if (novaIsInstalled && wallet.id === nova.id) return true
 
+    // Special case for Nightly Connect
+    if (wallet.id === nightlyConnect.id) return true
+
     return !!injectedExtension
   } catch (e) {
     return undefined
@@ -143,10 +164,26 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
  */
 export const enableWallet = async (wallet: SubstrateWallet, appName: string) => {
   if (!isWalletInstalled(wallet)) return undefined
-
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
+    if (wallet.id === nightlyConnect.id) {
+      const adapter = await getNightlyConnectAdapter()
+      try {
+        await adapter.connect()
+        const injectedExtension: InjectedExtension = {
+          accounts: adapter.accounts,
+          signer: adapter.signer,
+          name: wallet.id,
+          version: '0.0.8' || '',
+        }
+        return injectedExtension
+      } catch (e) {
+        await adapter.disconnect().catch(() => {})
+        throw new Error('Error while enabling wallet')
+      }
+    }
+
     const injectedWindowProvider =
       injectedWindow?.injectedWeb3?.[wallet.id === nova.id ? polkadotjs.id : wallet.id]
     if (!injectedWindowProvider?.enable)
