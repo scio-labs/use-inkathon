@@ -1,5 +1,9 @@
 import { SubstrateWallet, SubstrateWalletPlatform } from '@/types'
-import { InjectedExtension, InjectedWindow } from '@polkadot/extension-inject/types'
+import type {
+  InjectedAccount,
+  InjectedExtension,
+  InjectedWindow,
+} from '@polkadot/extension-inject/types'
 import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 /**
@@ -172,10 +176,19 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
       try {
         await adapter.connect()
         const injectedExtension: InjectedExtension = {
-          accounts: adapter.accounts,
+          accounts: {
+            ...adapter.accounts,
+            // A special case that probably results from the way packages are bundled
+            subscribe: (cb: (accounts: InjectedAccount[]) => void | Promise<void>) => {
+              const unsub = adapter.accounts.subscribe(cb)
+              // @ts-expect-error '_tiggerSubs' is defined in the nightly adapter
+              adapter.accounts._tiggerSubs()
+              return unsub
+            },
+          },
           signer: adapter.signer,
           name: wallet.id,
-          version: '0.0.8' || '',
+          version: '0.1.10',
         }
         return injectedExtension
       } catch (e) {

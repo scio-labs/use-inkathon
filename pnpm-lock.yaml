@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@nightlylabs/wallet-selector-polkadot':
-    specifier: ^0.1.7
-    version: 0.1.7(@polkadot/util@12.5.1)
+    specifier: '>=0.1.10'
+    version: 0.1.10(@polkadot/util@12.5.1)
   '@polkadot/api':
     specifier: '>=10'
     version: 10.10.1
@@ -729,8 +729,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@nightlylabs/nightly-connect-polkadot@0.0.8:
-    resolution: {integrity: sha512-3inLKOjOZow7z5b9QDiJc5JmZf6Hi8KxTxgTjn9Oj7NFVmKNb+sWcM+zT3wslGTlQEYUq+vmB8Pm3TGbhSvENQ==}
+  /@nightlylabs/nightly-connect-polkadot@0.0.11:
+    resolution: {integrity: sha512-orI2ip99dJ6O6zc3MN9EtAEbt2TToF/KxkjyHp1dA6OUpy3z6Dt8tgUPZU4j+a2ozcGNU+Mzfm1NQx335piolg==}
     dependencies:
       '@nightlylabs/nightly-connect-base': 0.0.26
       '@polkadot/api': 10.10.1
@@ -782,10 +782,10 @@ packages:
       - ts-node
     dev: false
 
-  /@nightlylabs/wallet-selector-polkadot@0.1.7(@polkadot/util@12.5.1):
-    resolution: {integrity: sha512-Ldhp0PmKGEnwQUyGG4iCoqg9sFpd6FIgJ2jZU1BESKbVRXYT8dgracSggjo94sXKXh06gAWHpxuEDuI698pKAQ==}
+  /@nightlylabs/wallet-selector-polkadot@0.1.10(@polkadot/util@12.5.1):
+    resolution: {integrity: sha512-jA6btrIRsPjc90G4z0MIadV+1UgRWE4tTJrjX0ErQgVM+YeQj+Du1CT/J8MaiLlzmrS7s9cXyJKKChCRdHfV9g==}
     dependencies:
-      '@nightlylabs/nightly-connect-polkadot': 0.0.8
+      '@nightlylabs/nightly-connect-polkadot': 0.0.11
       '@nightlylabs/wallet-selector-base': 0.2.3
       '@polkadot/api': 10.10.1
       '@polkadot/extension-inject': 0.46.5(@polkadot/api@10.10.1)(@polkadot/util@12.5.1)
@@ -1681,7 +1681,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.22.1
-      caniuse-lite: 1.0.30001550
+      caniuse-lite: 1.0.30001551
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -1741,7 +1741,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001550
+      caniuse-lite: 1.0.30001551
       electron-to-chromium: 1.4.559
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
@@ -1793,8 +1793,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /caniuse-lite@1.0.30001550:
-    resolution: {integrity: sha512-p82WjBYIypO0ukTsd/FG3Xxs+4tFeaY9pfT4amQL8KWtYH7H9nYwReGAbMTJ0hsmRO8IfDtsS6p3ZWj8+1c2RQ==}
+  /caniuse-lite@1.0.30001551:
+    resolution: {integrity: sha512-vtBAez47BoGMMzlbYhfXrMV1kvRF2WP/lqiMuDu1Sb4EE4LKEgjopFDSRtZfdVnslNRpOqV/woE+Xgrwj6VQlg==}
     dev: false
 
   /chalk@2.4.2:
