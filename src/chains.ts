@@ -54,7 +54,7 @@ export const alephzeroTestnet: SubstrateChain = {
 export const rococo: SubstrateChain = {
   network: 'rococo',
   name: 'Rococo',
-  rpcUrls: ['wss://rococo-rpc.polkadot.io'],
+  rpcUrls: ['wss://rococo-contracts-rpc.polkadot.io'],
   explorerUrls: {
     [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
   },
