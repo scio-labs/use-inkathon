@@ -28,7 +28,8 @@ Other projects include:
 2. [Features ✨](#features-)
 3. [Contract Registry 🗳️](#contract-registry-️)
    1. [How it works](#how-it-works)
-4. [Package Development 🛠](#package-development-)
+4. [Examples 📚](#examples-)
+5. [Package Development 🛠](#package-development-)
 
 ---
 
@@ -140,7 +141,17 @@ Then access the contract as above:
 const { contract } = useRegisteredContract('greeter')
 ```
 
----
+## Examples 📚
+
+Within this repository:
+
+- [Vanilla React Example](./examples/react-ts) (`examples/react-ts`)
+- [Vanilla CLI Scripts Example](./examples/scripts-ts) (`examples/scripts-ts`)
+
+Live examples:
+
+- [ink!athon Boilerplate](https://inkathon.xyz)
+- [AZERO.ID](https://azero.id)
 
 ## Package Development 🛠
 
@@ -159,8 +170,11 @@ pnpm i
 # Enable pre-commit hooks
 pnpm simple-git-hooks
 
-# Start tsup in development mode (watching)
+# Run tsup in development mode (watching)
 pnpm dev
+
+# Run package compilation in parallel with vanilla React example
+pnpm run dev:react-example
 
 # Build the package
 pnpm build
