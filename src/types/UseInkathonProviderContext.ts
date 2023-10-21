@@ -1,9 +1,9 @@
 import { SubstrateWallet } from '@/types'
+import { SubstrateChain } from '@/types/SubstrateChain'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { InjectedAccount, InjectedExtension } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { Dispatch, SetStateAction } from 'react'
-import { SubstrateChain } from '../chains'
 import { SubstrateDeployment } from './SubstrateDeployment'
 
 export type UseInkathonProviderContextType = {

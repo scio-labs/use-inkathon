@@ -1,26 +1,9 @@
-/**
- * Substrate Chain Type
- */
-export interface SubstrateChain {
-  network: string
-  name: string
-  rpcUrls: [string, ...string[]]
-  ss58Prefix?: number
-  explorerUrls?: Partial<Record<SubstrateExplorer, string>>
-  testnet?: boolean
-  faucetUrls?: string[]
-}
-
-export enum SubstrateExplorer {
-  Subscan = 'subscan',
-  PolkadotJs = 'polkadotjs',
-}
+import { SubstrateChain, SubstrateExplorer } from '@/types'
 
 /**
- * Defined Substrate Chain Constants
+ * Local Development Network
  */
 
-/// Local Development Network
 export const development: SubstrateChain = {
   network: 'development',
   name: 'Local Development',
@@ -35,7 +18,9 @@ export const development: SubstrateChain = {
   faucetUrls: ['https://polkadot.js.org/apps/#/accounts?rpc=ws://127.0.0.1:9944'],
 }
 
-/// Testnets
+/**
+ * Live Testnets
+ */
 
 export const alephzeroTestnet: SubstrateChain = {
   network: 'alephzero-testnet',
@@ -53,7 +38,8 @@ export const alephzeroTestnet: SubstrateChain = {
 
 export const rococo: SubstrateChain = {
   network: 'rococo',
-  name: 'Rococo',
+  name: 'Rococo Contracts Testnet',
+  ss58Prefix: 42,
   rpcUrls: ['wss://rococo-contracts-rpc.polkadot.io'],
   explorerUrls: {
     [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
@@ -74,7 +60,7 @@ export const shibuya: SubstrateChain = {
   faucetUrls: ['https://portal.astar.network/#/shibuya-testnet/assets'],
 }
 
-export const t0rn: SubstrateChain = {
+export const t0rnTestnet: SubstrateChain = {
   network: 't0rn',
   name: 'T0rn Testnet',
   ss58Prefix: 42,
@@ -104,7 +90,7 @@ export const bitCountryAlphaTestnet: SubstrateChain = {
 
 export const agungTestnet: SubstrateChain = {
   network: 'agung-testnet',
-  name: 'Agung Testnet (Peaq Network)',
+  name: 'Agung Testnet',
   ss58Prefix: 42,
   rpcUrls: ['wss://wss.agung.peaq.network'],
   explorerUrls: {
@@ -117,9 +103,9 @@ export const agungTestnet: SubstrateChain = {
   faucetUrls: ['https://discord.com/channels/943486047625572392/963415793394143232'],
 }
 
-export const rococoAmplitudeTestnet: SubstrateChain = {
-  network: 'rococo-amplitude-testnet',
-  name: 'Amplitude Testnet (Foucoco)',
+export const amplitudeTestnet: SubstrateChain = {
+  network: 'amplitude-testnet',
+  name: 'Amplitude Testnet',
   ss58Prefix: 57,
   rpcUrls: ['wss://pencol-roc-00.pendulumchain.tech'],
   explorerUrls: {
@@ -135,7 +121,7 @@ export const phalaPOC5Testnet: SubstrateChain = {
   network: 'phala-PoC-5-testnet',
   name: 'Phala PoC-5 Testnet',
   ss58Prefix: 30,
-  rpcUrls: ['wss://poc5.phala.network'],
+  rpcUrls: ['wss://poc5.phala.network/ws'],
   explorerUrls: {
     [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
       'wss://poc5.phala.network/ws',
@@ -145,21 +131,9 @@ export const phalaPOC5Testnet: SubstrateChain = {
   faucetUrls: [],
 }
 
-export const phalaPOC6Testnet: SubstrateChain = {
-  network: 'phala-PoC-6-testnet',
-  name: 'Phala PoC-6 Testnet',
-  ss58Prefix: 30,
-  rpcUrls: ['wss://poc6.phala.network'],
-  explorerUrls: {
-    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
-      'wss://poc6.phala.network/ws',
-    )}#/explorer`,
-  },
-  testnet: true,
-  faucetUrls: [],
-}
-
-/// Canary Networks (Kusama)
+/**
+ * Live Canary Networks
+ */
 
 export const shiden: SubstrateChain = {
   network: 'shiden',
@@ -201,7 +175,9 @@ export const khala: SubstrateChain = {
   },
 }
 
-/// Mainnets
+/**
+ * Live Mainnet Networks
+ */
 
 export const alephzero: SubstrateChain = {
   network: 'alephzero',
@@ -258,12 +234,11 @@ export const allSubstrateChains: SubstrateChain[] = [
   development,
   alephzeroTestnet,
   rococo,
-  t0rn,
+  t0rnTestnet,
   bitCountryAlphaTestnet,
   agungTestnet,
-  rococoAmplitudeTestnet,
+  amplitudeTestnet,
   phalaPOC5Testnet,
-  phalaPOC6Testnet,
   shibuya,
   shiden,
   amplitude,
