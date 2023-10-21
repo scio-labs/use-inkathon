@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.2.0
+
+### Minor Changes
+
+- [#36](https://github.com/scio-labs/use-inkathon/pull/36) [`a8e633d`](https://github.com/scio-labs/use-inkathon/commit/a8e633d95329d7b9661e0fa7f6e9a8154c020e5d) Thanks [@ical10](https://github.com/ical10)! - Added native support for more !ink compatible testnets (t0rn, Bit.Country, Peaq, Pendulum, Phala) and mainnets (Khala, Phala, Amplitude, Pendulum)
+
 ## 0.1.1
 
 ### Patch Changes
