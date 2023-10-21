@@ -12,7 +12,7 @@ This is a small vanilla React example app setup showcasing `@scio-labs/use-inkat
 pnpm install
 pnpm run dev
 
-# Alternatively, to compile the package and run the example in parallel:
+# Or compile & watch the package and run the example in parallel:
 # NOTE: Run this from the root directory
-pnpm run dev-with-example
+pnpm run dev:react-example
 ```

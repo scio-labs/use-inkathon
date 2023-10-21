@@ -143,7 +143,13 @@ const { contract } = useRegisteredContract('greeter')
 
 ## Examples 📚
 
-- [Vanilla React Example](./examples/react-ts) (_this repository_)
+Within this repository:
+
+- [Vanilla React Example](./examples/react-ts) (`examples/react-ts`)
+- [Vanilla CLI Scripts Example](./examples/scripts-ts) (`examples/scripts-ts`)
+
+Live examples:
+
 - [ink!athon Boilerplate](https://inkathon.xyz)
 - [AZERO.ID](https://azero.id)
 
@@ -167,8 +173,8 @@ pnpm simple-git-hooks
 # Run tsup in development mode (watching)
 pnpm dev
 
-# Run tsup package compilation in parallel with vanilla React example
-pnpm run dev-with-example
+# Run package compilation in parallel with vanilla React example
+pnpm run dev:react-example
 
 # Build the package
 pnpm build
