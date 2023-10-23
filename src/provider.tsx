@@ -1,6 +1,8 @@
 import { accountArraysAreEqual, accountsAreEqual, initPolkadotJs } from '@/helpers'
 import { registerDeployments } from '@/registry'
 import {
+  SubstrateChain,
+  SubstrateDeployment,
   SubstrateWallet,
   UseInkathonError,
   UseInkathonErrorCode,
@@ -12,9 +14,8 @@ import { ApiOptions } from '@polkadot/api/types'
 import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
-import { SubstrateChain, getSubstrateChain } from './chains'
+import { getSubstrateChain } from './chains'
 import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
-import { SubstrateDeployment } from './types/SubstrateDeployment'
 
 const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 

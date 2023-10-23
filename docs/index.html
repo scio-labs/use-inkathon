@@ -36,6 +36,7 @@
 <li><a href="#how-it-works">How it works</a></li>
 </ol>
 </li>
+<li><a href="#examples-">Examples 📚</a></li>
 <li><a href="#package-development-">Package Development 🛠</a></li>
 </ol>
 <hr>
@@ -100,7 +101,16 @@
 <p>Then access the contract as above:</p>
 <pre><code class="language-ts"><span class="hl-9">const</span><span class="hl-1"> { </span><span class="hl-10">contract</span><span class="hl-1"> } = </span><span class="hl-0">useRegisteredContract</span><span class="hl-1">(</span><span class="hl-2">&#39;greeter&#39;</span><span class="hl-1">)</span>
 </code><button>Copy</button></pre>
-<hr>
+<a id="md:examples-📚" class="tsd-anchor"></a><h2><a href="#md:examples-📚">Examples 📚</a></h2><p>Within this repository:</p>
+<ul>
+<li><a href="./examples/react-ts">Vanilla React Example</a> (<code>examples/react-ts</code>)</li>
+<li><a href="./examples/scripts-ts">Vanilla CLI Scripts Example</a> (<code>examples/scripts-ts</code>)</li>
+</ul>
+<p>Live examples:</p>
+<ul>
+<li><a href="https://inkathon.xyz">ink!athon Boilerplate</a></li>
+<li><a href="https://azero.id">AZERO.ID</a></li>
+</ul>
 <a id="md:package-development-🛠" class="tsd-anchor"></a><h2><a href="#md:package-development-🛠">Package Development 🛠</a></h2><p><strong>If you want to contribute, please read our <a href="https://github.com/scio-labs/use-inkathon/blob/main/CONTRIBUTING.md">Contributor Guidelines</a></strong> 🙏</p>
 <blockquote>
 <p><strong>Pre-requisites:</strong></p>
@@ -110,7 +120,7 @@
 <li>Clone this repository</li>
 </ul>
 </blockquote>
-<pre><code class="language-bash"><span class="hl-3"># Install dependencies</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">i</span><br/><br/><span class="hl-3"># Enable pre-commit hooks</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">simple-git-hooks</span><br/><br/><span class="hl-3"># Start tsup in development mode (watching)</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">dev</span><br/><br/><span class="hl-3"># Build the package</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">build</span>
+<pre><code class="language-bash"><span class="hl-3"># Install dependencies</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">i</span><br/><br/><span class="hl-3"># Enable pre-commit hooks</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">simple-git-hooks</span><br/><br/><span class="hl-3"># Run tsup in development mode (watching)</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">dev</span><br/><br/><span class="hl-3"># Run package compilation in parallel with vanilla React example</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">run</span><span class="hl-1"> </span><span class="hl-2">dev:react-example</span><br/><br/><span class="hl-3"># Build the package</span><br/><span class="hl-0">pnpm</span><span class="hl-1"> </span><span class="hl-2">build</span>
 </code><button>Copy</button></pre>
 <details>
 <summary><strong>How to import a development version of this package locally?</strong></summary>
@@ -149,6 +159,7 @@
 <li>
 <ul>
 <li><a href="#md:how-it-works"><span>How it works</span></a></li></ul></li>
+<li><a href="#md:examples-📚"><span>Examples 📚</span></a></li>
 <li><a href="#md:package-development-🛠"><span>Package <wbr/>Development 🛠</span></a></li></ul></li></ul></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-1"></use></svg><span>@scio-labs/use-inkathon</span></a>
@@ -171,9 +182,9 @@
 <li><a href="types/TokenData.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>TokenData</a></li>
 <li><a href="types/UseInkathonProviderContextType.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-2097152"></use></svg>UseInkathonProviderContextType</a></li>
 <li><a href="variables/PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL</a></li>
+<li><a href="variables/agungTestnet.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>agungTestnet</a></li>
 <li><a href="variables/alephzero.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>alephzero</a></li>
 <li><a href="variables/alephzeroSigner.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>alephzeroSigner</a></li>
-<li><a href="variables/alephzeroTestnet.html"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="#icon-32"></use></svg>alephzeroTestnet</a></li>
 <li>Loading...</li></ul></nav></div></div></div>
 <div class="tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" rel="noopener" target="_blank">TypeDoc</a></p></div>
