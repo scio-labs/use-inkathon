@@ -5,7 +5,11 @@ import App from './App.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <UseInkathonProvider appName="React Example dApp" defaultChain={alephzeroTestnet}>
+    <UseInkathonProvider
+      appName="React Example dApp"
+      defaultChain={alephzeroTestnet}
+      connectOnInit={false}
+    >
       <App />
     </UseInkathonProvider>
   </React.StrictMode>,

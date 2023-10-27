@@ -1,5 +1,13 @@
 # @scio-labs/use-inkathon
 
+## 0.3.0
+
+### Minor Changes
+
+- [`73b3f53`](https://github.com/scio-labs/use-inkathon/commit/73b3f536a41fe84b71cc33c294fc3cd9badfcf27) Thanks [@wottpal](https://github.com/wottpal)! - Refactor React (TS) example components and add dialog component to transfer native tokens that showcases `transferBalance`.
+
+- [`8fdb64f`](https://github.com/scio-labs/use-inkathon/commit/8fdb64fe0e1f84809ccc435a9bc4b2bfec292cfc) Thanks [@wottpal](https://github.com/wottpal)! - Improve transfer & contract tx utils (i.e. `transferBalance`, `transferFullBalance`, `contractTx`) with better error decoding and minimum balance checks upfront.
+
 ## 0.2.0
 
 ### Minor Changes

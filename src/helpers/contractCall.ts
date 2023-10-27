@@ -3,10 +3,11 @@ import { ContractPromise } from '@polkadot/api-contract'
 import { ContractCallOutcome, ContractOptions } from '@polkadot/api-contract/types'
 import { EventRecord } from '@polkadot/types/interfaces'
 import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
-import { BN, bnToBn, stringCamelCase } from '@polkadot/util'
+import { BN, stringCamelCase } from '@polkadot/util'
+import { checkIfBalanceSufficient } from './checkIfBalanceSufficient'
 import { decodeOutput } from './decodeOutput'
 import { getAbiMessage } from './getAbiMessage'
-import { getBalance } from './getBalance'
+import { getExtrinsicErrorMessage } from './getExtrinsicErrorMessage'
 import { getMaxGasLimit } from './getGasLimit'
 
 /**
@@ -62,7 +63,7 @@ export const contractQuery = async (
 export type ContractTxResult = {
   dryResult: ContractCallOutcome
   result?: ISubmittableResult
-  errorMessage?: string | 'UserCancelled' | 'ExtrinsicFailed' | 'TokenBelowMinimum' | 'Error'
+  errorMessage?: ReturnType<typeof getExtrinsicErrorMessage> | 'ExtrinsicFailed'
   errorEvent?: EventRecord
   successEvent?: EventRecord
   extrinsicHash?: string
@@ -79,12 +80,8 @@ export const contractTx = async (
   statusCb?: Callback<ISubmittableResult>,
 ): Promise<ContractTxResult> => {
   // Check if account has sufficient balance
-  const accountAddress = typeof account === 'string' ? account : account.address
-  const { reducibleBalance } = await getBalance(api, accountAddress)
-  const hasZeroBalance = !reducibleBalance || reducibleBalance.isZero()
-  const hasBalanceBelowPassedValue =
-    options?.value && reducibleBalance && reducibleBalance.lte(bnToBn(options.value))
-  if (hasZeroBalance || hasBalanceBelowPassedValue) {
+  const hasSufficientBalance = await checkIfBalanceSufficient(api, account, options?.value)
+  if (!hasSufficientBalance) {
     return Promise.reject({
       errorMessage: 'TokenBelowMinimum',
     })
@@ -154,26 +151,8 @@ export const contractTx = async (
         }
       })
     } catch (e: any) {
-      let errorMessage = 'Error'
-
-      if (e?.message?.match(/user reject request/i)) {
-        errorMessage = 'UserCancelled'
-      }
-
-      const errorText = e?.toString?.()
-      const rpcErrorCode =
-        errorText && typeof errorText === 'string'
-          ? errorText.match(/RpcError: (\d+):/i)?.[1]
-          : null
-      switch (rpcErrorCode) {
-        case '1010':
-          errorMessage = 'TokenBelowMinimum'
-          break
-        default:
-          break
-      }
-
-      reject({ errorMessage })
+      console.error('Error during contract transaction:', e)
+      reject({ errorMessage: getExtrinsicErrorMessage(e), errorEvent: e })
     }
   })
 }

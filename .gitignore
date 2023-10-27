@@ -166,3 +166,6 @@ fabric.properties
 # Local builds
 /*.tgz
 /package
+
+# substrate-contracts-node
+.node-data
