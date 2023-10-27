@@ -182,7 +182,7 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
             subscribe: (cb: (accounts: InjectedAccount[]) => void | Promise<void>) => {
               const unsub = adapter.accounts.subscribe(cb)
               // @ts-expect-error '_tiggerSubs' is defined in the nightly adapter
-              adapter.accounts._tiggerSubs()
+              adapter.accounts._triggerSubs()
               return unsub
             },
           },
