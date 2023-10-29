@@ -1,5 +1,5 @@
 {
-  "name": "@scio-labs/use-inkathon",
+  "name": "@lastic-xyz/lastic-sdk",
   "author": "Scio Labs <hello@scio.xyz> (https://scio.xyz)",
   "version": "0.3.0",
   "description": "Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.",

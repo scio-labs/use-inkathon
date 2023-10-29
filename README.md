@@ -81,6 +81,7 @@ At its core, this library serves as a **wrapper for polkadot{.js}, potentially s
   - [`usePSP22Balances`](https://scio-labs.github.io/use-inkathon/functions/usePSP22Balances.html)
   - [`useContract`](https://scio-labs.github.io/use-inkathon/functions/useContract.html)
   - [`useRegisteredContract`](https://scio-labs.github.io/use-inkathon/functions/useRegisteredContract.html) _(read more below)_
+  
 - Contract interaction helper functions with automatic upfront gas estimation, including:
   - [`contractTx`](https://scio-labs.github.io/use-inkathon/functions/contractTx.html)
   - [`contractQuery`](https://scio-labs.github.io/use-inkathon/functions/contractQuery.html)
