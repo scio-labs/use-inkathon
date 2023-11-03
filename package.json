@@ -59,7 +59,13 @@
     "@polkadot/types": ">=10",
     "@polkadot/util": ">=10",
     "react": ">=18",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "@nightlylabs/wallet-selector-polkadot": ">=0.1.10"
+  },
+  "peerDependenciesMeta": {
+    "@nightlylabs/wallet-selector-polkadot": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.8",

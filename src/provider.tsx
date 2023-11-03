@@ -8,19 +8,14 @@ import {
   UseInkathonErrorCode,
   UseInkathonProviderContextType,
 } from '@/types'
-import {
-  allSubstrateWallets,
-  enableWallet,
-  getSubstrateWallet,
-  isWalletInstalled,
-  nightly,
-} from '@/wallets'
+import { allSubstrateWallets, enableWallet, getSubstrateWallet, isWalletInstalled } from '@/wallets'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
 import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
 import { getSubstrateChain } from './chains'
+import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 
@@ -187,13 +182,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setActiveExtension(extension)
       setActiveSigner(signer)
 
-      // NOTE: Special handling for Nightly Wallet
-      if (extension?.name === nightly.id) {
-        const accounts = (extension?.accounts as any)?.activeAccounts
-        if (accounts?.length) updateAccounts(accounts, lastActiveAccountAddress)
-        else throw new Error('No injected account found')
-      }
-
       // Query & keep listening to injected accounts
       unsubscribeAccounts?.()
       const unsubscribe = extension?.accounts.subscribe((accounts) => {
@@ -221,6 +209,11 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       await api?.disconnect()
       return
     }
+    //activeExtension is undefined
+    // if (activeExtension?.name === nightlyConnect.name) {
+    const adapter = await getNightlyConnectAdapter(appName)
+    await adapter?.disconnect()
+    // }
     setIsConnected(false)
     updateAccounts([])
     unsubscribeAccounts?.()
