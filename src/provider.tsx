@@ -209,13 +209,16 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       await api?.disconnect()
       return
     }
+    //activeExtension is undefined
+    // if (activeExtension?.name === nightlyConnect.name) {
+    const adapter = await getNightlyConnectAdapter(appName)
+    await adapter?.disconnect()
+    // }
     setIsConnected(false)
     updateAccounts([])
     unsubscribeAccounts?.()
     setUnsubscribeAccounts(undefined)
     setActiveExtension(undefined)
-    const adapter = await getNightlyConnectAdapter()
-    await adapter?.disconnect()
   }
 
   // API Disconnection listener

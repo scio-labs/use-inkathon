@@ -1,14 +1,32 @@
-import { NightlyConnectAdapter } from '@nightlylabs/wallet-selector-polkadot'
+export const getNightlyConnectSelectorLibrary: any = async () => {
+  try {
+    return new Promise((resolve) => {
+      import('@nightlylabs/wallet-selector-polkadot').then((module) => resolve(module))
+    })
+  } catch {
+    return undefined
+  }
+}
 
-let _adapter: NightlyConnectAdapter | undefined
-export const getNightlyConnectAdapter = async (persisted = true) => {
+// In the case of the optional library, types are not available
+let _adapter: any | undefined
+export const getNightlyConnectAdapter = async (
+  appName: string,
+  appIcon?: string,
+  appOrigin?: string,
+  persisted = true,
+) => {
   if (_adapter) return _adapter
-  _adapter = await NightlyConnectAdapter.build(
+
+  const nightlyConnectSelector = await getNightlyConnectSelectorLibrary()
+  if (!nightlyConnectSelector) return undefined
+  const NightlyConnectAdapter = nightlyConnectSelector.NightlyConnectAdapter
+  _adapter = await NightlyConnectAdapter.buildLazy(
     {
       appMetadata: {
-        name: 'Use-inkathon selector',
-        description: 'Use-inkathon selector',
-        icon: 'https://inkathon.xyz/favicons/apple-touch-icon.png',
+        name: appName,
+        description: appOrigin,
+        icon: appIcon,
       },
       network: 'AlephZero',
     },

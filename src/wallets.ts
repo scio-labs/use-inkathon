@@ -4,7 +4,11 @@ import type {
   InjectedExtension,
   InjectedWindow,
 } from '@polkadot/extension-inject/types'
-import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
+import {
+  getNightlyConnectAdapter,
+  getNightlyConnectSelectorLibrary,
+} from './helpers/getNightlyAdapter'
+import { getWebsiteIcon } from './helpers/getWebsiteIcon'
 
 /**
  * Defined Substrate Wallet Constants
@@ -143,7 +147,7 @@ export const getSubstrateWallet = (id: string): SubstrateWallet | undefined => {
  * Returns `true` if wallet is installed, `false` if not, and
  * `undefined` if the environment is not a client browser.
  */
-export const isWalletInstalled = (wallet: SubstrateWallet) => {
+export const isWalletInstalled = async (wallet: SubstrateWallet) => {
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
@@ -154,8 +158,8 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
     if (novaIsInstalled && wallet.id === polkadotjs.id) return false
     if (novaIsInstalled && wallet.id === nova.id) return true
 
-    // Special case for Nightly Connect
-    if (wallet.id === nightlyConnect.id) return true
+    // A special case for NightlyConnect, as it serves as a selector.
+    if ((await getNightlyConnectSelectorLibrary()) && wallet.id === nightlyConnect.id) return true
 
     return !!injectedExtension
   } catch (e) {
@@ -167,12 +171,14 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
  * Enables the given wallet (if existent) and returns the injected extension.
  */
 export const enableWallet = async (wallet: SubstrateWallet, appName: string) => {
-  if (!isWalletInstalled(wallet)) return undefined
+  if (!(await isWalletInstalled(wallet))) return undefined
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
-    if (wallet.id === nightlyConnect.id) {
-      const adapter = await getNightlyConnectAdapter()
+    // NightlyConnect is a selector, it needs a special casu which handles the connection
+    if ((await getNightlyConnectSelectorLibrary()) && wallet.id === nightlyConnect.id) {
+      const websiteIcon = await getWebsiteIcon(injectedWindow.origin)
+      const adapter = await getNightlyConnectAdapter(appName, websiteIcon, injectedWindow.origin)
       try {
         await adapter.connect()
         const injectedExtension: InjectedExtension = {
@@ -181,7 +187,6 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
             // A special case that probably results from the way packages are bundled
             subscribe: (cb: (accounts: InjectedAccount[]) => void | Promise<void>) => {
               const unsub = adapter.accounts.subscribe(cb)
-              // @ts-expect-error '_tiggerSubs' is defined in the nightly adapter
               adapter.accounts._triggerSubs()
               return unsub
             },
