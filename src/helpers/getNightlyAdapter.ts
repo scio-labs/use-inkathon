@@ -1,3 +1,5 @@
+import { getWebsiteIcon } from './getWebsiteIcon'
+
 export const getNightlyConnectSelectorLibrary: any = async () => {
   try {
     return new Promise((resolve) => {
@@ -20,13 +22,14 @@ export const getNightlyConnectAdapter = async (
 
   const nightlyConnectSelector = await getNightlyConnectSelectorLibrary()
   if (!nightlyConnectSelector) return undefined
+
   const NightlyConnectAdapter = nightlyConnectSelector.NightlyConnectAdapter
   _adapter = await NightlyConnectAdapter.buildLazy(
     {
       appMetadata: {
         name: appName,
-        description: appOrigin,
-        icon: appIcon,
+        icon: appIcon || (await getWebsiteIcon(window?.origin)),
+        description: appOrigin || window?.origin,
       },
       network: 'AlephZero',
     },

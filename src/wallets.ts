@@ -8,7 +8,6 @@ import {
   getNightlyConnectAdapter,
   getNightlyConnectSelectorLibrary,
 } from './helpers/getNightlyAdapter'
-import { getWebsiteIcon } from './helpers/getWebsiteIcon'
 
 /**
  * Defined Substrate Wallet Constants
@@ -175,11 +174,12 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
-    // NightlyConnect is a selector, it needs a special casu which handles the connection
-    if ((await getNightlyConnectSelectorLibrary()) && wallet.id === nightlyConnect.id) {
-      const websiteIcon = await getWebsiteIcon(injectedWindow.origin)
-      const adapter = await getNightlyConnectAdapter(appName, websiteIcon, injectedWindow.origin)
+
+    // NightlyConnect is a selector, it needs a special case to handle the connection
+    if (wallet.id === nightlyConnect.id) {
+      let adapter: any
       try {
+        adapter = await getNightlyConnectAdapter(appName)
         await adapter.connect()
         const injectedExtension: InjectedExtension = {
           accounts: {
@@ -197,8 +197,8 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
         }
         return injectedExtension
       } catch (e) {
-        await adapter.disconnect().catch(() => {})
-        throw new Error('Error while enabling wallet')
+        await adapter?.disconnect().catch(() => {})
+        throw new Error('Error while enabling NightlyConnect')
       }
     }
 
