@@ -4,10 +4,7 @@ import type {
   InjectedExtension,
   InjectedWindow,
 } from '@polkadot/extension-inject/types'
-import {
-  getNightlyConnectAdapter,
-  getNightlyConnectSelectorLibrary,
-} from './helpers/getNightlyAdapter'
+import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 /**
  * Defined Substrate Wallet Constants
@@ -145,6 +142,8 @@ export const getSubstrateWallet = (id: string): SubstrateWallet | undefined => {
 /*
  * Returns `true` if wallet is installed, `false` if not, and
  * `undefined` if the environment is not a client browser.
+ *
+ * TODO: Check chain-specific availability (i.e. NightlyConnect is only available on Aleph Zero)
  */
 export const isWalletInstalled = async (wallet: SubstrateWallet) => {
   try {
@@ -158,7 +157,7 @@ export const isWalletInstalled = async (wallet: SubstrateWallet) => {
     if (novaIsInstalled && wallet.id === nova.id) return true
 
     // A special case for NightlyConnect, as it serves as a selector.
-    if ((await getNightlyConnectSelectorLibrary()) && wallet.id === nightlyConnect.id) return true
+    if (wallet.id === nightlyConnect.id) return true
 
     return !!injectedExtension
   } catch (e) {

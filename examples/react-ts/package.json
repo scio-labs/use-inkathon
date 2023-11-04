@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@nightlylabs/wallet-selector-polkadot": "^0.1.10",
     "@polkadot/api": "^10.10.1",
     "@polkadot/api-contract": "^10.10.1",
     "@polkadot/util-crypto": "^12.5.1",

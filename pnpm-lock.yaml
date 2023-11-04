@@ -84,9 +84,6 @@ importers:
 
   examples/react-ts:
     dependencies:
-      '@nightlylabs/wallet-selector-polkadot':
-        specifier: ^0.1.10
-        version: 0.1.10(@polkadot/util@12.5.1)
       '@polkadot/api':
         specifier: ^10.10.1
         version: 10.10.1
