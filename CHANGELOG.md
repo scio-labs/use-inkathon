@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.4.1
+
+### Patch Changes
+
+- [`77a1904`](https://github.com/scio-labs/use-inkathon/commit/77a19042daf47fe7b6f646504336a5942fbb3f65) Thanks [@wottpal](https://github.com/wottpal)! - Fix Next.js module import error by making `nightlylabs/wallet-selector-polkadot` a normal peer dependency (non-option) for now. Let's re-evaluate this in the future.
+
 ## 0.4.0
 
 ### Minor Changes
