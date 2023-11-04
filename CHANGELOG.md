@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.4.2
+
+### Patch Changes
+
+- [`d01b9f3`](https://github.com/scio-labs/use-inkathon/commit/d01b9f334223eb64c1fc80c73017f382c490bc53) Thanks [@wottpal](https://github.com/wottpal)! - Fix `isWalletInstalled` declaration to be synchronous again.
+
 ## 0.4.1
 
 ### Patch Changes
