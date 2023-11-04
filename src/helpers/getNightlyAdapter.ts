@@ -4,7 +4,7 @@ import { getWebsiteIcon } from './getWebsiteIcon'
 // In the case of the optional library, types are not available
 let _adapter: any | undefined
 export const getNightlyConnectAdapter = async (
-  appName: string,
+  appName?: string,
   appIcon?: string,
   appOrigin?: string,
   persisted = true,
@@ -12,13 +12,13 @@ export const getNightlyConnectAdapter = async (
   if (_adapter) return _adapter
 
   try {
-    _adapter = await NightlyConnectAdapter.buildLazy(
+    const name = appName || window?.location.hostname
+    const icon = appIcon || (await getWebsiteIcon(window?.origin))
+    const description = appOrigin || window?.origin
+
+    _adapter = await NightlyConnectAdapter.build(
       {
-        appMetadata: {
-          name: appName,
-          icon: appIcon || (await getWebsiteIcon(window?.origin)),
-          description: appOrigin || window?.origin,
-        },
+        appMetadata: { name, icon, description },
         network: 'AlephZero',
       },
       persisted,
