@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { TransferDialog } from './TransferDialog'
 
 export function ConnectionStatus() {
-  const { api, isConnected, activeChain, activeAccount, disconnect } = useInkathon()
+  const { api, error, isConnected, activeChain, activeAccount, disconnect } = useInkathon()
 
   // Fetch & watch balance
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
@@ -23,6 +23,10 @@ export function ConnectionStatus() {
         {isConnected ? (
           <code style={{ color: 'rgba(56, 142, 60, 1)', background: 'rgba(56, 142, 60, .1)' }}>
             Connected
+          </code>
+        ) : error?.message ? (
+          <code style={{ color: 'rgba(198, 40, 40, 1)', background: 'rgba(198, 40, 40, .1)' }}>
+            {error.message}
           </code>
         ) : (
           <code>Disconnected</code>
