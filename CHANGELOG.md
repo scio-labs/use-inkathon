@@ -1,5 +1,13 @@
 # @scio-labs/use-inkathon
 
+## 0.4.0
+
+### Minor Changes
+
+- [`020aeb1`](https://github.com/scio-labs/use-inkathon/commit/020aeb1900dee1ea449df061f919bb3d7f842db4) Thanks [@wottpal](https://github.com/wottpal)! - Add support for NightlyConnect on Aleph Zero. This is a WalletConnect-like connection dialog for using the Nightly Wallet mobile app or browser extension. IMPORTANT: To use it, install the optional peer-dependency `@nightlylabs/wallet-selector-polkadot`.
+
+- [`81da31b`](https://github.com/scio-labs/use-inkathon/commit/81da31bfeafecfe7d8e531c14553f975479a9c05) Thanks [@wottpal](https://github.com/wottpal)! - BREAKING: `enableWallet` is now async and needs to be awaited. If you were only using the provided `connect` function, nothing changes for you.
+
 ## 0.3.0
 
 ### Minor Changes
