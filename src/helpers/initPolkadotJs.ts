@@ -7,7 +7,7 @@ import { ApiOptions } from '@polkadot/api/types'
  */
 export const initPolkadotJs = async (
   chain: SubstrateChain,
-  options?: ApiOptions,
+  options?: Omit<ApiOptions, 'provider'>,
 ): Promise<{ api: ApiPromise; provider: WsProvider | HttpProvider }> => {
   const rpcUrl = chain.rpcUrls[0]
   if (!rpcUrl) {

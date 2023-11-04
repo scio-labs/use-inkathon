@@ -8,12 +8,26 @@ import {
   UseInkathonErrorCode,
   UseInkathonProviderContextType,
 } from '@/types'
-import { allSubstrateWallets, enableWallet, getSubstrateWallet, isWalletInstalled } from '@/wallets'
+import {
+  allSubstrateWallets,
+  enableWallet,
+  getSubstrateWallet,
+  isWalletInstalled,
+  nightlyConnect,
+} from '@/wallets'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
 import { InjectedAccount, InjectedExtension, Unsubcall } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
-import { FC, PropsWithChildren, createContext, useContext, useEffect, useState } from 'react'
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { getSubstrateChain } from './chains'
 import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
@@ -58,8 +72,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }
 
   // Setup state variables
-  const [isInitializing, setIsInitializing] = useState(true)
-  const [isInitialized, setIsInitialized] = useState(false)
+  const isInitializing = useRef(false)
+  const isInitialized = useRef(false)
   const [isConnecting, setIsConnecting] = useState(connectOnInit)
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<UseInkathonError | undefined>()
@@ -72,10 +86,10 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccount[]>([])
   const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
-  const [activeExtension, setActiveExtension] = useState<InjectedExtension>()
   const [lastActiveAccount, setLastActiveAccount] = useState<InjectedAccount>()
-  const [activeSigner, setActiveSigner] = useState<Signer>()
-  const [unsubscribeAccounts, setUnsubscribeAccounts] = useState<Unsubcall>()
+  const activeExtension = useRef<InjectedExtension>()
+  const activeSigner = useRef<Signer>()
+  const unsubscribeAccounts = useRef<Unsubcall>()
   const [deployments, setDeployments] = useState<SubstrateDeployment[]>([])
 
   // Register given deployments
@@ -84,37 +98,42 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async (chain?: SubstrateChain) => {
-    setIsInitialized(!!api?.isConnected)
-    setIsInitializing(true)
+  const initialize = async (chain?: SubstrateChain): Promise<ApiPromise | undefined> => {
+    isInitializing.current = true
     setIsConnected(false)
     setError(undefined)
 
+    const _chain = chain || activeChain
+    let _api: ApiPromise | undefined
+    let _provider: WsProvider | HttpProvider | undefined
     try {
-      const _chain = chain || activeChain
-      const { api, provider } = await initPolkadotJs(_chain, {
+      ;({ api: _api, provider: _provider } = await initPolkadotJs(_chain, {
         noInitWarn: true,
         throwOnConnect: true,
         ...apiOptions,
-      })
-      setProvider(provider)
-      setApi(api)
-      setIsInitialized(true)
+      }))
+
+      api?.disconnect()
+      setApi(_api)
+      provider?.disconnect()
+      setProvider(_provider)
+      isInitialized.current = true
 
       // Update active chain if switching
       if (activeChain.network !== _chain.network) setActiveChain(_chain)
     } catch (e) {
-      const message = 'Error while initializing polkadot.js api'
+      const message = 'Error while initializing Polkadot.js API'
       console.error(message, e)
       setError({ code: UseInkathonErrorCode.InitializationError, message })
       setIsConnected(false)
       setIsConnecting(false)
-      setIsInitialized(false)
       setApi(undefined)
       setProvider(undefined)
-    } finally {
-      setIsInitializing(false)
+      isInitialized.current = false
     }
+
+    isInitializing.current = false
+    return _api
   }
 
   // Updates account list and active account
@@ -157,7 +176,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
     // Make sure api is initialized & connected to provider
     if (!api?.isConnected || (chain && chain.network !== activeChain.network)) {
-      await initialize(chain)
+      const _api = await initialize(chain)
+      if (!_api?.isConnected) return
     }
 
     try {
@@ -178,20 +198,19 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
       // Enable wallet
       const extension = await enableWallet(_wallet, appName)
-      const signer = extension?.signer as Signer
-      setActiveExtension(extension)
-      setActiveSigner(signer)
+      activeExtension.current = extension
+      activeSigner.current = extension?.signer as Signer
 
       // Query & keep listening to injected accounts
-      unsubscribeAccounts?.()
+      unsubscribeAccounts.current?.()
       const unsubscribe = extension?.accounts.subscribe((accounts) => {
         updateAccounts(accounts, lastActiveAccountAddress)
       })
-      setUnsubscribeAccounts(unsubscribe)
+      unsubscribeAccounts.current = unsubscribe
     } catch (e: any) {
       console.error('Error while connecting wallet:', e)
-      setActiveExtension(undefined)
-      setActiveSigner(undefined)
+      activeExtension.current = undefined
+      activeSigner.current = undefined
       setIsConnected(false)
     } finally {
       setIsConnecting(false)
@@ -200,32 +219,34 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Keep active signer up to date
   useEffect(() => {
-    api?.setSigner(activeSigner as Signer)
-  }, [api, activeSigner])
+    api?.setSigner(activeSigner.current as Signer)
+  }, [api, activeSigner.current])
 
   // Disconnect
   const disconnect = async (disconnectApi?: boolean) => {
     if (disconnectApi) {
+      await provider?.disconnect()
       await api?.disconnect()
       return
     }
-    //activeExtension is undefined
-    // if (activeExtension?.name === nightlyConnect.name) {
-    const adapter = await getNightlyConnectAdapter(appName)
-    await adapter?.disconnect()
-    // }
+    if (activeExtension.current?.name === nightlyConnect.id) {
+      const adapter = await getNightlyConnectAdapter(appName)
+      await adapter?.disconnect()
+    }
     setIsConnected(false)
     updateAccounts([])
-    unsubscribeAccounts?.()
-    setUnsubscribeAccounts(undefined)
-    setActiveExtension(undefined)
+    unsubscribeAccounts.current?.()
+    unsubscribeAccounts.current = undefined
+    activeExtension.current = undefined
+    activeSigner.current = undefined
+    isInitialized.current = false
   }
 
   // API Disconnection listener
   useEffect(() => {
+    if (!api) return
     const handler = () => {
       disconnect()
-      setIsInitialized(false)
     }
     api?.on('disconnected', handler)
     return () => {
@@ -235,23 +256,24 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
   // Initialze
   useEffect(() => {
+    if (isInitialized.current || isInitializing.current) return
     connectOnInit ? connect() : initialize()
     return () => {
-      unsubscribeAccounts?.()
+      unsubscribeAccounts.current?.()
     }
   }, [])
 
   // Switch active chain
   const switchActiveChain = async (chain: SubstrateChain) => {
-    const activeWallet = activeExtension && getSubstrateWallet(activeExtension.name)
+    const activeWallet = activeExtension.current && getSubstrateWallet(activeExtension.current.name)
     await connect(chain, activeWallet)
   }
 
   return (
     <UseInkathonProviderContext.Provider
       value={{
-        isInitializing,
-        isInitialized,
+        isInitializing: isInitializing.current,
+        isInitialized: isInitialized.current,
         isConnecting,
         isConnected,
         error,
@@ -263,8 +285,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         disconnect,
         accounts,
         activeAccount,
-        activeExtension,
-        activeSigner,
+        activeExtension: activeExtension.current,
+        activeSigner: activeSigner.current,
         setActiveAccount,
         lastActiveAccount,
         deployments,
