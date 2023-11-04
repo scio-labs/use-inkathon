@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.4.3
+
+### Patch Changes
+
+- [`8333727`](https://github.com/scio-labs/use-inkathon/commit/8333727b78fad945b8f28b53970454d6aa3f9099) Thanks [@wottpal](https://github.com/wottpal)! - Build `NightlyConnectAdapter` non-lazy when (re)connecting on init.
+
 ## 0.4.2
 
 ### Patch Changes
