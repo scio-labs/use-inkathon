@@ -145,7 +145,7 @@ export const getSubstrateWallet = (id: string): SubstrateWallet | undefined => {
  *
  * TODO: Check chain-specific availability (i.e. NightlyConnect is only available on Aleph Zero)
  */
-export const isWalletInstalled = async (wallet: SubstrateWallet) => {
+export const isWalletInstalled = (wallet: SubstrateWallet) => {
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
@@ -169,7 +169,8 @@ export const isWalletInstalled = async (wallet: SubstrateWallet) => {
  * Enables the given wallet (if existent) and returns the injected extension.
  */
 export const enableWallet = async (wallet: SubstrateWallet, appName: string) => {
-  if (!(await isWalletInstalled(wallet))) return undefined
+  if (!isWalletInstalled(wallet)) return undefined
+
   try {
     if (typeof window === 'undefined') return undefined
     const injectedWindow = window as Window & InjectedWindow
