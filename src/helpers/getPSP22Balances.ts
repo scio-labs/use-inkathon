@@ -27,57 +27,57 @@ export const PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL = 60000
 export const getPSP22Balances = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
+  activeChain: string,
   formatterOptions?: BalanceFormatterOptions,
 ): Promise<PSP22BalanceData[]> => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
-  Object.entries(allPSP22Assets).forEach(([slug, tokenInfo]) => {
-    psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
-  })
-
   if (!address) {
-    const result = Object.values(allPSP22Assets).map(({ slug, decimals, symbol, iconPath }) => {
-      return {
-        tokenSlug: slug,
-        tokenDecimals: decimals,
-        tokenSymbol: symbol,
-        iconPath,
-      }
-    })
-
+    const result = Object.values(allPSP22Assets)
+      .filter(({ originChain }) => originChain === activeChain)
+      .map(({ slug, decimals, symbol, iconPath }) => {
+        return {
+          tokenSlug: slug,
+          tokenDecimals: decimals,
+          tokenSymbol: symbol,
+          iconPath,
+        }
+      })
     return result
   }
 
   const result = await Promise.all(
-    Object.values(allPSP22Assets).map(async ({ slug, decimals, symbol, iconPath }) => {
-      let balance = new BN(0)
+    Object.values(allPSP22Assets)
+      .filter(({ originChain }) => originChain === activeChain)
+      .map(async ({ slug, decimals, symbol, iconPath }) => {
+        let balance = new BN(0)
 
-      const contract = psp22ContractMap[slug]
-      const _balanceOf = await contract.query['psp22::balanceOf'](
-        address,
-        { gasLimit: getMaxGasLimit(api) },
-        address,
-      )
-      const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
+        const contract = psp22ContractMap[slug]
+        const _balanceOf = await contract.query['psp22::balanceOf'](
+          address,
+          { gasLimit: getMaxGasLimit(api) },
+          address,
+        )
+        const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
 
-      balance = new BN(
-        _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
-      )
+        balance = new BN(
+          _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
+        )
 
-      const data = {
-        tokenDecimals: decimals,
-        tokenSymbol: symbol,
-        balance,
-      }
+        const data = {
+          tokenDecimals: decimals,
+          tokenSymbol: symbol,
+          balance,
+        }
 
-      const balanceFormatted = parsePSP22Balance(data, formatterOptions)
-      return {
-        balanceFormatted,
-        tokenSlug: slug,
-        iconPath,
-        ...data,
-      }
-    }),
+        const balanceFormatted = parsePSP22Balance(data, formatterOptions)
+        return {
+          balanceFormatted,
+          tokenSlug: slug,
+          iconPath,
+          ...data,
+        }
+      }),
   )
 
   return result
@@ -91,6 +91,7 @@ export const watchPSP22Balances = (
   api: ApiPromise,
   address: string | AccountId | undefined,
   callback: (data: PSP22BalanceData[]) => void,
+  activeChain: string,
   formatterOptions?: BalanceFormatterOptions,
 ): VoidFunction | null => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
@@ -100,14 +101,16 @@ export const watchPSP22Balances = (
   })
 
   if (!address) {
-    const result = Object.values(allPSP22Assets).map(({ slug, decimals, symbol, iconPath }) => {
-      return {
-        tokenSlug: slug,
-        tokenDecimals: decimals,
-        tokenSymbol: symbol,
-        iconPath,
-      }
-    })
+    const result = Object.values(allPSP22Assets)
+      .filter(({ originChain }) => originChain === activeChain)
+      .map(({ slug, decimals, symbol, iconPath }) => {
+        return {
+          tokenSlug: slug,
+          tokenDecimals: decimals,
+          tokenSymbol: symbol,
+          iconPath,
+        }
+      })
     callback(result)
     return null
   }
@@ -116,35 +119,37 @@ export const watchPSP22Balances = (
   const fetchTokenBalances = async () =>
     callback(
       await Promise.all(
-        Object.values(allPSP22Assets).map(async ({ slug, decimals, symbol, iconPath }) => {
-          let balance = new BN(0)
+        Object.values(allPSP22Assets)
+          .filter(({ originChain }) => originChain === activeChain)
+          .map(async ({ slug, decimals, symbol, iconPath }) => {
+            let balance = new BN(0)
 
-          const contract = psp22ContractMap[slug]
-          const _balanceOf = await contract.query['psp22::balanceOf'](
-            address,
-            { gasLimit: getMaxGasLimit(api) },
-            address,
-          )
-          const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
+            const contract = psp22ContractMap[slug]
+            const _balanceOf = await contract.query['psp22::balanceOf'](
+              address,
+              { gasLimit: getMaxGasLimit(api) },
+              address,
+            )
+            const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
 
-          balance = new BN(
-            _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
-          )
+            balance = new BN(
+              _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
+            )
 
-          const data = {
-            tokenDecimals: decimals,
-            tokenSymbol: symbol,
-            balance,
-          }
+            const data = {
+              tokenDecimals: decimals,
+              tokenSymbol: symbol,
+              balance,
+            }
 
-          const balanceFormatted = parsePSP22Balance(data, formatterOptions)
-          return {
-            balanceFormatted,
-            tokenSlug: slug,
-            iconPath,
-            ...data,
-          }
-        }),
+            const balanceFormatted = parsePSP22Balance(data, formatterOptions)
+            return {
+              balanceFormatted,
+              tokenSlug: slug,
+              iconPath,
+              ...data,
+            }
+          }),
       ),
     )
 
