@@ -61,8 +61,8 @@ export const shibuya: SubstrateChain = {
 }
 
 export const t0rnTestnet: SubstrateChain = {
-  network: 't0rn',
-  name: 'T0rn Testnet',
+  network: 't0rn-testnet',
+  name: 't0rn Testnet',
   ss58Prefix: 42,
   rpcUrls: ['wss://ws.t0rn.io'],
   explorerUrls: {
