@@ -27,14 +27,14 @@ export const PSP22_TOKEN_BALANCE_SUBSCRIPTION_INTERVAL = 60000
 export const getPSP22Balances = async (
   api: ApiPromise,
   address: string | AccountId | undefined,
-  activeChain: string,
+  chainId: string,
   formatterOptions?: BalanceFormatterOptions,
 ): Promise<PSP22BalanceData[]> => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
   if (!address) {
     const result = Object.values(allPSP22Assets)
-      .filter(({ originChain }) => originChain === activeChain)
+      .filter(({ originChain }) => originChain === chainId)
       .map(({ slug, decimals, symbol, iconPath }) => {
         return {
           tokenSlug: slug,
@@ -48,7 +48,7 @@ export const getPSP22Balances = async (
 
   const result = await Promise.all(
     Object.values(allPSP22Assets)
-      .filter(({ originChain }) => originChain === activeChain)
+      .filter(({ originChain }) => originChain === chainId)
       .map(async ({ slug, decimals, symbol, iconPath }) => {
         let balance = new BN(0)
 
