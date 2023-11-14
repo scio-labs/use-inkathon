@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.4.4
+
+### Patch Changes
+
+- [`b9cfa60`](https://github.com/scio-labs/use-inkathon/commit/b9cfa60b1bc3eb2424d3fd41f68ee3e04631b645) Thanks [@wottpal](https://github.com/wottpal)! - Rename chain id `t0rn` to `t0rn-testnet` for consistency.
+
 ## 0.4.3
 
 ### Patch Changes
