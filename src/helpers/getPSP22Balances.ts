@@ -4,8 +4,9 @@ import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
+import { contractQuery } from './contractCall'
+import { decodeOutput } from './decodeOutput'
 import { BalanceFormatterOptions, formatBalance } from './formatBalance'
-import { getMaxGasLimit } from './getGasLimit'
 
 export type PSP22BalanceData = {
   tokenSlug: string
@@ -32,6 +33,10 @@ export const getPSP22Balances = async (
 ): Promise<PSP22BalanceData[]> => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
 
+  Object.entries(allPSP22Assets).forEach(([slug, tokenInfo]) => {
+    psp22ContractMap[slug] = new ContractPromise(api, psp22Abi, tokenInfo.metadata?.contractAddress)
+  })
+
   if (!address) {
     const result = Object.values(allPSP22Assets)
       .filter(({ originChain }) => originChain === chainId)
@@ -53,16 +58,15 @@ export const getPSP22Balances = async (
         let balance = new BN(0)
 
         const contract = psp22ContractMap[slug]
-        const _balanceOf = await contract.query['psp22::balanceOf'](
-          address,
-          { gasLimit: getMaxGasLimit(api) },
-          address,
-        )
-        const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
+        const response = await contractQuery(api, '', contract, 'psp22::balanceOf', {}, [address])
+        const { isError, decodedOutput } = decodeOutput(response, contract, 'psp22::balanceOf')
 
-        balance = new BN(
-          _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
-        )
+        if (isError) throw new Error(decodedOutput)
+
+        const _balance = response.output?.toPrimitive() as Record<string, any>
+        balance = new BN(response.output ? (_balance.ok as string) || (_balance.Ok as string) : '0')
+
+        if (!balance) throw new Error('Invalid fetched balances')
 
         const data = {
           tokenDecimals: decimals,
@@ -91,7 +95,7 @@ export const watchPSP22Balances = (
   api: ApiPromise,
   address: string | AccountId | undefined,
   callback: (data: PSP22BalanceData[]) => void,
-  activeChain: string,
+  chainId: string,
   formatterOptions?: BalanceFormatterOptions,
 ): VoidFunction | null => {
   const psp22ContractMap: Record<string, ContractPromise> = {}
@@ -102,7 +106,7 @@ export const watchPSP22Balances = (
 
   if (!address) {
     const result = Object.values(allPSP22Assets)
-      .filter(({ originChain }) => originChain === activeChain)
+      .filter(({ originChain }) => originChain === chainId)
       .map(({ slug, decimals, symbol, iconPath }) => {
         return {
           tokenSlug: slug,
@@ -120,21 +124,24 @@ export const watchPSP22Balances = (
     callback(
       await Promise.all(
         Object.values(allPSP22Assets)
-          .filter(({ originChain }) => originChain === activeChain)
+          .filter(({ originChain }) => originChain === chainId)
           .map(async ({ slug, decimals, symbol, iconPath }) => {
             let balance = new BN(0)
 
             const contract = psp22ContractMap[slug]
-            const _balanceOf = await contract.query['psp22::balanceOf'](
+            const response = await contractQuery(api, '', contract, 'psp22::balanceOf', {}, [
               address,
-              { gasLimit: getMaxGasLimit(api) },
-              address,
-            )
-            const balanceObj = _balanceOf?.output?.toPrimitive() as Record<string, any>
+            ])
+            const { isError, decodedOutput } = decodeOutput(response, contract, 'psp22::balanceOf')
 
+            if (isError) throw new Error(decodedOutput)
+
+            const _balance = response.output?.toPrimitive() as Record<string, any>
             balance = new BN(
-              _balanceOf.output ? (balanceObj.ok as string) || (balanceObj.Ok as string) : '0',
+              response.output ? (_balance.ok as string) || (_balance.Ok as string) : '0',
             )
+
+            if (!balance) throw new Error('Invalid fetched balances')
 
             const data = {
               tokenDecimals: decimals,
