@@ -1,5 +1,18 @@
 # @scio-labs/use-inkathon
 
+## 0.5.0
+
+### Minor Changes
+
+- [#47](https://github.com/scio-labs/use-inkathon/pull/47) [`64f6e51`](https://github.com/scio-labs/use-inkathon/commit/64f6e51a0d529541cdd0464ccc2af18bb21564c9) Thanks [@ical10](https://github.com/ical10)! - Improve PSP22 balance helpers to only fetch tokens applicable for the active chain.
+
+- [#47](https://github.com/scio-labs/use-inkathon/pull/47) [`35d0f00`](https://github.com/scio-labs/use-inkathon/commit/35d0f006e3cc8fd3a1a2d92c097a28993be5331b) Thanks [@ical10](https://github.com/ical10)! - - usePSP22Balances checks if `originChain` matches `activeChain` before fetching PSP22 tokens balance.
+  - Improve formats and add INW testnet contract address on `PSP22_ASSETS.json`.
+
+### Patch Changes
+
+- [#47](https://github.com/scio-labs/use-inkathon/pull/47) [`ca9ce54`](https://github.com/scio-labs/use-inkathon/commit/ca9ce5473ad36b368ab89663757b2b32388a5166) Thanks [@ical10](https://github.com/ical10)! - Improve fetching of PSP22 balances.
+
 ## 0.4.4
 
 ### Patch Changes
