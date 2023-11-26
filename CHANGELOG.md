@@ -1,5 +1,15 @@
 # @scio-labs/use-inkathon
 
+## 0.6.0
+
+### Minor Changes
+
+- [`2e5bc70`](https://github.com/scio-labs/use-inkathon/commit/2e5bc70a4b04825c52044abf0783c2f37437c706) Thanks [@wottpal](https://github.com/wottpal)! - Enable sub-path package imports (e.g. via `@scio-labs/use-inkathon/helpers`) for better ssr compatability.
+
+### Patch Changes
+
+- [`0a0565f`](https://github.com/scio-labs/use-inkathon/commit/0a0565f48af4ec2a48a43635a6024d388db7dec5) Thanks [@wottpal](https://github.com/wottpal)! - Wait for crypto APIs to be ready to prevent polkadot.js initialization issues.
+
 ## 0.5.0
 
 ### Minor Changes
