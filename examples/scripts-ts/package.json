@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "script": "ts-node --cwd=src",
-    "dev": "pnpm run script index"
+    "script": "f() { tsx ./src/$1; }; f \"$@\"",
+    "dev": "pnpm run script index",
+    "type-check": "tsc --pretty --noEmit"
   },
   "dependencies": {
     "@polkadot/api": "^10.11.1",
@@ -21,7 +22,7 @@
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.1.0",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.5.0",
     "typescript": "^5.3.2"
   }
 }
