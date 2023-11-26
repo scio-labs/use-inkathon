@@ -16,7 +16,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=16 <=18",
+    "node": ">=18 <=20",
     "pnpm": "8"
   },
   "type": "module",
