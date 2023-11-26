@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.6.1
+
+### Patch Changes
+
+- [`17814f3`](https://github.com/scio-labs/use-inkathon/commit/17814f3ad8d05418dd9d8874637e22f14a535897) Thanks [@wottpal](https://github.com/wottpal)! - Minor types fix & Updates (i.e. to Node 20).
+
 ## 0.6.0
 
 ### Minor Changes
