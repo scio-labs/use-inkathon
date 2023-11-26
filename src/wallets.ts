@@ -173,7 +173,7 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
 
   try {
     if (typeof window === 'undefined') return undefined
-    const injectedWindow = window as Window & InjectedWindow
+    const injectedWindow = window as InjectedWindow
 
     // NightlyConnect is a selector, it needs a special case to handle the connection
     if (wallet.id === nightlyConnect.id) {
