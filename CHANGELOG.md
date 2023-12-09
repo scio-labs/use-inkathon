@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.6.2
+
+### Patch Changes
+
+- [#52](https://github.com/scio-labs/use-inkathon/pull/52) [`646cc1b`](https://github.com/scio-labs/use-inkathon/commit/646cc1be6e79514e3956e9591f85c6c37113f594) Thanks [@Leechael](https://github.com/Leechael)! - Update Phala testnet endpoint URL
+
 ## 0.6.1
 
 ### Patch Changes
