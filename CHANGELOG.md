@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.6.3
+
+### Patch Changes
+
+- [`decead0`](https://github.com/scio-labs/use-inkathon/commit/decead01197cf92d28437d1cb982329e3b8aa019) Thanks [@wottpal](https://github.com/wottpal)! - Add & export explicit return type definition for `deployContract` (`DeployedContract`).
+
 ## 0.6.2
 
 ### Patch Changes
