@@ -1,4 +1,4 @@
-import { SubstrateDeployment } from '@/types/'
+import { SubstrateDeployment } from '@/types'
 import { Dispatch, SetStateAction } from 'react'
 
 /**
