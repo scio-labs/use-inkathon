@@ -9,9 +9,9 @@ import { BrokerConstantsType } from '../types/GetConstants';
 const convertToBrokerConstants = (brokerConsts: any): BrokerConstantsType => {
     return {
       palletId: brokerConsts.palletId.toString(),
-      timeslicePeriod: brokerConsts.timeslicePeriod.toString(),
-      maxLeasedCores: brokerConsts.maxLeasedCores.toString(),
-      maxReservedCores: brokerConsts.maxReservedCores.toString(),
+      timeslicePeriod: parseInt(brokerConsts.timeslicePeriod.toString(), 10),
+      maxLeasedCores: parseInt(brokerConsts.maxLeasedCores.toString(), 10),
+      maxReservedCores: parseInt(brokerConsts.maxReservedCores.toString(), 10),
     };
   };
 
