@@ -227,6 +227,30 @@ export const phala: SubstrateChain = {
   },
 }
 
+export const kusama: SubstrateChain = {
+  network: 'kusama',
+  name: 'Kusama',
+  ss58Prefix: 2,
+  rpcUrls: ['wss://kusama-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://kusama.subscan.io`,
+  },
+  testnet: false,
+  faucetUrls: ['https://matrix.to/#/#kusama-waterfall:matrix.org'],
+}
+
+export const polkadot: SubstrateChain = {
+  network: 'polkadot',
+  name: 'Polkadot',
+  ss58Prefix: 0,
+  rpcUrls: ['wss://rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://polkadot.subscan.io`,
+  },
+  testnet: false,
+  faucetUrls: ['https://matrix.to/#/#polkadot-waterfall:matrix.org'],
+}
+
 /**
  * Exporting all chains separately
  */
