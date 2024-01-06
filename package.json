@@ -1,22 +1,22 @@
 {
   "name": "@lastic-xyz/lastic-sdk",
-  "author": "Scio Labs <hello@scio.xyz> (https://scio.xyz)",
-  "version": "0.3.0",
-  "description": "Typesafe React Hooks abstracting functionality by polkadot.js for working with Substrate-based networks and ink! Smart Contracts.",
-  "homepage": "https://inkathon.xyz",
+  "author": "Lastic <hi@lastic.xyz> (https://lastic.xyz)",
+  "version": "0.0.0",
+  "description": "Typesafe React Hooks abstracting functionality of polkadot.js, created for Lastic website",
+  "homepage": "https://lastic.xyz",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/scio-labs/use-inkathon"
+    "url": "https://github.com/LasticXYZ/lastic-sdk"
   },
   "bugs": {
-    "url": "https://github.com/scio-labs/use-inkathon/issues"
+    "url": "https://github.com/LasticXYZ/lastic-sdk/issues"
   },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=16 <=18",
+    "node": ">=18",
     "pnpm": "8"
   },
   "type": "module",
