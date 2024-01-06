@@ -233,10 +233,11 @@ export const kusama: SubstrateChain = {
   ss58Prefix: 2,
   rpcUrls: ['wss://kusama-rpc.polkadot.io'],
   explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
+      'wss://kusama-rpc.polkadot.io',
+    )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://kusama.subscan.io`,
-  },
-  testnet: false,
-  faucetUrls: ['https://matrix.to/#/#kusama-waterfall:matrix.org'],
+  }
 }
 
 export const polkadot: SubstrateChain = {
@@ -245,10 +246,11 @@ export const polkadot: SubstrateChain = {
   ss58Prefix: 0,
   rpcUrls: ['wss://rpc.polkadot.io'],
   explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
+      'wss://rpc.polkadot.io',
+    )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://polkadot.subscan.io`,
-  },
-  testnet: false,
-  faucetUrls: ['https://matrix.to/#/#polkadot-waterfall:matrix.org'],
+  }
 }
 
 /**
@@ -269,6 +271,8 @@ export const allSubstrateChains: SubstrateChain[] = [
   khala,
   alephzero,
   astar,
+  kusama,
+  polkadot,
   pendulum,
   phala,
 ]
