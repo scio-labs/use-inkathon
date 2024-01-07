@@ -1,5 +1,5 @@
 import { BN } from '@polkadot/util'
-import { getBalance, transferBalance } from '@scio-labs/use-inkathon'
+import { getBalance, transferBalance } from '@poppyseed/lastic-sdk'
 import { initPolkadotJs } from './utils/initPolkadotJs'
 
 const main = async () => {

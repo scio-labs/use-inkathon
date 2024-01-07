@@ -3,7 +3,7 @@
 ![Vite](https://img.shields.io/badge/Vite-000000?logo=vite&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-000000?logo=typescript&logoColor=white)
 
-These are small vanilla TypeScript example scripts (without UI) showcasing `@scio-labs/use-inkathon`.
+These are small vanilla TypeScript example scripts (without UI) showcasing `@poppyseed/lastic-sdk`.
 
 ## Usage
 

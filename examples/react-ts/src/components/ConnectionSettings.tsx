@@ -4,7 +4,7 @@ import {
   getSubstrateChain,
   getSubstrateWallet,
   useInkathon,
-} from '@scio-labs/use-inkathon'
+} from '@poppyseed/lastic-sdk'
 import { useState } from 'react'
 
 export function ConnectionSettings() {

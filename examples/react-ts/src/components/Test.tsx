@@ -1,4 +1,4 @@
-import { BrokerConstantsType, getConstants } from '@scio-labs/use-inkathon'
+import { BrokerConstantsType, getConstants } from '@poppyseed/lastic-sdk'
 
 export function Test() {
   const brokerConstants: BrokerConstantsType | null = getConstants()

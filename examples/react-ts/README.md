@@ -4,7 +4,7 @@
 ![React](https://img.shields.io/badge/React-000000?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-000000?logo=typescript&logoColor=white)
 
-This is a small vanilla React example app setup showcasing `@scio-labs/use-inkathon`.
+This is a small vanilla React example app setup showcasing `@poppyseed/lastic-sdk`.
 
 ## Usage
 

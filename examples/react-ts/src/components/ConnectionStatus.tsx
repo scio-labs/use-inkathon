@@ -1,4 +1,4 @@
-import { useBalance, useInkathon } from '@scio-labs/use-inkathon'
+import { useBalance, useInkathon } from '@poppyseed/lastic-sdk'
 import { useEffect, useState } from 'react'
 import { TransferDialog } from './TransferDialog'
 

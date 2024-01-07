@@ -41,17 +41,17 @@ Other projects include:
 1. Go to your existing project and install the package from the npm registry:
 
 ```bash
-pnpm add @scio-labs/use-inkathon
+pnpm add @poppyseed/lastic-sdk
 # or
-npm install @scio-labs/use-inkathon
+npm install @poppyseed/lastic-sdk
 # or
-yarn add @scio-labs/use-inkathon
+yarn add @poppyseed/lastic-sdk
 ```
 
 2. Wrap it around your app or parent component:
 
 ```ts
-import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
+import { development, UseInkathonProvider } from '@poppyseed/lastic-sdk'
 ```
 
 ```tsx
@@ -63,7 +63,7 @@ import { development, UseInkathonProvider } from '@scio-labs/use-inkathon'
 1. Use the primary `useInkathon` hook for connecting the wallet or accessing the API:
 
 ```ts
-import { useInkathon } from '@scio-labs/use-inkathon'
+import { useInkathon } from '@poppyseed/lastic-sdk'
 ```
 
 ```ts
@@ -110,7 +110,7 @@ Start by defining an async `getDeployments` function that returns [`SubstrateDep
 > Checkout an advanced example within the ink!athon boilerplate [here](https://github.com/scio-labs/inkathon/blob/main/frontend/src/deployments/deployments.ts) where metadata is imported dynamically based on defined chains and contract identifiers.
 
 ```ts
-import { alephzeroTestnet, SubstrateDeployment } from '@scio-labs/use-inkathon'
+import { alephzeroTestnet, SubstrateDeployment } from '@poppyseed/lastic-sdk'
 
 export const getDeployments = async (): Promise<SubstrateDeployment[]> => {
   return [
@@ -191,11 +191,11 @@ Unfortunately, importing this package locally into other local projects requires
 pnpm tsup && pnpm pack
 
 # 2. [OTHER PROJECT] Add it as a dependency in your other project like:
-#    `"@scio-labs/use-inkathon": "file:../scio-labs-use-inkathon-0.0.X.tgz"`
+#    `"@poppyseed/lastic-sdk": "file:../scio-labs-use-inkathon-0.0.X.tgz"`
 pnpm add ../use-inkathon/scio-labs-use-inkathon-0.0.X.tgz
 
 # 3. [OTHER PROJECT] Subsequent updates can be done via
-pnpm update @scio-labs/use-inkathon --force
+pnpm update @poppyseed/lastic-sdk --force
 ```
 
 </details>

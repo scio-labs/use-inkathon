@@ -6,7 +6,7 @@ import {
   getBalance,
   getSubstrateChain,
   initPolkadotJs as initApi,
-} from '@scio-labs/use-inkathon'
+} from '@poppyseed/lastic-sdk'
 
 /**
  * Initialize Polkadot.js API with given RPC & account from given URI.

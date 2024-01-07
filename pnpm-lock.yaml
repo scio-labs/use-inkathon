@@ -90,7 +90,7 @@ importers:
       '@polkadot/util-crypto':
         specifier: ^12.5.1
         version: 12.5.1(@polkadot/util@12.5.1)
-      '@scio-labs/use-inkathon':
+      '@poppyseed/lastic-sdk':
         specifier: workspace:*
         version: link:../..
       react:
@@ -148,7 +148,7 @@ importers:
       '@polkadot/api-contract':
         specifier: ^10.10.1
         version: 10.10.1
-      '@scio-labs/use-inkathon':
+      '@poppyseed/lastic-sdk':
         specifier: workspace:*
         version: link:../..
     devDependencies:

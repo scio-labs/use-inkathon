@@ -1,5 +1,6 @@
 import { ConnectionSettings } from './components/ConnectionSettings'
 import { ConnectionStatus } from './components/ConnectionStatus'
+import { Test } from './components/Test'
 
 
 export default function App() {
@@ -9,7 +10,7 @@ export default function App() {
         <hgroup>
           <h1>React Example</h1>
           <h2>
-            This is a small vanilla React app showcasing <code>@scio-labs/use-inkathon</code>.
+            This is a small vanilla React app showcasing <code>@poppyseed/lastic-sdk</code>.
           </h2>
         </hgroup>
       </header>
@@ -21,6 +22,7 @@ export default function App() {
 
           {/* Connection status & Disconnect */}
           <ConnectionStatus />
+          <Test />
         </div>
       </div>
     </>

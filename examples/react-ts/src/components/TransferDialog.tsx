@@ -1,6 +1,6 @@
 import { BN } from '@polkadot/util'
 import { checkAddress } from '@polkadot/util-crypto'
-import { formatBalance, transferBalance, useBalance, useInkathon } from '@scio-labs/use-inkathon'
+import { formatBalance, transferBalance, useBalance, useInkathon } from '@poppyseed/lastic-sdk'
 import { useState } from 'react'
 
 export function TransferDialog() {

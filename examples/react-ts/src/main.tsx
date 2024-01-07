@@ -1,4 +1,4 @@
-import { UseInkathonProvider, development } from '@scio-labs/use-inkathon'
+import { UseInkathonProvider, development } from '@poppyseed/lastic-sdk'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'

@@ -36,11 +36,35 @@ export const alephzeroTestnet: SubstrateChain = {
   faucetUrls: ['https://faucet.test.azero.dev'],
 }
 
-export const rococo: SubstrateChain = {
-  network: 'rococo',
+export const rococoContracts: SubstrateChain = {
+  network: 'rococo-contracts',
   name: 'Rococo Contracts Testnet',
   ss58Prefix: 42,
   rpcUrls: ['wss://rococo-contracts-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
+  },
+  testnet: true,
+  faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
+}
+
+export const rococo: SubstrateChain = {
+  network: 'rococo',
+  name: 'Rococo Relay Chain',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://rococo-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
+  },
+  testnet: true,
+  faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
+}
+
+export const rococoCoretime: SubstrateChain = {
+  network: 'rococo-coretime',
+  name: 'Rococo Coretime Testnet',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://rococo-coretime-rpc.polkadot.io'],
   explorerUrls: {
     [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
   },
@@ -260,6 +284,8 @@ export const allSubstrateChains: SubstrateChain[] = [
   development,
   alephzeroTestnet,
   rococo,
+  rococoContracts,
+  rococoCoretime,
   t0rnTestnet,
   bitCountryAlphaTestnet,
   agungTestnet,
