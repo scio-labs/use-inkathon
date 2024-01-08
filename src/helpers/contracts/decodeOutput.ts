@@ -1,7 +1,7 @@
 import { ContractPromise } from '@polkadot/api-contract'
 import { ContractExecResult } from '@polkadot/types/interfaces'
 import { AnyJson, TypeDef } from '@polkadot/types/types'
-import { getAbiMessage } from './contracts/getAbiMessage'
+import { getAbiMessage } from './getAbiMessage'
 
 /**
  * Helper types & functions

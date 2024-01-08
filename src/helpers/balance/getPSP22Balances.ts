@@ -4,7 +4,7 @@ import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
-import { getMaxGasLimit } from '../getGasLimit'
+import { getMaxGasLimit } from '../contracts/getGasLimit'
 import { BalanceFormatterOptions, formatBalance } from './formatBalance'
 
 export type PSP22BalanceData = {
