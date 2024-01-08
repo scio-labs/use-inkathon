@@ -3,7 +3,7 @@ import {
   getConstants
 } from '@poppyseed/lastic-sdk'
 
-export function Test() {
+export function BrokerPallet() {
   const brokerConstants: BrokerConstantsType | null = getConstants()
   
   if (brokerConstants === null) {
@@ -25,7 +25,6 @@ export function Test() {
         <p>Max Leased Cores: {brokerConstants.maxLeasedCores}</p>
         <p>Max reserved Cores: {brokerConstants.maxReservedCores}</p>
         <h3>Broker Extrinsics:</h3>
-
     </div>
   )
 }

@@ -4,11 +4,11 @@ import { ContractCallOutcome, ContractOptions } from '@polkadot/api-contract/typ
 import { EventRecord } from '@polkadot/types/interfaces'
 import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
-import { checkIfBalanceSufficient } from './checkIfBalanceSufficient'
-import { decodeOutput } from './decodeOutput'
+import { checkIfBalanceSufficient } from '../balance/checkIfBalanceSufficient'
+import { decodeOutput } from '../decodeOutput'
+import { getExtrinsicErrorMessage } from '../getExtrinsicErrorMessage'
+import { getMaxGasLimit } from '../getGasLimit'
 import { getAbiMessage } from './getAbiMessage'
-import { getExtrinsicErrorMessage } from './getExtrinsicErrorMessage'
-import { getMaxGasLimit } from './getGasLimit'
 
 /**
  * Performs a dry run for the given contract method and arguments.

@@ -4,7 +4,7 @@ import { ContractOptions } from '@polkadot/api-contract/types'
 import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import { IKeyringPair } from '@polkadot/types/types'
 import { stringCamelCase } from '@polkadot/util'
-import { getMaxGasLimit } from './getGasLimit'
+import { getMaxGasLimit } from '../getGasLimit'
 
 /**
  * Uploads & instantiates a contract on-chain.

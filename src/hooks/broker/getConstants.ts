@@ -1,7 +1,6 @@
 import { useInkathon } from '@/provider';
 import { useEffect, useState } from 'react';
-import { BrokerConstantsType } from '../types/GetConstants';
-
+import { BrokerConstantsType } from '../../types/broker/GetConstants';
 
 /**
  * Convert the Substrate constants to your BrokerConstantsType
