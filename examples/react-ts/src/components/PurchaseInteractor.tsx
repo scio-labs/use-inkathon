@@ -1,15 +1,17 @@
 import { TxButtonProps, useBalance, useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
-import { useState } from 'react';
-import { Form, Grid, Input } from 'semantic-ui-react';
+import { ChangeEvent, useState } from 'react';
+import { Form, Grid, Input, InputOnChangeData } from 'semantic-ui-react';
 
 export default function PurchaseInteractor() {
-  const { api, isConnected, activeSigner, activeAccount } = useInkathon()
+  const { api, activeSigner, activeAccount } = useInkathon()
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
 
   console.log('activeSigner:', activeSigner )
   const [param, setParam] = useState('');
 
-  const handleInputChange = (_, { value }) => setParam(value);
+  const handleInputChange = (_: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    setParam(data.value);
+  };
 
   const txButtonProps: TxButtonProps = {
     api,

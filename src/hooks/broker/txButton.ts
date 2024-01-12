@@ -23,7 +23,7 @@ export interface TxButtonProps {
 }
 
 interface UseTxButtonResult {
-  transaction: () => Promise<void>;
+  transaction: null | (() => Promise<void>) ;
   status: string | null;
   allParamsFilled: () => boolean;
 }
@@ -41,9 +41,8 @@ export const useTxButton = ({
   const isSigned = () => type === 'SIGNED-TX'
 
   if (!activeAccount || !activeSigner) {
-    return { transaction: () => {}, status, allParamsFilled: () => false }
+    return { transaction: null, status, allParamsFilled: () => false }
   }
-
 
   useEffect(() => {
     const loadSudoKey = async () => {

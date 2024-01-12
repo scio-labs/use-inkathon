@@ -65,4 +65,4 @@ const unsignedTx = async (
   setUnsub(() => unsub);
 };
 
-export { getFromAcct, signedTx, unsignedTx };
+export { signedTx, unsignedTx };
