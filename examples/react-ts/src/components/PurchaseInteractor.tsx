@@ -6,12 +6,15 @@ export default function PurchaseInteractor() {
   const { api, activeSigner, activeAccount } = useInkathon()
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
 
-  console.log('activeSigner:', activeSigner )
   const [param, setParam] = useState('');
 
   const handleInputChange = (_: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
     setParam(data.value);
   };
+
+  if (!api || !activeSigner || !activeAccount) {
+    return null;
+  }
 
   const txButtonProps: TxButtonProps = {
     api,
