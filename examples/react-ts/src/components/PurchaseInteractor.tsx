@@ -1,15 +1,16 @@
-import { useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
+import { TxButtonProps, useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
 import { useState } from 'react';
 import { Form, Grid, Input } from 'semantic-ui-react';
 
 export default function PurchaseInteractor() {
-  const { api } = useInkathon();
+  const { api, currentAccount } = useInkathon(); // Assuming useInkathon provides currentAccount
   const [param, setParam] = useState('');
 
   const handleInputChange = (_, { value }) => setParam(value);
 
-  const txButtonProps = {
+  const txButtonProps: TxButtonProps = {
     api,
+    setStatus: (status: string | null) => console.log('tx status:', status),
     attrs: {
       palletRpc: 'broker',
       callable: 'purchase',
@@ -17,9 +18,11 @@ export default function PurchaseInteractor() {
       paramFields: [{ name: 'param', type: 'TYPE', optional: false }],
     },
     type: 'SIGNED-TX',
+    currentAccount,
+    txOnClickHandler: null, // Define if needed
   };
 
-  const { transaction, status } = useTxButton(txButtonProps);
+  const { transaction, status, allParamsFilled } = useTxButton(txButtonProps);
 
   return (
     <Grid.Column width={8}>
@@ -36,7 +39,7 @@ export default function PurchaseInteractor() {
           />
         </Form.Field>
         <Form.Field style={{ textAlign: 'center' }}>
-          <button onClick={transaction} disabled={!param}>
+          <button onClick={transaction} disabled={!allParamsFilled()}>
             Submit
           </button>
         </Form.Field>

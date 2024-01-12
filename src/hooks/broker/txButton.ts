@@ -1,9 +1,13 @@
-import { transformParams, txErrHandler, txResHandler } from '@/utils';
+import {
+    signedTx,
+    unsignedTx
+} from '@/utils';
+import { CurrentAccount } from '@/utils/broker_tx';
 import { ApiPromise } from '@polkadot/api';
-import { web3FromSource } from '@polkadot/extension-dapp';
 import { useEffect, useState } from 'react';
 
-interface TxButtonProps {
+
+export interface TxButtonProps {
   api: ApiPromise;
   setStatus: (status: string | null) => void;
   attrs: {
@@ -12,29 +16,27 @@ interface TxButtonProps {
     inputParams: any[];
     paramFields: any[];
   };
-  type: 'QUERY' | 'RPC' | 'SIGNED-TX' | 'UNSIGNED-TX' | 'CONSTANT';
-  currentAccount: any;
+  type: 'SIGNED-TX' | 'UNSIGNED-TX';
+  currentAccount: CurrentAccount;
+  txOnClickHandler: null;
 }
 
 interface UseTxButtonResult {
   transaction: () => Promise<void>;
   status: string | null;
-  isSudoer: (acctPair: any) => boolean;
   allParamsFilled: () => boolean;
 }
 
-export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps): UseTxButtonResult => {
+export const useTxButton = ({ 
+    api, attrs, type, currentAccount, txOnClickHandler }: TxButtonProps): UseTxButtonResult => {
   const [status, setStatus] = useState<string | null>(null);
-  const [unsub, setUnsub] = useState(null)
+  const [unsub, setUnsub] = useState<(() => void) | null>(null);
   const [sudoKey, setSudoKey] = useState<string | null>(null);
 
   const { palletRpc, callable, inputParams, paramFields } = attrs
 
-  const isQuery = () => type === 'QUERY'
   const isUnsigned = () => type === 'UNSIGNED-TX'
   const isSigned = () => type === 'SIGNED-TX'
-  const isRpc = () => type === 'RPC'
-  const isConstant = () => type === 'CONSTANT'
 
   useEffect(() => {
     const loadSudoKey = async () => {
@@ -48,79 +50,6 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
     loadSudoKey();
   }, [api]);
 
-  const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected },
-    } = currentAccount
-
-    if (!isInjected) {
-      return [currentAccount]
-    }
-
-    // currentAccount is injected from polkadot-JS extension, need to return the addr and signer object.
-    // ref: https://polkadot.js.org/docs/extension/cookbook#sign-and-send-a-transaction
-    const injector = await web3FromSource(source)
-    return [address, { signer: injector.signer }]
-  }
-
-  const signedTx = async () => {
-    const fromAcct = await getFromAcct()
-    const transformed = transformParams(paramFields, inputParams)
-    // transformed can be empty parameters
-
-    const txExecute = transformed
-      ? api.tx[palletRpc][callable](...transformed)
-      : api.tx[palletRpc][callable]()
-
-    const unsub = await txExecute
-      .signAndSend(...fromAcct, txResHandler)
-      .catch(txErrHandler)
-
-    setUnsub(() => unsub)
-  }
-
-  const unsignedTx = async () => {
-    const transformed = transformParams(paramFields, inputParams)
-    // transformed can be empty parameters
-    const txExecute = transformed
-      ? api.tx[palletRpc][callable](...transformed)
-      : api.tx[palletRpc][callable]()
-
-    const unsub = await txExecute.send(txResHandler).catch(txErrHandler)
-    setUnsub(() => unsub)
-  }
-
-  const queryResHandler = (result: any) => {
-    result.isNone ? setStatus('None') : setStatus(result.toString())
-  }
-
-  const query = async () => {
-    const transformed = transformParams(paramFields, inputParams)
-    const unsub = await api.query[palletRpc][callable](
-      ...transformed,
-      queryResHandler
-    )
-
-    setUnsub(() => unsub)
-  }
-
-  const rpc = async () => {
-    const transformed = transformParams(paramFields, inputParams, {
-      emptyAsNull: false,
-    })
-    const unsub = await api.rpc[palletRpc][callable](
-      ...transformed,
-      queryResHandler
-    )
-    setUnsub(() => unsub)
-  }
-
-  const constant = () => {
-    const result = api.consts[palletRpc][callable]
-    result.isNone ? setStatus('None') : setStatus(result.toString())
-  }
-
   // Main transaction handler
   const transaction = async () => {
     if (typeof unsub === 'function') {
@@ -130,15 +59,12 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
 
     setStatus('Sending...')
 
-    const asyncFunc =
-      (isSigned() && signedTx) ||
-      (isUnsigned() && unsignedTx) ||
-      (isQuery() && query) ||
-      (isRpc() && rpc) ||
-      (isConstant() && constant)
-
-    await asyncFunc()
-
+    if (isSigned()) {
+        await signedTx(api, attrs, setStatus, setUnsub, currentAccount);
+    } else if (isUnsigned()) {
+        await unsignedTx(api, attrs, setStatus, setUnsub);
+    }
+      
     return txOnClickHandler && typeof txOnClickHandler === 'function'
       ? txOnClickHandler(unsub)
       : null
@@ -163,13 +89,6 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
     })
   }
 
-  const isSudoer = (acctPair: any | null) => {
-    if (!sudoKey || !acctPair) {
-      return false
-    }
-    return acctPair.address === sudoKey
-  }
-
   // Expose necessary functions and state
-  return { transaction, status, isSudoer, allParamsFilled };
+  return { transaction, status, allParamsFilled };
 };

@@ -19,5 +19,6 @@ const utils = {
   
 export * from './broker'
 export * from './broker_handler'
+export * from './broker_tx'
 export { utils }
 

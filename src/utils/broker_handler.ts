@@ -1,4 +1,5 @@
-import { ApiPromise } from '@polkadot/api';
+import { ApiPromise, SubmittableResult } from '@polkadot/api';
+import { DispatchError } from '@polkadot/types/interfaces';
 import { bnFromHex } from '@polkadot/util';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -19,26 +20,29 @@ interface TransactionStatus {
 const txResHandler = (
     setStatus: Dispatch<SetStateAction<string | null>>,
     api: ApiPromise,
-    { events, status, txHash }: { events: EventRecord[]; status: TransactionStatus; txHash: string }
+    result: SubmittableResult,
 ) =>{
+    const { events, status } = result;
+    const txHash = result.txHash.toString();
+
     status.isFinalized
       ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
       : setStatus(`Current transaction status: ${status.type}`)
 
       // Loop through Vec<EventRecord> to display all events
       events.forEach(({ event: { data, method, section } }) => {
-        if ((section + ":" + method) === 'system:ExtrinsicFailed' ) {
+        if ((section + ":" + method) === 'system:ExtrinsicFailed') {
           // extract the data for this event
           const [dispatchError, dispatchInfo] = data;
           console.log(`dispatchinfo: ${dispatchInfo}`)
           let errorInfo;
           
           // decode the error
-          if (dispatchError.isModule) {
+          if ((dispatchError as DispatchError).isModule) {
             // for module errors, we have the section indexed, lookup
             // (For specific known errors, we can also do a check against the
             // api.errors.<module>.<ErrorName>.is(dispatchError.asModule) guard)
-            const mod = dispatchError.asModule
+            const mod = (dispatchError as DispatchError).asModule
             const error = api.registry.findMetaError(
                 new Uint8Array([mod.index.toNumber(), bnFromHex(mod.error.toHex().slice(0, 4)).toNumber()])
             )
@@ -67,6 +71,12 @@ const txErrHandler = (
 };
 
 
-export {
-    txErrHandler, txResHandler
-};
+const queryResHandler = (
+    setStatus: Dispatch<SetStateAction<string | null>>,
+    result: any
+  ) => {
+    result.isNone ? setStatus('None') : setStatus(result.toString())
+  }
+
+export { queryResHandler, txErrHandler, txResHandler };
+
