@@ -1,4 +1,4 @@
-import { BrokerPallet } from './components/BrokerPallet'
+import BrokerPallet from './components/BrokerPallet'
 import { ConnectionSettings } from './components/ConnectionSettings'
 import { ConnectionStatus } from './components/ConnectionStatus'
 

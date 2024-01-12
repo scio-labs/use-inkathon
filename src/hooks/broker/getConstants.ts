@@ -1,5 +1,4 @@
-import { useInkathon } from '@/provider';
-import { useEffect, useState } from 'react';
+import { ApiPromise } from '@polkadot/api';
 import { BrokerConstantsType } from '../../types/broker/GetConstants';
 
 /**
@@ -17,18 +16,17 @@ const convertToBrokerConstants = (brokerConsts: any): BrokerConstantsType => {
 /**
  * Hook that returns the constants of the coretime chain.
  */
-export const getConstants = () => {
-    const { api } = useInkathon();
-    const [brokerConstants, setBrokerConstants] = useState<BrokerConstantsType | null>(null);
+export const getConstants = async(
+  api: ApiPromise | undefined
+  ): Promise<BrokerConstantsType | null> => {
+  if (!api) return null;
 
-    useEffect(() => {
-        if (api) {
-            // Assuming api.consts.broker returns the constants in the expected format
-            const consts = convertToBrokerConstants(api.consts.broker);
-            setBrokerConstants(consts);
-
-        }
-    }, [api]);
-
-    return brokerConstants
-}
+  try {
+    // Assuming api.consts.broker returns the constants in the expected format
+    const consts = convertToBrokerConstants(api.consts.broker);
+    return consts;
+  } catch (error) {
+    console.error("Error fetching broker constants:", error);
+    return null;
+  }
+};
