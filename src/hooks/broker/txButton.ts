@@ -2,8 +2,9 @@ import {
     signedTx,
     unsignedTx
 } from '@/utils';
-import { CurrentAccount } from '@/utils/broker_tx';
 import { ApiPromise } from '@polkadot/api';
+import { InjectedAccount } from '@polkadot/extension-inject/types';
+import { Signer } from '@polkadot/types/types';
 import { useEffect, useState } from 'react';
 
 
@@ -17,8 +18,8 @@ export interface TxButtonProps {
     paramFields: any[];
   };
   type: 'SIGNED-TX' | 'UNSIGNED-TX';
-  currentAccount: CurrentAccount;
-  txOnClickHandler: null;
+  activeAccount: InjectedAccount | undefined;
+  activeSigner: Signer | undefined;
 }
 
 interface UseTxButtonResult {
@@ -28,7 +29,8 @@ interface UseTxButtonResult {
 }
 
 export const useTxButton = ({ 
-    api, attrs, type, currentAccount, txOnClickHandler }: TxButtonProps): UseTxButtonResult => {
+    api, attrs, type, activeAccount, activeSigner
+}: TxButtonProps): UseTxButtonResult => {
   const [status, setStatus] = useState<string | null>(null);
   const [unsub, setUnsub] = useState<(() => void) | null>(null);
   const [sudoKey, setSudoKey] = useState<string | null>(null);
@@ -37,6 +39,11 @@ export const useTxButton = ({
 
   const isUnsigned = () => type === 'UNSIGNED-TX'
   const isSigned = () => type === 'SIGNED-TX'
+
+  if (!activeAccount || !activeSigner) {
+    return { transaction: () => {}, status, allParamsFilled: () => false }
+  }
+
 
   useEffect(() => {
     const loadSudoKey = async () => {
@@ -60,14 +67,10 @@ export const useTxButton = ({
     setStatus('Sending...')
 
     if (isSigned()) {
-        await signedTx(api, attrs, setStatus, setUnsub, currentAccount);
+        await signedTx(api, attrs, setStatus, setUnsub, activeAccount, activeSigner);
     } else if (isUnsigned()) {
         await unsignedTx(api, attrs, setStatus, setUnsub);
     }
-      
-    return txOnClickHandler && typeof txOnClickHandler === 'function'
-      ? txOnClickHandler(unsub)
-      : null
   }
 
   const allParamsFilled = () => {

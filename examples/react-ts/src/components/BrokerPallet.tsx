@@ -7,7 +7,7 @@ import BrokerConstants from './BrokerConstants';
 import PurchaseInteractor from './PurchaseInteractor';
 
 export default function BrokerPallet() {
-  const { api } = useInkathon();
+  const { api, isConnected } = useInkathon()
   const [brokerExists, setBrokerExists] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +37,10 @@ export default function BrokerPallet() {
 
   if (brokerExists === null) {
     return <div>Loading...</div>;
+  }
+
+  if (!isConnected) {
+    return <div>Not connected</div>;
   }
 
   // Handling case when broker does not exist

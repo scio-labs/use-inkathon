@@ -1,9 +1,12 @@
-import { TxButtonProps, useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
+import { TxButtonProps, useBalance, useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
 import { useState } from 'react';
 import { Form, Grid, Input } from 'semantic-ui-react';
 
 export default function PurchaseInteractor() {
-  const { api, currentAccount } = useInkathon(); // Assuming useInkathon provides currentAccount
+  const { api, isConnected, activeSigner, activeAccount } = useInkathon()
+  const { balanceFormatted } = useBalance(activeAccount?.address, true)
+
+  console.log('activeSigner:', activeSigner )
   const [param, setParam] = useState('');
 
   const handleInputChange = (_, { value }) => setParam(value);
@@ -18,8 +21,8 @@ export default function PurchaseInteractor() {
       paramFields: [{ name: 'param', type: 'TYPE', optional: false }],
     },
     type: 'SIGNED-TX',
-    currentAccount,
-    txOnClickHandler: null, // Define if needed
+    activeAccount,
+    activeSigner,
   };
 
   const { transaction, status, allParamsFilled } = useTxButton(txButtonProps);
@@ -39,6 +42,7 @@ export default function PurchaseInteractor() {
           />
         </Form.Field>
         <Form.Field style={{ textAlign: 'center' }}>
+          <div>Using account: {activeAccount?.address}, {balanceFormatted}</div>
           <button onClick={transaction} disabled={!allParamsFilled()}>
             Submit
           </button>
