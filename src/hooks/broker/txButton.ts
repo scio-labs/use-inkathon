@@ -12,7 +12,7 @@ interface TxButtonProps {
     inputParams: any[];
     paramFields: any[];
   };
-  type: 'QUERY' | 'RPC' | 'SIGNED-TX' | 'UNSIGNED-TX' | 'SUDO-TX' | 'UNCHECKED-SUDO-TX' | 'CONSTANT';
+  type: 'QUERY' | 'RPC' | 'SIGNED-TX' | 'UNSIGNED-TX' | 'CONSTANT';
   currentAccount: any;
 }
 
@@ -31,8 +31,6 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
   const { palletRpc, callable, inputParams, paramFields } = attrs
 
   const isQuery = () => type === 'QUERY'
-  const isSudo = () => type === 'SUDO-TX'
-  const isUncheckedSudo = () => type === 'UNCHECKED-SUDO-TX'
   const isUnsigned = () => type === 'UNSIGNED-TX'
   const isSigned = () => type === 'SIGNED-TX'
   const isRpc = () => type === 'RPC'
@@ -64,35 +62,6 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
     // ref: https://polkadot.js.org/docs/extension/cookbook#sign-and-send-a-transaction
     const injector = await web3FromSource(source)
     return [address, { signer: injector.signer }]
-  }
-
-  const sudoTx = async () => {
-    const fromAcct = await getFromAcct()
-    const transformed = transformParams(paramFields, inputParams)
-    // transformed can be empty parameters
-    const txExecute = transformed
-      ? api.tx.sudo.sudo(api.tx[palletRpc][callable](...transformed))
-      : api.tx.sudo.sudo(api.tx[palletRpc][callable]())
-
-    const unsub = txExecute
-      .signAndSend(...fromAcct, txResHandler)
-      .catch(txErrHandler)
-
-    setUnsub(() => unsub)
-  }
-
-  const uncheckedSudoTx = async () => {
-    const fromAcct = await getFromAcct()
-    const txExecute = api.tx.sudo.sudoUncheckedWeight(
-      api.tx[palletRpc][callable](...inputParams),
-      0
-    )
-
-    const unsub = txExecute
-      .signAndSend(...fromAcct, txResHandler)
-      .catch(txErrHandler)
-
-    setUnsub(() => unsub)
   }
 
   const signedTx = async () => {
@@ -162,8 +131,6 @@ export const useTxButton = ({ api, attrs, type, currentAccount }: TxButtonProps)
     setStatus('Sending...')
 
     const asyncFunc =
-      (isSudo() && sudoTx) ||
-      (isUncheckedSudo() && uncheckedSudoTx) ||
       (isSigned() && signedTx) ||
       (isUnsigned() && unsignedTx) ||
       (isQuery() && query) ||

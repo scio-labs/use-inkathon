@@ -8,13 +8,13 @@ interface EventRecord {
       method: string;
       section: string;
     };
-  }
-  
-  interface TransactionStatus {
+}
+
+interface TransactionStatus {
     isFinalized: boolean;
     asFinalized: { toString(): string };
     type: string;
-  }
+}
 
 const txResHandler = (
     setStatus: Dispatch<SetStateAction<string | null>>,
@@ -26,7 +26,7 @@ const txResHandler = (
       : setStatus(`Current transaction status: ${status.type}`)
 
       // Loop through Vec<EventRecord> to display all events
-      events.forEach(({ _, event: { data, method, section } }) => {
+      events.forEach(({ event: { data, method, section } }) => {
         if ((section + ":" + method) === 'system:ExtrinsicFailed' ) {
           // extract the data for this event
           const [dispatchError, dispatchInfo] = data;

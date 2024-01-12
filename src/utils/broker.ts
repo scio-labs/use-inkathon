@@ -5,65 +5,50 @@ interface ParamField {
     value: any;
   }
   
+interface TransformOptions {
+    emptyAsNull: boolean;
+}
+
+const isNumType = (type: string): boolean => {
+    return utils.paramConversion.num.some((el) => type.indexOf(el) >= 0);
+};
+
 const transformParams = (
     paramFields: ParamField[],
-    inputParams: any[],
-    opts = { emptyAsNull: true }
-  ) => {
-    // if `opts.emptyAsNull` is true, empty param value will be added to res as `null`.
-    //   Otherwise, it will not be added
+    inputParams: any[], // Define the type more specifically if possible
+    opts: TransformOptions = { emptyAsNull: true }
+    ): any[] => { // Define the return type more specifically if possible
     const paramVal = inputParams.map(inputParam => {
-      // To cater the js quirk that `null` is a type of `object`.
-      if (
-        typeof inputParam === 'object' &&
-        inputParam !== null &&
-        typeof inputParam.value === 'string'
-      ) {
-        return inputParam.value.trim()
-      } else if (typeof inputParam === 'string') {
-        return inputParam.trim()
-      }
-      return inputParam
-    })
-    const params = paramFields.map((field, ind) => ({
-      ...field,
-      value: paramVal[ind] || null,
-    }))
+        if (typeof inputParam === 'object' && inputParam !== null && typeof inputParam.value === 'string') {
+        return inputParam.value.trim();
+        } else if (typeof inputParam === 'string') {
+        return inputParam.trim();
+        }
+        return inputParam;
+    });
 
-    return params.reduce((memo, { type = 'string', value }) => {
-      if (value == null || value === '')
-        return opts.emptyAsNull ? [...memo, null] : memo
+    return paramFields.map((field, ind) => {
+        const value = paramVal[ind];
+        if (value == null || value === '') {
+        return opts.emptyAsNull ? null : undefined;
+        }
 
-      let converted = value
+        // Deal with vectors
+        if (field.type.includes('Vec<')) {
+        const splitValues = value.split(',').map((e: string) => e.trim());
+        return splitValues.map((single: string) => 
+            isNumType(field.type) ? (single.includes('.') ? parseFloat(single) : parseInt(single, 10)) : single
+        );
+        }
 
-      // Deal with a vector
-      if (type.indexOf('Vec<') >= 0) {
-        converted = converted.split(',').map(e => e.trim())
-        converted = converted.map(single =>
-          isNumType(type)
-            ? single.indexOf('.') >= 0
-              ? Number.parseFloat(single)
-              : Number.parseInt(single)
-            : single
-        )
-        return [...memo, converted]
-      }
+        // Deal with single values
+        if (isNumType(field.type)) {
+        return value.includes('.') ? parseFloat(value) : parseInt(value, 10);
+        }
 
-      // Deal with a single value
-      if (isNumType(type)) {
-        converted =
-          converted.indexOf('.') >= 0
-            ? Number.parseFloat(converted)
-            : Number.parseInt(converted)
-      }
-      return [...memo, converted]
-    }, [])
-  }
-
-  const isNumType = (type: string): boolean => {
-    return utils.paramConversion.num.some((el) => type.indexOf(el) >= 0);
-  };
-
+        return value;
+    });
+};
 
 export {
     isNumType, transformParams
