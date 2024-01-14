@@ -74,9 +74,12 @@ function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
 }
 
 export default function BrokerEvents() {
-  const saleInfo = useSubstrateQuery('saleInfo');
-  const configuration = useSubstrateQuery('configuration');
-  const status = useSubstrateQuery('status');
+  const saleInfoString: string | null = useSubstrateQuery('saleInfo');
+  const saleInfo: SaleInfoType | null = saleInfoString ? JSON.parse(saleInfoString) as SaleInfoType : null;
+  const configurationString: string | null = useSubstrateQuery('configuration');
+  const configuration: ConfigurationType | null = configurationString ? JSON.parse(configurationString) as ConfigurationType : null;
+  const statusString: string | null = useSubstrateQuery('status');
+  const status: StatusType | null = statusString ? JSON.parse(statusString) as StatusType : null;
   const leases = useSubstrateQuery('leases');
   const reservations = useSubstrateQuery('reservations');
   const palletVersion = useSubstrateQuery('palletVersion');
@@ -85,18 +88,41 @@ export default function BrokerEvents() {
   const instaPoolContribution = useSubstrateQuery('instaPoolContribution', ['']);
   const instaPoolHistory = useSubstrateQuery('instaPoolHistory', ['']);
   const workload = useSubstrateQuery('workload', ['']);
-  //let regionId = { begin: '214', core: '0', mask: '0xffffffffffffffffffff' };
-  const regionData = useSubstrateQuery('regions', ['']);
+  let regionId = { begin: '214', core: '0', mask: '0xffffffffffffffffffff' };
+  const regionData = useSubstrateQuery('regions', [regionId]);
 
   return (
     <div>
-      <h1>Query Items</h1>
-      <div>Sale Info:</div>
-      <div>{saleInfo || "None"}</div>
-      <div>Configuration:</div>
-      <div>{configuration}</div>
-      <div>Status:</div>
-      <div>{status || "None"}</div>
+      <div><b>Sale Info:</b></div>
+      <div>
+        {saleInfo ? (
+          Object.entries(saleInfo).map(([key, value]) => (
+            <div key={key}>{`${key}: ${value}`}</div>
+          ))
+        ) : (
+          "None"
+        )}
+      </div>
+      <div><b>Configuration:</b></div>
+      <div>
+        {configuration ? (
+          Object.entries(configuration).map(([key, value]) => (
+            <div key={key}>{`${key}: ${value}`}</div>
+          ))
+        ) : (
+          "None"
+        )}
+      </div>      
+      <div><b>Status:</b></div>
+      <div>
+        {status ? (
+          Object.entries(status).map(([key, value]) => (
+            <div key={key}>{`${key}: ${value}`}</div>
+          ))
+        ) : (
+          "None"
+        )}
+      </div>
       <div>Leases:</div>
       <div>{leases || "None"}</div>
       <div>Reservations:</div>
