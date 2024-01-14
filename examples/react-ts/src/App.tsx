@@ -1,4 +1,5 @@
 import BlockNumber from './components/BlockTime'
+import BlockTimeTest from './components/BlockTimeTest'
 import BrokerPallet from './components/BrokerPallet'
 import { ConnectionSettings } from './components/ConnectionSettings'
 import { ConnectionStatus } from './components/ConnectionStatus'
@@ -26,6 +27,7 @@ export default function App() {
         </div>
         <BrokerPallet />
         <BlockNumber />
+        <BlockTimeTest />
 
       </div>
     </>

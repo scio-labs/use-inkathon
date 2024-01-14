@@ -4,5 +4,6 @@ export * from './SubstrateChain'
 export * from './SubstrateDeployment'
 export * from './SubstrateWallet'
 export * from './UseInkathonProviderContext'
+export * from './broker/BrokerEventTypes'
 export * from './broker/GetConstants'
 // @endindex

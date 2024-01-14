@@ -1,43 +1,14 @@
 import {
-  useInkathon
+  ConfigurationType,
+  LeasesType,
+  SaleInfoType,
+  StatusType,
+  useInkathon,
 } from '@poppyseed/lastic-sdk';
 import { useEffect, useState } from 'react';
 
 // Define a type for the queryParams
 type QueryParams = (string | number | Record<string, unknown>)[];
-
-interface SaleInfoType {
-  saleStart: number;
-  leadinLength: number;
-  price: number;
-  regionBegin: number;
-  regionEnd: number;
-  idealCoresSold: number;
-  coresOffered: number;
-  firstCore: number;
-  selloutPrice: number | null;
-  coresSold: number;
-}
-
-interface ConfigurationType {
-  advanceNotice: number;
-  interludeLength: number;
-  leadinLength: number;
-  regionLength: number;
-  idealBulkProportion: number;
-  limitCoresOffered: number | null;
-  renewalBump: number;
-  contributionTimeout: number;
-}
-
-interface StatusType {
-  coreCount: number;
-  privatePoolSize: number;
-  systemPoolSize: number;
-  lastCommittedTimeslice: number;
-  lastTimeslice: number;
-}
-
 
 // Custom hook for querying substrate state
 function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
@@ -53,8 +24,8 @@ function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
         try {
           const result = await api.query.broker[queryKey](...queryParams);
           // Check if the Option type is Some and unwrap the value
-          if (result.isSome) {
-            setData(result.unwrap().toString());
+          if (!!result) {
+            setData(result.toString());
           } else {
             setData(null);
           }
@@ -80,7 +51,8 @@ export default function BrokerEvents() {
   const configuration: ConfigurationType | null = configurationString ? JSON.parse(configurationString) as ConfigurationType : null;
   const statusString: string | null = useSubstrateQuery('status');
   const status: StatusType | null = statusString ? JSON.parse(statusString) as StatusType : null;
-  const leases = useSubstrateQuery('leases');
+  const leasesString: string | null = useSubstrateQuery('leases');
+  const leases: LeasesType | null = leasesString ? JSON.parse(leasesString) as LeasesType : null;
   const reservations = useSubstrateQuery('reservations');
   const palletVersion = useSubstrateQuery('palletVersion');
   const instaPoolIo = useSubstrateQuery('instaPoolIo', ['']);
@@ -95,11 +67,19 @@ export default function BrokerEvents() {
     <div>
       <div><b>Sale Info:</b></div>
       <div>
-        {saleInfo ? (
-          Object.entries(saleInfo).map(([key, value]) => (
-            <div key={key}>{`${key}: ${value}`}</div>
-          ))
-        ) : (
+        {saleInfo ? `
+          cores sold: ${saleInfo.coresSold} out of ${saleInfo.coresOffered} available
+          saleStart: ${saleInfo.saleStart}
+          leadinLength: ${saleInfo.leadinLength}
+          price: ${saleInfo.price}
+          regionBegin: ${saleInfo.regionBegin}
+          regionEnd: ${saleInfo.regionEnd}
+          idealCoresSold: ${saleInfo.idealCoresSold}
+          coresOffered: ${saleInfo.coresOffered}
+          firstCore: ${saleInfo.firstCore}
+          selloutPrice: ${saleInfo.selloutPrice}
+          `
+         : (
           "None"
         )}
       </div>
@@ -124,7 +104,17 @@ export default function BrokerEvents() {
         )}
       </div>
       <div>Leases:</div>
-      <div>{leases || "None"}</div>
+      {leases ? (
+        <ul>
+          {leases.map((lease, index) => (
+            <li key={index}>
+              Until: {lease.until}, Task: {lease.task}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No lease data available.</p>
+      )}
       <div>Reservations:</div>
       <div>{reservations || "None"}</div>
       <div>Pallet Version:</div>
