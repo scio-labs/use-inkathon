@@ -43,7 +43,7 @@ export const blockTimeToUTC = async (
   };
 
 
-export const getCurrentBlockHeight = async (
+export const getCurrentBlockNumber = async (
     api: ApiPromise
     ): Promise<number> => {
     const resHeight = await api.query.system.number();
@@ -89,11 +89,4 @@ export const getCurrentBlockTimeLocalShortDate = async (
     const timestamp = await getCurrentBlockTime(api);
     const date = new Date(timestamp);
     return date.toLocaleDateString();
-}
-
-export const getCurrentBlock = async (
-    api: ApiPromise
-    ): Promise<any> => {
-    const resBlock = await api.rpc.chain.getBlock();
-    return resBlock;
 }

@@ -3,7 +3,7 @@ import {
   LeasesType,
   SaleInfoType,
   StatusType,
-  useInkathon,
+  useInkathon
 } from '@poppyseed/lastic-sdk';
 import { useEffect, useState } from 'react';
 
@@ -68,14 +68,13 @@ export default function BrokerEvents() {
       <div><b>Sale Info:</b></div>
       <div>
         {saleInfo ? `
-          cores sold: ${saleInfo.coresSold} out of ${saleInfo.coresOffered} available
+        coresSold: ${saleInfo.coresSold} out of ${saleInfo.coresOffered} available
           saleStart: ${saleInfo.saleStart}
           leadinLength: ${saleInfo.leadinLength}
           price: ${saleInfo.price}
           regionBegin: ${saleInfo.regionBegin}
           regionEnd: ${saleInfo.regionEnd}
           idealCoresSold: ${saleInfo.idealCoresSold}
-          coresOffered: ${saleInfo.coresOffered}
           firstCore: ${saleInfo.firstCore}
           selloutPrice: ${saleInfo.selloutPrice}
           `
@@ -104,17 +103,7 @@ export default function BrokerEvents() {
         )}
       </div>
       <div>Leases:</div>
-      {leases ? (
-        <ul>
-          {leases.map((lease, index) => (
-            <li key={index}>
-              Until: {lease.until}, Task: {lease.task}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No lease data available.</p>
-      )}
+      <div>{leasesString || "None"}</div>
       <div>Reservations:</div>
       <div>{reservations || "None"}</div>
       <div>Pallet Version:</div>
