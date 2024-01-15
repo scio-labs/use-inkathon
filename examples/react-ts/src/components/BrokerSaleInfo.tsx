@@ -54,19 +54,42 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
         setCurrentBlockNumber(currentBlock);
       };
   
-      fetchCurrentBlockNumber();
+      const intervalId = setInterval(fetchCurrentBlockNumber, 1000); // Update every second
+  
+      return () => clearInterval(intervalId);
     }, [api]);
   
     return currentBlockNumber;
   }
 
+  
+  function blocksToTimeFormat(blocks: number): string {
+    // Assuming each block takes X seconds, adjust this according to your blockchain's specifications
+    const secondsPerBlock = 3; 
+    const totalSeconds = blocks * secondsPerBlock;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours === 0 && minutes === 0) {
+      return `${seconds}s`;
+    } else if (hours === 0) {
+        return `${minutes}m ${seconds}s`;
+    } else {  
+    return `${hours}h ${minutes}m ${seconds}s`
+    };
+  }
+  
   function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): string {
     if (currentBlockNumber < saleInfo.saleStart) {
-      return `Sale hasn't started yet. It will start in ${saleInfo.saleStart - currentBlockNumber} blocks.`;
-    } else if (currentBlockNumber >= saleInfo.saleStart && currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
-      return `Sale is in the lead-in period. Purchase period starts in ${saleInfo.saleStart + config.leadinLength - currentBlockNumber} blocks.`;
-    } else if (currentBlockNumber >= saleInfo.saleStart + config.leadinLength && currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
-      return `Sale is in the purchase period. Sale ends in ${saleInfo.saleStart + config.regionLength - currentBlockNumber} blocks.`;
+      const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber);
+      return `Sale hasn't started yet. It will start in ${timeUntilStart}.`;
+    } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
+      const timeUntilPurchase = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber);
+      return `Sale is in the lead-in period. Purchase period starts in ${timeUntilPurchase}.`;
+    } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
+      const timeUntilEnd = blocksToTimeFormat(saleInfo.saleStart + config.regionLength - currentBlockNumber);
+      return `Sale is in the purchase period. Sale ends in ${timeUntilEnd}.`;
     } else {
       return `The sale has ended.`;
     }
@@ -86,6 +109,15 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
     const configuration = useMemo(() => configurationString ? JSON.parse(configurationString) as ConfigurationType : null, [configurationString]);
     const status = useMemo(() => statusString ? JSON.parse(statusString) as StatusType : null, [statusString]);
 
+    // Update saleStage every second based on the currentBlockNumber
+    const [saleStage, setSaleStage] = useState('');
+    useEffect(() => {
+        if (saleInfo && configuration) {
+        setSaleStage(saleStatus(currentBlockNumber, saleInfo, configuration));
+        }
+    }, [currentBlockNumber, saleInfo, configuration]);
+
+
     if (
       !saleInfo ||
       !configuration || 
@@ -93,13 +125,6 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
       ) {
       return <div>Loading...</div>;
     }
-
-    const saleHasStarted = currentBlockNumber >= saleInfo.saleStart;
-    const blocksUntilSaleStarts = saleHasStarted ? 0 : saleInfo.saleStart - currentBlockNumber;
-    const saleStartTime = blocksUntilSaleStarts; // Replace with actual conversion logic if needed
-  
-    const saleStage = saleStatus(currentBlockNumber, saleInfo, configuration);
-
   
     return (
       <div>
