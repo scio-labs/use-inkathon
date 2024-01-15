@@ -94,6 +94,18 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
       return `The sale has ended.`;
     }
   }
+
+  function calculateCurrentPrice(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): number {
+    if (currentBlockNumber < saleInfo.saleStart) {
+      return 0;
+    } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
+      return saleInfo.price * 2;
+    } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
+      return saleInfo.price;
+    } else {
+      return saleInfo.selloutPrice? saleInfo.selloutPrice : 0;
+    }
+  }
   
   
   export default function BrokerSaleInfo() {
@@ -130,7 +142,13 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
       <div>
         <h2><b>Sale Info:</b></h2>
         <div>
-          coresSold: {saleInfo.coresSold} out of {saleInfo.coresOffered} available
+          availableCores: {saleInfo.coresOffered - saleInfo.coresSold}
+        </div>
+        <div>
+          coresSold: {saleInfo.coresSold} / {saleInfo.coresOffered}
+        </div>
+        <div>
+            currentPrice: {calculateCurrentPrice(currentBlockNumber, saleInfo, configuration)}
         </div>
         <div>
             saleStart: {saleInfo.saleStart}
@@ -164,4 +182,4 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
         </div>      
       </div>
     )
-  };    
+  };
