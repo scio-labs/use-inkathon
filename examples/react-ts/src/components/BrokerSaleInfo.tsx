@@ -1,3 +1,4 @@
+import { ApiPromise } from '@polkadot/api';
 import {
     ConfigurationType,
     SaleInfoType,
@@ -5,15 +6,13 @@ import {
     getCurrentBlockNumber,
     useInkathon
 } from '@poppyseed/lastic-sdk';
-import { useEffect, useState } from 'react';
-  
+import { useEffect, useMemo, useState } from 'react';
+
   // Define a type for the queryParams
   type QueryParams = (string | number | Record<string, unknown>)[];
   
 // Custom hook for querying substrate state
-function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
-    const { api } = useInkathon();
-  
+function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: QueryParams = []) {  
     const [data, setData] = useState<string | null>(null);
   
     useEffect(() => {
@@ -43,30 +42,49 @@ function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
   
     return data;
   }
-  
-  export default function BrokerSaleInfo() {
-    const { api } = useInkathon();
 
-    const saleInfoString: string | null = useSubstrateQuery('saleInfo');
-    const saleInfo: SaleInfoType | null = saleInfoString ? JSON.parse(saleInfoString) as SaleInfoType : null;
-    const configurationString: string | null = useSubstrateQuery('configuration');
-    const configuration: ConfigurationType | null = configurationString ? JSON.parse(configurationString) as ConfigurationType : null;
-    const statusString: string | null = useSubstrateQuery('status');
-    const status: StatusType | null = statusString ? JSON.parse(statusString) as StatusType : null;
-  
+  function useCurrentBlockNumber(api: ApiPromise) {
     const [currentBlockNumber, setCurrentBlockNumber] = useState(0);
   
     useEffect(() => {
-        if (!api) return;
-    
-        const fetchCurrentBlockNumber = async () => {
-          const currentBlock = await getCurrentBlockNumber(api);
-          setCurrentBlockNumber(currentBlock);
-        };
-    
-        fetchCurrentBlockNumber();
-      }, [api]);
+      if (!api) return;
   
+      const fetchCurrentBlockNumber = async () => {
+        const currentBlock = await getCurrentBlockNumber(api);
+        setCurrentBlockNumber(currentBlock);
+      };
+  
+      fetchCurrentBlockNumber();
+    }, [api]);
+  
+    return currentBlockNumber;
+  }
+
+  function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): string {
+    if (currentBlockNumber < saleInfo.saleStart) {
+      return `Sale hasn't started yet. It will start in ${saleInfo.saleStart - currentBlockNumber} blocks.`;
+    } else if (currentBlockNumber >= saleInfo.saleStart && currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
+      return `Sale is in the lead-in period. Purchase period starts in ${saleInfo.saleStart + config.leadinLength - currentBlockNumber} blocks.`;
+    } else if (currentBlockNumber >= saleInfo.saleStart + config.leadinLength && currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
+      return `Sale is in the purchase period. Sale ends in ${saleInfo.saleStart + config.regionLength - currentBlockNumber} blocks.`;
+    } else {
+      return `The sale has ended.`;
+    }
+  }
+  
+  
+  export default function BrokerSaleInfo() {
+    const { api } = useInkathon();
+    if (!api) return;
+    const currentBlockNumber = useCurrentBlockNumber(api);
+
+    const saleInfoString = useSubstrateQuery(api, 'saleInfo');
+    const configurationString = useSubstrateQuery(api, 'configuration');
+    const statusString = useSubstrateQuery(api, 'status');
+  
+    const saleInfo = useMemo(() => saleInfoString ? JSON.parse(saleInfoString) as SaleInfoType : null, [saleInfoString]);
+    const configuration = useMemo(() => configurationString ? JSON.parse(configurationString) as ConfigurationType : null, [configurationString]);
+    const status = useMemo(() => statusString ? JSON.parse(statusString) as StatusType : null, [statusString]);
 
     if (
       !saleInfo ||
@@ -76,12 +94,12 @@ function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
       return <div>Loading...</div>;
     }
 
-
-
     const saleHasStarted = currentBlockNumber >= saleInfo.saleStart;
     const blocksUntilSaleStarts = saleHasStarted ? 0 : saleInfo.saleStart - currentBlockNumber;
     const saleStartTime = blocksUntilSaleStarts; // Replace with actual conversion logic if needed
   
+    const saleStage = saleStatus(currentBlockNumber, saleInfo, configuration);
+
   
     return (
       <div>
@@ -94,11 +112,10 @@ function useSubstrateQuery(queryKey: string, queryParams: QueryParams = []) {
             saleEnd: {saleInfo.saleStart + configuration?.regionLength}
         </div>
         <div>
-            {saleHasStarted ? (
-            <p>The sale has already started.</p>
-            ) : (
-            <p>The sale will start in {saleStartTime} blocks.</p>
-            )}
+            currentTime: {currentBlockNumber}
+        </div>
+        <div>
+            {saleStage}
         </div>
         <div>
             leadinLength: {saleInfo.leadinLength}

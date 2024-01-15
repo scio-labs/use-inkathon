@@ -4,7 +4,6 @@ import {
 } from '@poppyseed/lastic-sdk';
 import { useEffect, useState } from 'react';
 import BrokerConstants from './BrokerConstants';
-import BrokerEvents from './BrokerEvents';
 import BrokerSaleInfo from './BrokerSaleInfo';
 import PurchaseInteractor from './PurchaseInteractor';
 
@@ -61,7 +60,6 @@ export default function BrokerPallet() {
         <BrokerSaleInfo />
 
         <h3>Broker Events:</h3>
-        <BrokerEvents />
     </div>
   );
 }
