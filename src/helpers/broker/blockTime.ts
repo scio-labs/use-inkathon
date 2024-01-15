@@ -1,14 +1,15 @@
 import { ApiPromise } from '@polkadot/api';
 
 export const RELAY_CHAIN_BLOCK_TIME = 6 * 1000; // 6 seconds in milliseconds
+export const CORETIME_CHAIN_BLOCK_TIME = 12 * 1000; // 6 seconds in milliseconds
 
 export const parseHNString = (str: string): number => {
     return parseInt(parseHNStringToString(str));
-  };
+};
 
-  export const parseHNStringToString = (str: string): string => {
+export const parseHNStringToString = (str: string): string => {
     return str.replace(/,/g, '');
-  };
+};
 
   /**
  * Get the timestamp for a given block.

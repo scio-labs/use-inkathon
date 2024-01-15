@@ -5,6 +5,7 @@ import {
 import { useEffect, useState } from 'react';
 import BrokerConstants from './BrokerConstants';
 import BrokerEvents from './BrokerEvents';
+import BrokerSaleInfo from './BrokerSaleInfo';
 import PurchaseInteractor from './PurchaseInteractor';
 
 export default function BrokerPallet() {
@@ -56,6 +57,8 @@ export default function BrokerPallet() {
 
         <h3>Broker Extrinsics:</h3>
         <PurchaseInteractor />
+
+        <BrokerSaleInfo />
 
         <h3>Broker Events:</h3>
         <BrokerEvents />
