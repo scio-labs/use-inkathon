@@ -86,7 +86,7 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
       return `Sale hasn't started yet. It will start in ${timeUntilStart}.`;
     } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
       const timeUntilPurchase = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber);
-      return `Sale is in the lead-in period. Purchase period starts in ${timeUntilPurchase}.`;
+      return `Sale is in the lead-in period. Price is linearaly decreasing, purchase period ends in ${timeUntilPurchase}.`;
     } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
       const timeUntilEnd = blocksToTimeFormat(saleInfo.saleStart + config.regionLength - currentBlockNumber);
       return `Sale is in the purchase period. Sale ends in ${timeUntilEnd}.`;
@@ -99,7 +99,7 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
     if (currentBlockNumber < saleInfo.saleStart) {
       return 0;
     } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
-      return saleInfo.price * 2;
+      return saleInfo.price * (2 - (currentBlockNumber - saleInfo.saleStart) / config.leadinLength);
     } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
       return saleInfo.price;
     } else {
@@ -151,14 +151,14 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
             currentPrice: {calculateCurrentPrice(currentBlockNumber, saleInfo, configuration)}
         </div>
         <div>
+            {saleStage}
+        </div>
+        <div>
             saleStart: {saleInfo.saleStart}
             saleEnd: {saleInfo.saleStart + configuration?.regionLength}
         </div>
         <div>
             currentTime: {currentBlockNumber}
-        </div>
-        <div>
-            {saleStage}
         </div>
         <div>
             leadinLength: {saleInfo.leadinLength}
