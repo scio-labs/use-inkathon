@@ -3,6 +3,7 @@ import {
     ConfigurationType,
     SaleInfoType,
     StatusType,
+    blocksToTimeFormat,
     getCurrentBlockNumber,
     useInkathon
 } from '@poppyseed/lastic-sdk';
@@ -63,32 +64,19 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
   }
 
   
-  function blocksToTimeFormat(blocks: number): string {
-    // Assuming each block takes X seconds, adjust this according to your blockchain's specifications
-    const secondsPerBlock = 3; 
-    const totalSeconds = blocks * secondsPerBlock;
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
 
-    if (hours === 0 && minutes === 0) {
-      return `${seconds}s`;
-    } else if (hours === 0) {
-        return `${minutes}m ${seconds}s`;
-    } else {  
-    return `${hours}h ${minutes}m ${seconds}s`
-    };
-  }
   
   function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): string {
+    console.log(saleInfo.saleStart + config.regionLength - currentBlockNumber)
+
     if (currentBlockNumber < saleInfo.saleStart) {
-      const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber);
+      const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber, 'LOCAL');
       return `Sale hasn't started yet. It will start in ${timeUntilStart}.`;
     } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
-      const timeUntilPurchase = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber);
-      return `Sale is in the lead-in period. Price is linearaly decreasing, purchase period ends in ${timeUntilPurchase}.`;
+      const timeUntilPurchase = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber, 'LOCAL');
+      return `Sale is in the lead-in period. Price is linearaly decreasing, prices will stablize in ${timeUntilPurchase}.`;
     } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
-      const timeUntilEnd = blocksToTimeFormat(saleInfo.saleStart + config.regionLength - currentBlockNumber);
+      const timeUntilEnd = blocksToTimeFormat(saleInfo.saleStart + config.regionLength - currentBlockNumber, 'LOCAL');
       return `Sale is in the purchase period. Sale ends in ${timeUntilEnd}.`;
     } else {
       return `The sale has ended.`;
@@ -128,7 +116,6 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
         setSaleStage(saleStatus(currentBlockNumber, saleInfo, configuration));
         }
     }, [currentBlockNumber, saleInfo, configuration]);
-
 
     if (
       !saleInfo ||

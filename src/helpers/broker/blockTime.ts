@@ -34,6 +34,41 @@ export const getBlockTimestamp = async (
     }
   };
 
+/**
+ * Get the time difference between two blocks.
+ * Use for future blocks only and approximations only.
+*/
+export const blocksToTimeFormat = (
+  nbOfBlocks: number,
+  typeOfChain?: 'PARA' | 'RELAY' | 'LOCAL'
+  ): string => {
+  // avg 3 seconds per block for local
+  // avg 6 seconds per block for relay chains: rococo, kusama, polkadot
+  // avg 12 seconds per block for parachains: rococo coretime chain
+  let secondsPerBlock: 2 | 6 | 12 = 6;
+  if (typeOfChain = 'PARA') {
+    secondsPerBlock = 12
+  } else if (typeOfChain = 'RELAY') {
+    secondsPerBlock = 6
+  } else if (typeOfChain = 'LOCAL') {
+    secondsPerBlock = 2
+  } else {
+    secondsPerBlock = 12
+  }
+  const totalSeconds = nbOfBlocks * secondsPerBlock;
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours === 0 && minutes === 0) {
+    return `${seconds}s`;
+  } else if (hours === 0) {
+      return `${minutes}m ${seconds}s`;
+  } else {  
+  return `${hours}h ${minutes}m ${seconds}s`
+  };
+}
+
 export const blockTimeToUTC = async (
     api: ApiPromise,
     blockHeight: number
@@ -91,3 +126,4 @@ export const getCurrentBlockTimeLocalShortDate = async (
     const date = new Date(timestamp);
     return date.toLocaleDateString();
 }
+
