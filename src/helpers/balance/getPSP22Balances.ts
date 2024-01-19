@@ -1,11 +1,11 @@
 import { allPSP22Assets } from '@/assets'
-import { psp22Abi } from '@/helpers/getAbi'
+import { psp22Abi } from '@/helpers/contracts/getAbi'
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
+import { getMaxGasLimit } from '../contracts/getGasLimit'
 import { BalanceFormatterOptions, formatBalance } from './formatBalance'
-import { getMaxGasLimit } from './getGasLimit'
 
 export type PSP22BalanceData = {
   tokenSlug: string

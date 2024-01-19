@@ -1,6 +1,6 @@
+import BrokerPallet from './components/BrokerPallet'
 import { ConnectionSettings } from './components/ConnectionSettings'
 import { ConnectionStatus } from './components/ConnectionStatus'
-import { Test } from './components/Test'
 
 
 export default function App() {
@@ -22,8 +22,9 @@ export default function App() {
 
           {/* Connection status & Disconnect */}
           <ConnectionStatus />
-          <Test />
         </div>
+        <BrokerPallet />
+
       </div>
     </>
   )

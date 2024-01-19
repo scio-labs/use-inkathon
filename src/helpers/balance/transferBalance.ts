@@ -3,8 +3,8 @@ import { SubmittableExtrinsicFunction } from '@polkadot/api/types'
 import { AccountId, EventRecord } from '@polkadot/types/interfaces'
 import { AnyTuple, Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN, bnToBn } from '@polkadot/util'
+import { ExstrinsicThrowErrorMessage, getExtrinsicErrorMessage } from '../contracts/getExtrinsicErrorMessage'
 import { checkIfBalanceSufficient } from './checkIfBalanceSufficient'
-import { ExstrinsicThrowErrorMessage, getExtrinsicErrorMessage } from './getExtrinsicErrorMessage'
 
 export type TransferBalanceResult = {
   result?: ISubmittableResult

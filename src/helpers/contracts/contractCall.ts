@@ -4,7 +4,7 @@ import { ContractCallOutcome, ContractOptions } from '@polkadot/api-contract/typ
 import { EventRecord } from '@polkadot/types/interfaces'
 import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
-import { checkIfBalanceSufficient } from './checkIfBalanceSufficient'
+import { checkIfBalanceSufficient } from '../balance/checkIfBalanceSufficient'
 import { decodeOutput } from './decodeOutput'
 import { getAbiMessage } from './getAbiMessage'
 import { getExtrinsicErrorMessage } from './getExtrinsicErrorMessage'
