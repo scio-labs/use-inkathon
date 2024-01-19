@@ -13,11 +13,15 @@ export type UseInkathonProviderContextType = {
   isConnected?: boolean
   error?: UseInkathonError
   activeChain?: SubstrateChain
-  switchActiveChain?: (chain: SubstrateChain) => Promise<void>
+  activeRelayChain?: SubstrateChain
+  switchActiveChain?: (chain: SubstrateChain, relayChain: SubstrateChain) => Promise<void>
   api?: ApiPromise
+  relayApi?: ApiPromise
   provider?: WsProvider | HttpProvider
+  relayProvider?: WsProvider | HttpProvider
   connect?: (
     chain?: SubstrateChain,
+    relayChain?: SubstrateChain,
     wallet?: SubstrateWallet,
     lastActiveAccountAddress?: string,
   ) => Promise<void>

@@ -4,6 +4,7 @@ import {
     ConfigurationType,
     SaleInfoType,
     StatusType,
+    blockTimeToUTC,
     blocksToTimeFormat,
     getConstants,
     getCurrentBlockNumber,
@@ -122,11 +123,25 @@ function useBrokerConstants(api: ApiPromise) {
       return saleInfo.price;
     }
   }
+
+  function currentRelayBlockUtilization(currentRelayBlock: number, saleInfo: SaleInfoType, constant: BrokerConstantsType) {
+    const startBlock = saleInfo.regionBegin * constant.timeslicePeriod;
+    const endBlock = saleInfo.regionEnd * constant.timeslicePeriod;
+    let percent = (currentRelayBlock - startBlock) / (endBlock - startBlock)
+    if (percent < 0 ) {
+        return 0
+    } else {
+        return percent
+    }
+  }
   
   
   export default function BrokerSaleInfo() {
-    const { api } = useInkathon();
-    if (!api) return <div>API not available</div>;
+    const { 
+        api,
+        relayApi
+    } = useInkathon();
+    if (!api || !relayApi ) return <div>API not available</div>;
 
     const currentBlockNumber = useCurrentBlockNumber(api);
 
@@ -148,10 +163,37 @@ function useBrokerConstants(api: ApiPromise) {
         }
     }, [currentBlockNumber, saleInfo, configuration, brokerConstants]);
 
+    const [regionBeginTimestamp, setRegionBeginTimestamp] = useState<string>('');
+    const [regionEndTimestamp, setRegionEndTimestamp] = useState<string>('');
+    const [currentRelayBlock, setCurrentRelayBlock] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchRegionTimestamps = async () => {
+            try {
+                if (saleInfo && brokerConstants) {
+                    const beginTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionBegin * brokerConstants.timeslicePeriod);
+                    const endTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionEnd * brokerConstants.timeslicePeriod);
+                    let getCurrentRelayBlock = await getCurrentBlockNumber(relayApi);
+
+                    setRegionBeginTimestamp(beginTimestamp);
+                    setRegionEndTimestamp(endTimestamp);
+                    setCurrentRelayBlock(getCurrentRelayBlock);
+                }
+            } catch (error) {
+                console.error('Error fetching block timestamp:', error);
+            }
+        };
+
+        fetchRegionTimestamps();
+    }, [relayApi, saleInfo]);
+
+
     if (
       !saleInfo ||
       !configuration || 
       !status ||
+      !currentRelayBlock ||
+      !brokerConstants ||
       isConstantsLoading
       ) {
       return <div>Loading...</div>;
@@ -173,12 +215,15 @@ function useBrokerConstants(api: ApiPromise) {
             {saleStage}
         </div>
         <div>
-            Amount of utilization:
-            regionBegin: {saleInfo.regionBegin}
-            regionEnd: {saleInfo.regionEnd}
+            Amount of utilization: {currentRelayBlockUtilization(currentRelayBlock, saleInfo, brokerConstants)} %
+            current relay block: {currentRelayBlock}
+            start region block: {saleInfo.regionBegin * brokerConstants.timeslicePeriod}
+            end region block: {saleInfo.regionEnd * brokerConstants.timeslicePeriod}
+            Region Begin Timestamp: {regionBeginTimestamp !== null ? regionBeginTimestamp : 'Loading...'}
+            Region End Timestamp: {regionEndTimestamp !== null ? regionEndTimestamp : 'Loading...'}
         </div>
         <div>
-            
+            How many cores are set to renew by default?
         </div>
         <div>
 

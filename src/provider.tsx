@@ -40,6 +40,7 @@ export const useInkathon = () => {
 export interface UseInkathonProviderProps extends PropsWithChildren {
   appName: string
   defaultChain: SubstrateChain | SubstrateChain['network']
+  relayChain: SubstrateChain | SubstrateChain['network'] 
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
   apiOptions?: ApiOptions
@@ -48,17 +49,18 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   children,
   appName,
   defaultChain,
+  relayChain,
   connectOnInit,
   deployments: _deployments,
   apiOptions,
 }) => {
   // Check if default chain was provided
   if (
-    !defaultChain ||
-    (typeof defaultChain === 'string' && getSubstrateChain(defaultChain) === undefined)
+    !defaultChain || !relayChain ||
+    (typeof defaultChain === 'string' && typeof relayChain === 'string' && getSubstrateChain(defaultChain) === undefined)
   ) {
     throw new Error(
-      'None or invalid `defaultChain` provided with `UseInkathonProvider`. Forgot to set environment variable?',
+      'None or invalid `defaultChain` or invalid `relayChain` provided with `UseInkathonProvider`. Forgot to set environment variable?',
     )
   }
 
@@ -73,8 +75,15 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       ? getSubstrateChain(defaultChain)
       : defaultChain) as SubstrateChain,
   )
+  const [activeRelayChain, setActiveRelayChain] = useState<SubstrateChain>(
+    (typeof relayChain === 'string'
+      ? getSubstrateChain(relayChain)
+      : relayChain) as SubstrateChain,
+  )
   const [api, setApi] = useState<ApiPromise>()
+  const [relayApi, setRelayApi] = useState<ApiPromise>()
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
+  const [relayProvider, setRelayProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccount[]>([])
   const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
   const [activeExtension, setActiveExtension] = useState<InjectedExtension>()
@@ -89,7 +98,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Initialize polkadot-js/api
-  const initialize = async (chain?: SubstrateChain) => {
+  const initialize = async (chain?: SubstrateChain, relayChain?: SubstrateChain) => {
     setIsInitialized(!!api?.isConnected)
     setIsInitializing(true)
     setIsConnected(false)
@@ -97,17 +106,26 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
     try {
       const _chain = chain || activeChain
+      const _relayChain = relayChain || activeRelayChain
       const { api, provider } = await initPolkadotJs(_chain, {
         noInitWarn: true,
         throwOnConnect: true,
         ...apiOptions,
       })
+      const { api: relayApi, provider: relayProvider } = await initPolkadotJs(_relayChain, {
+        noInitWarn: true,
+        throwOnConnect: true,
+        ...apiOptions,
+      })
       setProvider(provider)
+      setRelayProvider(relayProvider)
       setApi(api)
+      setRelayApi(relayApi)
       setIsInitialized(true)
 
       // Update active chain if switching
       if (activeChain.network !== _chain.network) setActiveChain(_chain)
+      if (activeRelayChain.network !== _chain.network) setActiveRelayChain(_relayChain)
     } catch (e) {
       const message = 'Error while initializing polkadot.js api'
       console.error(message, e)
@@ -116,7 +134,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setIsConnecting(false)
       setIsInitialized(false)
       setApi(undefined)
+      setRelayApi(undefined)
       setProvider(undefined)
+      setRelayProvider(undefined)
     } finally {
       setIsInitializing(false)
     }
@@ -153,6 +173,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Connect to injected wallet
   const connect = async (
     chain?: SubstrateChain,
+    relayChain?: SubstrateChain,
     wallet?: SubstrateWallet,
     lastActiveAccountAddress?: string,
   ) => {
@@ -161,8 +182,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     setIsConnected(!!activeAccount)
 
     // Make sure api is initialized & connected to provider
-    if (!api?.isConnected || (chain && chain.network !== activeChain.network)) {
-      await initialize(chain)
+    if (
+      !api?.isConnected || 
+      !relayApi?.isConnected || 
+      (chain && chain.network !== activeChain.network) ||
+      (relayChain && relayChain.network !== activeRelayChain.network)
+      ) {
+      await initialize(chain, relayChain)
     }
 
     try {
@@ -235,10 +261,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       setIsInitialized(false)
     }
     api?.on('disconnected', handler)
+    relayApi?.on('disconnected', handler)
     return () => {
       api?.off('disconnected', handler)
+      relayApi?.off('disconnected', handler)
     }
-  }, [api])
+  }, [api, relayApi])
 
   // Initialze
   useEffect(() => {
@@ -249,9 +277,9 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   }, [])
 
   // Switch active chain
-  const switchActiveChain = async (chain: SubstrateChain) => {
+  const switchActiveChain = async (chain: SubstrateChain, relayChain: SubstrateChain) => {
     const activeWallet = activeExtension && getSubstrateWallet(activeExtension.name)
-    await connect(chain, activeWallet)
+    await connect(chain, relayChain, activeWallet)
   }
 
   return (
@@ -263,9 +291,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         isConnected,
         error,
         activeChain,
+        activeRelayChain,
         switchActiveChain,
         api,
+        relayApi,
         provider,
+        relayProvider,
         connect,
         disconnect,
         accounts,
