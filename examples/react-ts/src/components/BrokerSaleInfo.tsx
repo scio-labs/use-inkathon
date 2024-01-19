@@ -1,11 +1,13 @@
 import { ApiPromise } from '@polkadot/api';
 import {
+    BrokerConstantsType,
     ConfigurationType,
     SaleInfoType,
     StatusType,
     blocksToTimeFormat,
+    getConstants,
     getCurrentBlockNumber,
-    useInkathon
+    useInkathon,
 } from '@poppyseed/lastic-sdk';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -44,39 +46,72 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
     return data;
   }
 
-  function useCurrentBlockNumber(api: ApiPromise) {
+function useCurrentBlockNumber(api: ApiPromise) {
     const [currentBlockNumber, setCurrentBlockNumber] = useState(0);
-  
+
     useEffect(() => {
-      if (!api) return;
-  
-      const fetchCurrentBlockNumber = async () => {
+        if (!api) return;
+
+        const fetchCurrentBlockNumber = async () => {
         const currentBlock = await getCurrentBlockNumber(api);
         setCurrentBlockNumber(currentBlock);
-      };
-  
-      const intervalId = setInterval(fetchCurrentBlockNumber, 1000); // Update every second
-  
-      return () => clearInterval(intervalId);
+        };
+
+        const intervalId = setInterval(fetchCurrentBlockNumber, 1000); // Update every second
+
+        return () => clearInterval(intervalId);
     }, [api]);
-  
+
     return currentBlockNumber;
-  }
+}
 
-  
+function useBrokerConstants(api: ApiPromise) {
+    const [brokerConstants, setBrokerConstants] = useState<BrokerConstantsType | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        let isMounted = true;
+    
+        const fetchConstants = async () => {
+          try {
+            const constants = await getConstants(api);
+            if (isMounted) {
+              setBrokerConstants(constants);
+              setIsLoading(false);
+            }
+          } catch (err) {
+            console.error(err);
+            setIsLoading(false);
+          }
+        };
+    
+        fetchConstants();
+    
+        return () => {
+          isMounted = false;
+        };
+    }, [api]);
+
+    return { brokerConstants, isLoading };
+}
   
-  function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): string {
-    console.log(saleInfo.saleStart + config.regionLength - currentBlockNumber)
+  function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType, constant: BrokerConstantsType): string {
+    let typeOfChain: 'PARA' | 'RELAY' | 'LOCAL' = 'LOCAL'
+    let divide_by_2_or_not: 1 | 2 = 1;
+    if (!(typeOfChain === 'LOCAL'))  {
+        divide_by_2_or_not = 2
+    }
+
+    let saleEnds: number = saleInfo.saleStart + config.regionLength * constant.timeslicePeriod / divide_by_2_or_not  - config.interludeLength
 
     if (currentBlockNumber < saleInfo.saleStart) {
       const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber, 'LOCAL');
-      return `Sale hasn't started yet. It will start in ${timeUntilStart}.`;
+      return `Interlude Period - time to renew your core! Sales will start in ${timeUntilStart}.`;
     } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
-      const timeUntilPurchase = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber, 'LOCAL');
-      return `Sale is in the lead-in period. Price is linearaly decreasing, prices will stablize in ${timeUntilPurchase}.`;
-    } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
-      const timeUntilEnd = blocksToTimeFormat(saleInfo.saleStart + config.regionLength - currentBlockNumber, 'LOCAL');
+      const timeUntilStabilize = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber, 'LOCAL');
+      return `Sales have started we are now in the lead-in period. The price is linearaly decreasing with each block, and will stablize in ${timeUntilStabilize}.`;
+    } else if (currentBlockNumber <= saleEnds) {
+      const timeUntilEnd = blocksToTimeFormat(saleEnds - currentBlockNumber, 'LOCAL');
       return `Sale is in the purchase period. Sale ends in ${timeUntilEnd}.`;
     } else {
       return `The sale has ended.`;
@@ -84,26 +119,25 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
   }
 
   function calculateCurrentPrice(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType): number {
-    if (currentBlockNumber < saleInfo.saleStart) {
-      return 0;
-    } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
+    if (currentBlockNumber < saleInfo.saleStart + config.leadinLength && currentBlockNumber > saleInfo.saleStart) {
       return saleInfo.price * (2 - (currentBlockNumber - saleInfo.saleStart) / config.leadinLength);
-    } else if (currentBlockNumber <= saleInfo.saleStart + config.regionLength) {
-      return saleInfo.price;
     } else {
-      return saleInfo.selloutPrice? saleInfo.selloutPrice : 0;
+      return saleInfo.price;
     }
   }
   
   
   export default function BrokerSaleInfo() {
     const { api } = useInkathon();
-    if (!api) return;
+    if (!api) return <div>API not available</div>;
+
     const currentBlockNumber = useCurrentBlockNumber(api);
 
     const saleInfoString = useSubstrateQuery(api, 'saleInfo');
     const configurationString = useSubstrateQuery(api, 'configuration');
     const statusString = useSubstrateQuery(api, 'status');
+
+    const { brokerConstants, isLoading: isConstantsLoading } = useBrokerConstants(api);
   
     const saleInfo = useMemo(() => saleInfoString ? JSON.parse(saleInfoString) as SaleInfoType : null, [saleInfoString]);
     const configuration = useMemo(() => configurationString ? JSON.parse(configurationString) as ConfigurationType : null, [configurationString]);
@@ -112,15 +146,16 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
     // Update saleStage every second based on the currentBlockNumber
     const [saleStage, setSaleStage] = useState('');
     useEffect(() => {
-        if (saleInfo && configuration) {
-        setSaleStage(saleStatus(currentBlockNumber, saleInfo, configuration));
+        if (saleInfo && configuration && brokerConstants) {
+            setSaleStage(saleStatus(currentBlockNumber, saleInfo, configuration, brokerConstants));
         }
-    }, [currentBlockNumber, saleInfo, configuration]);
+    }, [currentBlockNumber, saleInfo, configuration, brokerConstants]);
 
     if (
       !saleInfo ||
       !configuration || 
-      !status
+      !status ||
+      isConstantsLoading
       ) {
       return <div>Loading...</div>;
     }
@@ -139,13 +174,6 @@ function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: Query
         </div>
         <div>
             {saleStage}
-        </div>
-        <div>
-            saleStart: {saleInfo.saleStart}
-            saleEnd: {saleInfo.saleStart + configuration?.regionLength}
-        </div>
-        <div>
-            currentTime: {currentBlockNumber}
         </div>
         <div>
             leadinLength: {saleInfo.leadinLength}

@@ -46,11 +46,11 @@ export const blocksToTimeFormat = (
   // avg 6 seconds per block for relay chains: rococo, kusama, polkadot
   // avg 12 seconds per block for parachains: rococo coretime chain
   let secondsPerBlock: 2 | 6 | 12 = 6;
-  if (typeOfChain = 'PARA') {
+  if (typeOfChain === 'PARA') {
     secondsPerBlock = 12
-  } else if (typeOfChain = 'RELAY') {
+  } else if (typeOfChain === 'RELAY') {
     secondsPerBlock = 6
-  } else if (typeOfChain = 'LOCAL') {
+  } else if (typeOfChain === 'LOCAL') {
     secondsPerBlock = 2
   } else {
     secondsPerBlock = 12
