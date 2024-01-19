@@ -123,6 +123,17 @@ function useBrokerConstants(api: ApiPromise) {
       return saleInfo.price;
     }
   }
+
+  function currentRelayBlockUtilization(currentRelayBlock: number, saleInfo: SaleInfoType, constant: BrokerConstantsType) {
+    const startBlock = saleInfo.regionBegin * constant.timeslicePeriod;
+    const endBlock = saleInfo.regionEnd * constant.timeslicePeriod;
+    let percent = (currentRelayBlock - startBlock) / (endBlock - startBlock)
+    if (percent < 0 ) {
+        return 0
+    } else {
+        return percent
+    }
+  }
   
   
   export default function BrokerSaleInfo() {
@@ -152,16 +163,16 @@ function useBrokerConstants(api: ApiPromise) {
         }
     }, [currentBlockNumber, saleInfo, configuration, brokerConstants]);
 
-    const [regionBeginTimestamp, setRegionBeginTimestamp] = useState<number | null>(null);
-    const [regionEndTimestamp, setRegionEndTimestamp] = useState<number | null>(null);
+    const [regionBeginTimestamp, setRegionBeginTimestamp] = useState<string>('');
+    const [regionEndTimestamp, setRegionEndTimestamp] = useState<string>('');
     const [currentRelayBlock, setCurrentRelayBlock] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchRegionTimestamps = async () => {
             try {
-                if (saleInfo) {
-                    const beginTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionBegin);
-                    const endTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionEnd);
+                if (saleInfo && brokerConstants) {
+                    const beginTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionBegin * brokerConstants.timeslicePeriod);
+                    const endTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionEnd * brokerConstants.timeslicePeriod);
                     let getCurrentRelayBlock = await getCurrentBlockNumber(relayApi);
 
                     setRegionBeginTimestamp(beginTimestamp);
@@ -182,6 +193,7 @@ function useBrokerConstants(api: ApiPromise) {
       !configuration || 
       !status ||
       !currentRelayBlock ||
+      !brokerConstants ||
       isConstantsLoading
       ) {
       return <div>Loading...</div>;
@@ -203,11 +215,10 @@ function useBrokerConstants(api: ApiPromise) {
             {saleStage}
         </div>
         <div>
-            Amount of utilization:
-            Current timestamp: {(currentRelayBlock - saleInfo.regionBegin) / (saleInfo.regionBegin - saleInfo.regionEnd)} %
+            Amount of utilization: {currentRelayBlockUtilization(currentRelayBlock, saleInfo, brokerConstants)} %
             current relay block: {currentRelayBlock}
-            start region: {saleInfo.regionBegin}
-            end region: {saleInfo.regionEnd}
+            start region block: {saleInfo.regionBegin * brokerConstants.timeslicePeriod}
+            end region block: {saleInfo.regionEnd * brokerConstants.timeslicePeriod}
             Region Begin Timestamp: {regionBeginTimestamp !== null ? regionBeginTimestamp : 'Loading...'}
             Region End Timestamp: {regionEndTimestamp !== null ? regionEndTimestamp : 'Loading...'}
         </div>
