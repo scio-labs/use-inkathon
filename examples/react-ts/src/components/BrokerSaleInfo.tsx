@@ -14,6 +14,8 @@ import { useEffect, useMemo, useState } from 'react';
   // Define a type for the queryParams
   type QueryParams = (string | number | Record<string, unknown>)[];
   
+const typeOfChain: 'PARA' | 'RELAY' | 'LOCAL' = 'PARA'
+
 // Custom hook for querying substrate state
 function useSubstrateQuery(api: ApiPromise, queryKey: string, queryParams: QueryParams = []) {  
     const [data, setData] = useState<string | null>(null);
@@ -96,22 +98,17 @@ function useBrokerConstants(api: ApiPromise) {
 }
   
   function saleStatus(currentBlockNumber: number, saleInfo: SaleInfoType, config: ConfigurationType, constant: BrokerConstantsType): string {
-    let typeOfChain: 'PARA' | 'RELAY' | 'LOCAL' = 'LOCAL'
-    let divide_by_2_or_not: 1 | 2 = 1;
-    if (!(typeOfChain === 'LOCAL'))  {
-        divide_by_2_or_not = 2
-    }
-
+    let divide_by_2_or_not: 1 | 2 = typeOfChain === 'PARA' ? 2 : 1;
     let saleEnds: number = saleInfo.saleStart + config.regionLength * constant.timeslicePeriod / divide_by_2_or_not  - config.interludeLength
 
     if (currentBlockNumber < saleInfo.saleStart) {
-      const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber, 'LOCAL');
+      const timeUntilStart = blocksToTimeFormat(saleInfo.saleStart - currentBlockNumber, typeOfChain);
       return `Interlude Period - time to renew your core! Sales will start in ${timeUntilStart}.`;
     } else if (currentBlockNumber < saleInfo.saleStart + config.leadinLength) {
-      const timeUntilStabilize = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber, 'LOCAL');
-      return `Sales have started we are now in the lead-in period. The price is linearaly decreasing with each block, and will stablize in ${timeUntilStabilize}.`;
+      const timeUntilStabilize = blocksToTimeFormat(saleInfo.saleStart + config.leadinLength - currentBlockNumber, typeOfChain);
+      return `Sales have started we are now in the lead-in period. The price is linearaly decreasing with each block, and will stablize in ${timeUntilStabilize}. Will stabilize to the price ${saleInfo.price}.`;
     } else if (currentBlockNumber <= saleEnds) {
-      const timeUntilEnd = blocksToTimeFormat(saleEnds - currentBlockNumber, 'LOCAL');
+      const timeUntilEnd = blocksToTimeFormat(saleEnds - currentBlockNumber, typeOfChain);
       return `Sale is in the purchase period. Sale ends in ${timeUntilEnd}.`;
     } else {
       return `The sale has ended.`;
@@ -176,23 +173,24 @@ function useBrokerConstants(api: ApiPromise) {
             {saleStage}
         </div>
         <div>
-            leadinLength: {saleInfo.leadinLength}
-            price: {saleInfo.price}
+            Amount of utilization:
             regionBegin: {saleInfo.regionBegin}
             regionEnd: {saleInfo.regionEnd}
+        </div>
+        <div>
+            
+        </div>
+        <div>
+
             idealCoresSold: {saleInfo.idealCoresSold}
             firstCore: {saleInfo.firstCore}
             selloutPrice: {saleInfo.selloutPrice}
+            renewalBump: {configuration.renewalBump}
         </div>
         <div><b>Configuration:</b></div>
         <div>
-            advanceNotice: {configuration.advanceNotice}
-            interludeLength: {configuration.interludeLength}
-            leadinLength: {configuration.leadinLength}
-            regionLength: {configuration.regionLength}
             idealBulkProportion: {configuration.idealBulkProportion}
             limitCoresOffered: {configuration.limitCoresOffered}
-            renewalBump: {configuration.renewalBump}
             contributionTimeout: {configuration.contributionTimeout}
         </div>      
       </div>

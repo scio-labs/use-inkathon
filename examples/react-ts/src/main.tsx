@@ -8,6 +8,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <UseInkathonProvider
       appName="React Example dApp"
       defaultChain={development}
+      relayChain={development}
       connectOnInit={false}
     >
       <App />
