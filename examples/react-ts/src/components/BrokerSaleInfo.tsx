@@ -4,8 +4,8 @@ import {
     ConfigurationType,
     SaleInfoType,
     StatusType,
+    blockTimeToUTC,
     blocksToTimeFormat,
-    getBlockTimestamp,
     getConstants,
     getCurrentBlockNumber,
     useInkathon,
@@ -154,15 +154,19 @@ function useBrokerConstants(api: ApiPromise) {
 
     const [regionBeginTimestamp, setRegionBeginTimestamp] = useState<number | null>(null);
     const [regionEndTimestamp, setRegionEndTimestamp] = useState<number | null>(null);
+    const [currentRelayBlock, setCurrentRelayBlock] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchRegionTimestamps = async () => {
             try {
                 if (saleInfo) {
-                    const beginTimestamp = await getBlockTimestamp(relayApi, saleInfo.regionBegin);
-                    const endTimestamp = await getBlockTimestamp(relayApi, saleInfo.regionEnd);
+                    const beginTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionBegin);
+                    const endTimestamp = await blockTimeToUTC(relayApi, saleInfo.regionEnd);
+                    let getCurrentRelayBlock = await getCurrentBlockNumber(relayApi);
+
                     setRegionBeginTimestamp(beginTimestamp);
                     setRegionEndTimestamp(endTimestamp);
+                    setCurrentRelayBlock(getCurrentRelayBlock);
                 }
             } catch (error) {
                 console.error('Error fetching block timestamp:', error);
@@ -177,6 +181,7 @@ function useBrokerConstants(api: ApiPromise) {
       !saleInfo ||
       !configuration || 
       !status ||
+      !currentRelayBlock ||
       isConstantsLoading
       ) {
       return <div>Loading...</div>;
@@ -199,6 +204,10 @@ function useBrokerConstants(api: ApiPromise) {
         </div>
         <div>
             Amount of utilization:
+            Current timestamp: {(currentRelayBlock - saleInfo.regionBegin) / (saleInfo.regionBegin - saleInfo.regionEnd)} %
+            current relay block: {currentRelayBlock}
+            start region: {saleInfo.regionBegin}
+            end region: {saleInfo.regionEnd}
             Region Begin Timestamp: {regionBeginTimestamp !== null ? regionBeginTimestamp : 'Loading...'}
             Region End Timestamp: {regionEndTimestamp !== null ? regionEndTimestamp : 'Loading...'}
         </div>
