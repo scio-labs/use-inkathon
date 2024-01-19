@@ -5,6 +5,7 @@ import {
     SaleInfoType,
     StatusType,
     blocksToTimeFormat,
+    getBlockTimestamp,
     getConstants,
     getCurrentBlockNumber,
     useInkathon,
@@ -125,8 +126,11 @@ function useBrokerConstants(api: ApiPromise) {
   
   
   export default function BrokerSaleInfo() {
-    const { api } = useInkathon();
-    if (!api) return <div>API not available</div>;
+    const { 
+        api,
+        relayApi
+    } = useInkathon();
+    if (!api || !relayApi ) return <div>API not available</div>;
 
     const currentBlockNumber = useCurrentBlockNumber(api);
 
@@ -147,6 +151,27 @@ function useBrokerConstants(api: ApiPromise) {
             setSaleStage(saleStatus(currentBlockNumber, saleInfo, configuration, brokerConstants));
         }
     }, [currentBlockNumber, saleInfo, configuration, brokerConstants]);
+
+    const [regionBeginTimestamp, setRegionBeginTimestamp] = useState<number | null>(null);
+    const [regionEndTimestamp, setRegionEndTimestamp] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchRegionTimestamps = async () => {
+            try {
+                if (saleInfo) {
+                    const beginTimestamp = await getBlockTimestamp(relayApi, saleInfo.regionBegin);
+                    const endTimestamp = await getBlockTimestamp(relayApi, saleInfo.regionEnd);
+                    setRegionBeginTimestamp(beginTimestamp);
+                    setRegionEndTimestamp(endTimestamp);
+                }
+            } catch (error) {
+                console.error('Error fetching block timestamp:', error);
+            }
+        };
+
+        fetchRegionTimestamps();
+    }, [relayApi, saleInfo]);
+
 
     if (
       !saleInfo ||
@@ -174,11 +199,11 @@ function useBrokerConstants(api: ApiPromise) {
         </div>
         <div>
             Amount of utilization:
-            regionBegin: {saleInfo.regionBegin}
-            regionEnd: {saleInfo.regionEnd}
+            Region Begin Timestamp: {regionBeginTimestamp !== null ? regionBeginTimestamp : 'Loading...'}
+            Region End Timestamp: {regionEndTimestamp !== null ? regionEndTimestamp : 'Loading...'}
         </div>
         <div>
-            
+            How many cores are set to renew by default?
         </div>
         <div>
 
