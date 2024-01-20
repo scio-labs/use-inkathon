@@ -41,33 +41,33 @@ export const getBlockTimestamp = async (
 export const blocksToTimeFormat = (
   nbOfBlocks: number,
   typeOfChain?: 'PARA' | 'RELAY' | 'LOCAL'
-  ): string => {
-  // avg 3 seconds per block for local
-  // avg 6 seconds per block for relay chains: rococo, kusama, polkadot
-  // avg 12 seconds per block for parachains: rococo coretime chain
-  let secondsPerBlock: 2 | 6 | 12 = 6;
+): string => {
+  let secondsPerBlock: number = 6; // Default value for relay chain
   if (typeOfChain === 'PARA') {
-    secondsPerBlock = 12
+    secondsPerBlock = 12; // Parachain
   } else if (typeOfChain === 'RELAY') {
-    secondsPerBlock = 6
+    secondsPerBlock = 6; // Relay chain
   } else if (typeOfChain === 'LOCAL') {
-    secondsPerBlock = 2
-  } else {
-    secondsPerBlock = 12
+    secondsPerBlock = 2; // Local chain
   }
+
   const totalSeconds = nbOfBlocks * secondsPerBlock;
-  const hours = Math.floor(totalSeconds / 3600);
+  const days = Math.floor(totalSeconds / (24 * 3600));
+  const hours = Math.floor((totalSeconds - days * 24 * 3600) / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  if (hours === 0 && minutes === 0) {
-    return `${seconds}s`;
-  } else if (hours === 0) {
-      return `${minutes}m ${seconds}s`;
-  } else {  
-  return `${hours}h ${minutes}m ${seconds}s`
-  };
-}
+  if (days > 0) {
+    return `${days}days ${hours}hours ${minutes}min ${seconds}sec`;
+  } else if (hours > 0) {
+    return `${hours}hours ${minutes}min ${seconds}sec`;
+  } else if (minutes > 0) {
+    return `${minutes}min ${seconds}sec`;
+  } else {
+    return `${seconds}sec`;
+  }
+};
+
 
 export const blockTimeToUTC = async (
     api: ApiPromise,
