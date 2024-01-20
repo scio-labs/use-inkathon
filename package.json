@@ -1,7 +1,7 @@
 {
   "name": "@poppyseed/lastic-sdk",
   "author": "Lastic <hi@lastic.xyz> (https://lastic.xyz)",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Typesafe React Hooks abstracting functionality of polkadot.js, created for Lastic website",
   "homepage": "https://lastic.xyz",
   "license": "GPL-3.0",
