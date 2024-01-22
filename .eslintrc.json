@@ -12,6 +12,25 @@
   "rules": {
     "no-async-promise-executor": "off",
     "react/react-in-jsx-scope": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": ".",
+            "message": "Please don't import from global index and use full paths instead."
+          },
+          {
+            "name": "..",
+            "message": "Please don't import from global index and use full paths instead."
+          },
+          {
+            "name": "@/",
+            "message": "Please don't import from global index and use full paths instead."
+          }
+        ]
+      }
+    ]
   }
 }

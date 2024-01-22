@@ -4,7 +4,8 @@ import { TransferDialog } from './TransferDialog'
 
 export function ConnectionStatus() {
   const { 
-    api, 
+    api,
+    error,
     relayApi,
     isConnected, 
     activeChain, 
@@ -37,6 +38,10 @@ export function ConnectionStatus() {
         {isConnected ? (
           <code style={{ color: 'rgba(56, 142, 60, 1)', background: 'rgba(56, 142, 60, .1)' }}>
             Connected
+          </code>
+        ) : error?.message ? (
+          <code style={{ color: 'rgba(198, 40, 40, 1)', background: 'rgba(198, 40, 40, .1)' }}>
+            {error.message}
           </code>
         ) : (
           <code>Disconnected</code>
