@@ -1,4 +1,4 @@
-![inkathon Devtooling Banner](inkathon-devtooling-banner.png)
+![lastic Banner](lastic-banner.png)
 
 # `useInkathon` – React Hooks & Utility Library
 
