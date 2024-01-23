@@ -15,5 +15,8 @@ export * from './contracts/getAbiMessage'
 export * from './contracts/getExtrinsicErrorMessage'
 export * from './contracts/getGasLimit'
 export * from './contracts/unwrapResult'
+export * from './getDeployment'
+export * from './getNightlyAdapter'
+export * from './getWebsiteIcon'
 export * from './initPolkadotJs'
 // @endindex

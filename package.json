@@ -27,6 +27,32 @@
     "README.md",
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./chains": {
+      "types": "./dist/chains.d.ts",
+      "import": "./dist/chains.js"
+    },
+    "./wallets": {
+      "types": "./dist/wallets.d.ts",
+      "import": "./dist/wallets.js"
+    },
+    "./helpers": {
+      "types": "./dist/helpers/index.d.ts",
+      "import": "./dist/helpers/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -34,8 +60,8 @@
     "dev:scripts-example": "pnpm run build && pnpm run -F \"{examples/scripts-ts}\" script",
     "node": "substrate-contracts-node --dev --port 9944 --base-path ./.node-data",
     "type-check": "tsc --pretty --noEmit",
-    "lint": "prettier . --check && pnpm eslint",
-    "lint:fix": "prettier . --write && pnpm eslint --fix",
+    "lint": "prettier . --check && pnpm eslint .",
+    "lint:fix": "prettier . --write && pnpm eslint . --fix",
     "lint:format": "prettier . --write",
     "typedoc": "typedoc src/index.ts --titleLink \"https://github.com/scio-labs/use-inkathon\"",
     "changeset:version": "pnpm run typedoc && changeset version",
@@ -53,11 +79,13 @@
     ]
   },
   "peerDependencies": {
+    "@nightlylabs/wallet-selector-polkadot": ">=0.1.10",
     "@polkadot/api": ">=10",
     "@polkadot/api-contract": ">=10",
     "@polkadot/extension-inject": ">=0.46",
     "@polkadot/types": ">=10",
     "@polkadot/util": ">=10",
+    "@polkadot/util-crypto": ">=10",
     "react": ">=18",
     "react-dom": ">=18"
   },
@@ -87,6 +115,21 @@
     "@polkadot/types": "^10.11.2",
     "@polkadot/util": "^12.6.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@changesets/cli": "^2.26.2",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.38",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.33.2",
+    "lint-staged": "^15.1.0",
+    "prettier": "^3.1.0",
+    "simple-git-hooks": "^2.9.0",
+    "tsup": "^8.0.1",
+    "typedoc": "^0.25.3",
+    "typescript": "^5.3.2"
   }
 }

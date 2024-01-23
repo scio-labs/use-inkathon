@@ -16,7 +16,7 @@ export const usePSP22Balances = (
   watch?: boolean,
   formatterOptions?: BalanceFormatterOptions,
 ): PSP22BalanceData[] => {
-  const { api } = useInkathon()
+  const { api, activeChain } = useInkathon()
   const [balanceData, setBalanceData] = useState<PSP22BalanceData[]>(
     [] satisfies PSP22BalanceData[],
   )
@@ -27,23 +27,29 @@ export const usePSP22Balances = (
       setBalanceData(() => data)
     }
 
-    if (!api) {
+    if (!api || !activeChain) {
       setBalanceData([] as PSP22BalanceData[])
       return
     }
 
     if (watch) {
-      const unsubscribe = watchPSP22Balances(api, address, updateBalanceData, formatterOptions)
+      const unsubscribe = watchPSP22Balances(
+        api,
+        address,
+        updateBalanceData,
+        activeChain.network,
+        formatterOptions,
+      )
       unsubscribe && setUnsubscribes((prev) => [...prev, unsubscribe])
     } else {
-      getPSP22Balances(api, address, formatterOptions).then(updateBalanceData)
+      getPSP22Balances(api, address, activeChain.network, formatterOptions).then(updateBalanceData)
     }
 
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe?.())
       setUnsubscribes(() => [])
     }
-  }, [api, address])
+  }, [api, address, activeChain])
 
   return balanceData
 }
