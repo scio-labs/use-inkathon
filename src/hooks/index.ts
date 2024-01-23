@@ -5,5 +5,5 @@ export * from './broker/getConstants'
 export * from './broker/purchaseInteract'
 export * from './broker/txButton'
 export * from './contracts/useContract'
-export * from './contracts/useRegisteredContract'
+export * from './useRegisteredContract'
 // @endindex

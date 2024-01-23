@@ -1,4 +1,5 @@
-import { SubstrateChain, SubstrateWallet } from '@/types'
+import { SubstrateWallet } from '@/types'
+import { SubstrateChain } from '@/types/SubstrateChain'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { InjectedAccount, InjectedExtension } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
