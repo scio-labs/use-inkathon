@@ -48,7 +48,7 @@ export const useTxButton = ({
     setStatus('Sending...')
 
     // Check if API, account, and signer are present
-    if (!api || (!activeAccount && isSigned()) || (!activeSigner && isSigned())) {
+    if (!api || !activeAccount || !activeSigner) {
       setStatus('Error: API, account or signer not present')
       return
     }
