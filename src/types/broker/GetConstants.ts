@@ -1,7 +1,6 @@
 export interface BrokerConstantsType {
-    palletId: string;
-    timeslicePeriod: number;
-    maxLeasedCores: number;
-    maxReservedCores: number;
-  }
-  
+  palletId: string
+  timeslicePeriod: number
+  maxLeasedCores: number
+  maxReservedCores: number
+}

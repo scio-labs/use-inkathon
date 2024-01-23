@@ -1,3 +1,4 @@
+import { DeployedContract } from '@/types'
 import { ApiPromise } from '@polkadot/api'
 import { CodePromise } from '@polkadot/api-contract'
 import { ContractOptions } from '@polkadot/api-contract/types'
@@ -17,7 +18,7 @@ export const deployContract = async (
   constructorMethod = 'new',
   args = [] as unknown[],
   options = {} as ContractOptions,
-) => {
+): Promise<DeployedContract> => {
   return new Promise<{
     address: string
     hash: string

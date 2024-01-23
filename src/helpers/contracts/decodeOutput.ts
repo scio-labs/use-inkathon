@@ -62,8 +62,8 @@ export function decodeOutput(
         ? JSON.stringify(output.Err, null, 2)
         : output.Err?.toString() ?? 'Error'
       : output !== 'Ok'
-      ? output?.toString() || 'Error'
-      : 'Error'
+        ? output?.toString() || 'Error'
+        : 'Error'
 
     const okText = isOk(r)
       ? typeof output === 'object'

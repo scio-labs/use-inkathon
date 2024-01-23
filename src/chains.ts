@@ -85,8 +85,8 @@ export const shibuya: SubstrateChain = {
 }
 
 export const t0rnTestnet: SubstrateChain = {
-  network: 't0rn',
-  name: 'T0rn Testnet',
+  network: 't0rn-testnet',
+  name: 't0rn Testnet',
   ss58Prefix: 42,
   rpcUrls: ['wss://ws.t0rn.io'],
   explorerUrls: {
@@ -141,18 +141,18 @@ export const amplitudeTestnet: SubstrateChain = {
   faucetUrls: [],
 }
 
-export const phalaPOC5Testnet: SubstrateChain = {
-  network: 'phala-PoC-5-testnet',
-  name: 'Phala PoC-5 Testnet',
+export const phalaPOC6Testnet: SubstrateChain = {
+  network: 'phala-PoC-6-testnet',
+  name: 'Phala PoC-6 Testnet',
   ss58Prefix: 30,
-  rpcUrls: ['wss://poc5.phala.network/ws'],
+  rpcUrls: ['wss://poc6.phala.network/ws'],
   explorerUrls: {
     [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
-      'wss://poc5.phala.network/ws',
+      'wss://poc6.phala.network/ws',
     )}#/explorer`,
   },
   testnet: true,
-  faucetUrls: [],
+  faucetUrls: ['https://phala.network/faucet'],
 }
 
 /**
@@ -261,7 +261,7 @@ export const kusama: SubstrateChain = {
       'wss://kusama-rpc.polkadot.io',
     )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://kusama.subscan.io`,
-  }
+  },
 }
 
 export const polkadot: SubstrateChain = {
@@ -274,7 +274,7 @@ export const polkadot: SubstrateChain = {
       'wss://rpc.polkadot.io',
     )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://polkadot.subscan.io`,
-  }
+  },
 }
 
 /**
@@ -290,7 +290,7 @@ export const allSubstrateChains: SubstrateChain[] = [
   bitCountryAlphaTestnet,
   agungTestnet,
   amplitudeTestnet,
-  phalaPOC5Testnet,
+  phalaPOC6Testnet,
   shibuya,
   shiden,
   amplitude,
