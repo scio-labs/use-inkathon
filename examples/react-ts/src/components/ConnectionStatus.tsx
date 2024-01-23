@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react'
 import { TransferDialog } from './TransferDialog'
 
 export function ConnectionStatus() {
-  const { 
-    api, 
+  const {
+    api,
+    error,
     relayApi,
-    isConnected, 
-    activeChain, 
+    isConnected,
+    activeChain,
     activeRelayChain,
-    activeAccount, 
-    disconnect
+    activeAccount,
+    disconnect,
   } = useInkathon()
 
   // Fetch & watch balance
@@ -18,7 +19,9 @@ export function ConnectionStatus() {
 
   // Check whether the connected chain has pallet-contracts
   const [hasPalletContracts, setHasPalletContracts] = useState<boolean | undefined>(undefined)
-  const [relayHasPalletContracts, setRelayHasPalletContracts] = useState<boolean | undefined>(undefined)
+  const [relayHasPalletContracts, setRelayHasPalletContracts] = useState<boolean | undefined>(
+    undefined,
+  )
   useEffect(() => {
     const getPalletVersion = api?.query?.contracts?.palletVersion
     setHasPalletContracts(!!getPalletVersion)
@@ -38,6 +41,10 @@ export function ConnectionStatus() {
           <code style={{ color: 'rgba(56, 142, 60, 1)', background: 'rgba(56, 142, 60, .1)' }}>
             Connected
           </code>
+        ) : error?.message ? (
+          <code style={{ color: 'rgba(198, 40, 40, 1)', background: 'rgba(198, 40, 40, .1)' }}>
+            {error.message}
+          </code>
         ) : (
           <code>Disconnected</code>
         )}
@@ -54,7 +61,7 @@ export function ConnectionStatus() {
                 <span style={{ color: 'rgba(198, 40, 40, 1)' }}>(pallet-contracts not found)</span>
               )}
             </p>
-          <strong>Relay Network</strong>
+            <strong>Relay Network</strong>
             <p>
               {activeRelayChain?.name}{' '}
               {!relayHasPalletContracts && (

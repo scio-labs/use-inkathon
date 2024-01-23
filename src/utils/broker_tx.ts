@@ -1,23 +1,23 @@
-import { ApiPromise, SubmittableResult } from '@polkadot/api';
-import { InjectedAccount } from '@polkadot/extension-inject/types';
-import { Signer } from '@polkadot/types/types';
-import { Dispatch, SetStateAction } from 'react';
-import { transformParams } from './broker';
-import { txErrHandler, txResHandler } from './broker_handler';
+import { ApiPromise, SubmittableResult } from '@polkadot/api'
+import { InjectedAccount } from '@polkadot/extension-inject/types'
+import { Signer } from '@polkadot/types/types'
+import { Dispatch, SetStateAction } from 'react'
+import { transformParams } from './broker'
+import { txErrHandler, txResHandler } from './broker_handler'
 
 export interface CurrentAccount {
-    address: string;
-    meta: {
-      source: string;
-      isInjected: boolean;
-    };
+  address: string
+  meta: {
+    source: string
+    isInjected: boolean
   }
+}
 
 interface TransactionParams {
-  palletRpc: string;
-  callable: string;
-  inputParams: any[];
-  paramFields: any[];
+  palletRpc: string
+  callable: string
+  inputParams: any[]
+  paramFields: any[]
 }
 
 const signedTx = async (
@@ -26,43 +26,45 @@ const signedTx = async (
   setStatus: Dispatch<SetStateAction<string | null>>,
   setUnsub: Dispatch<SetStateAction<any>>,
   activeAccount: InjectedAccount,
-  activeSigner: Signer
+  activeSigner: Signer,
 ) => {
-  const address = activeAccount?.address;
-  const transformed = transformParams(paramFields, inputParams);
+  const address = activeAccount?.address
+  const transformed = transformParams(paramFields, inputParams)
 
   const txExecute = transformed
     ? api.tx[palletRpc][callable](...transformed)
-    : api.tx[palletRpc][callable]();
+    : api.tx[palletRpc][callable]()
 
   const signerOptions = {
-    signer: activeSigner
-  };
+    signer: activeSigner,
+  }
 
   const unsub = await txExecute
-    .signAndSend(address, signerOptions, (result: SubmittableResult) => txResHandler(setStatus, api, result))
-    .catch((err: Error) => txErrHandler(setStatus, err));
+    .signAndSend(address, signerOptions, (result: SubmittableResult) =>
+      txResHandler(setStatus, api, result),
+    )
+    .catch((err: Error) => txErrHandler(setStatus, err))
 
-  setUnsub(() => unsub);
-};
+  setUnsub(() => unsub)
+}
 
 const unsignedTx = async (
   api: ApiPromise,
   { palletRpc, callable, inputParams, paramFields }: TransactionParams,
   setStatus: Dispatch<SetStateAction<string | null>>,
-  setUnsub: Dispatch<SetStateAction<any>> // Replace 'any' with a specific type if possible
+  setUnsub: Dispatch<SetStateAction<any>>, // Replace 'any' with a specific type if possible
 ) => {
-  const transformed = transformParams(paramFields, inputParams);
+  const transformed = transformParams(paramFields, inputParams)
 
   const txExecute = transformed
     ? api.tx[palletRpc][callable](...transformed)
-    : api.tx[palletRpc][callable]();
+    : api.tx[palletRpc][callable]()
 
   const unsub = await txExecute
     .send((result: SubmittableResult) => txResHandler(setStatus, api, result))
-    .catch((err: Error) => txErrHandler(setStatus, err));
+    .catch((err: Error) => txErrHandler(setStatus, err))
 
-  setUnsub(() => unsub);
-};
+  setUnsub(() => unsub)
+}
 
-export { signedTx, unsignedTx };
+export { signedTx, unsignedTx }

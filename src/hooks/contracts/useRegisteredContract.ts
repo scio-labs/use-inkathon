@@ -1,6 +1,6 @@
+import { getDeployment } from '@/helpers'
 import { useInkathon } from '@/provider'
-import { getDeployment } from '@/registry'
-import { useContract } from './contracts/useContract'
+import { useContract } from './useContract'
 
 /**
  * React Hook that returns a `ContractPromise` object configured with
