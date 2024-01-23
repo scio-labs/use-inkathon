@@ -1,44 +1,40 @@
-import {
-    BrokerConstantsType,
-    getConstants,
-    useInkathon
-} from '@poppyseed/lastic-sdk';
-import { useEffect, useState } from 'react';
+import { BrokerConstantsType, getConstants, useInkathon } from '@poppyseed/lastic-sdk'
+import { useEffect, useState } from 'react'
 
 function BrokerConstants() {
-  const { api } = useInkathon();
-  const [brokerConstants, setBrokerConstants] = useState<BrokerConstantsType | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { api } = useInkathon()
+  const [brokerConstants, setBrokerConstants] = useState<BrokerConstantsType | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     const fetchConstants = async () => {
       try {
-        const constants = await getConstants(api);
+        const constants = await getConstants(api)
         if (isMounted) {
-          setBrokerConstants(constants);
+          setBrokerConstants(constants)
         }
       } catch (err) {
         if (isMounted) {
-          setError(err instanceof Error ? err.message : String(err));
+          setError(err instanceof Error ? err.message : String(err))
         }
       }
-    };
+    }
 
-    fetchConstants();
+    fetchConstants()
 
     return () => {
-      isMounted = false;
-    };
-  }, [api]);
+      isMounted = false
+    }
+  }, [api])
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error}</div>
   }
 
   if (!brokerConstants) {
-    return <div>Loading broker constants...</div>;
+    return <div>Loading broker constants...</div>
   }
 
   return (
@@ -48,7 +44,7 @@ function BrokerConstants() {
       <p>Max Leased Cores: {brokerConstants.maxLeasedCores}</p>
       <p>Max reserved Cores: {brokerConstants.maxReservedCores}</p>
     </>
-  );
+  )
 }
 
-export default BrokerConstants;
+export default BrokerConstants

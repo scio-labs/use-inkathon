@@ -49,7 +49,7 @@ export const useInkathon = () => {
 export interface UseInkathonProviderProps extends PropsWithChildren {
   appName: string
   defaultChain: SubstrateChain | SubstrateChain['network']
-  relayChain: SubstrateChain | SubstrateChain['network'] 
+  relayChain: SubstrateChain | SubstrateChain['network']
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
   apiOptions?: ApiOptions
@@ -65,8 +65,11 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 }) => {
   // Check if default chain was provided
   if (
-    !defaultChain || !relayChain ||
-    (typeof defaultChain === 'string' && typeof relayChain === 'string' && getSubstrateChain(defaultChain) === undefined)
+    !defaultChain ||
+    !relayChain ||
+    (typeof defaultChain === 'string' &&
+      typeof relayChain === 'string' &&
+      getSubstrateChain(defaultChain) === undefined)
   ) {
     throw new Error(
       'None or invalid `defaultChain` or invalid `relayChain` provided with `UseInkathonProvider`. Forgot to set environment variable?',
@@ -85,9 +88,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       : defaultChain) as SubstrateChain,
   )
   const [activeRelayChain, setActiveRelayChain] = useState<SubstrateChain>(
-    (typeof relayChain === 'string'
-      ? getSubstrateChain(relayChain)
-      : relayChain) as SubstrateChain,
+    (typeof relayChain === 'string' ? getSubstrateChain(relayChain) : relayChain) as SubstrateChain,
   )
   const [api, setApi] = useState<ApiPromise>()
   const [relayApi, setRelayApi] = useState<ApiPromise>()
@@ -118,14 +119,13 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     let _relayApi: ApiPromise | undefined
     let _provider: WsProvider | HttpProvider | undefined
     let _relayProvider: WsProvider | HttpProvider | undefined
-    
+
     try {
       ;({ api: _api, provider: _provider } = await initPolkadotJs(_chain, {
         noInitWarn: true,
         throwOnConnect: true,
         ...apiOptions,
       }))
-
       ;({ api: _relayApi, provider: _relayProvider } = await initPolkadotJs(_relayChain, {
         noInitWarn: true,
         throwOnConnect: true,
@@ -158,7 +158,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
 
     isInitializing.current = false
-    return {_api, _relayApi}
+    return { _api, _relayApi }
   }
 
   // Updates account list and active account
@@ -204,11 +204,10 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     if (
       !api?.isConnected ||
       !relayApi?.isConnected ||
-       (chain && chain.network !== activeChain.network) ||
-       (relayChain && relayChain.network !== activeRelayChain.network)
-      )
-       {
-      const {_api, _relayApi} = await initialize(chain, relayChain)
+      (chain && chain.network !== activeChain.network) ||
+      (relayChain && relayChain.network !== activeRelayChain.network)
+    ) {
+      const { _api, _relayApi } = await initialize(chain, relayChain)
       if (!_api?.isConnected || !_relayApi?.isConnected) return
     }
 

@@ -4,8 +4,8 @@ import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { AccountId } from '@polkadot/types/interfaces'
 import { BN } from '@polkadot/util'
-import { contractQuery } from './contractCall'
-import { decodeOutput } from './decodeOutput'
+import { contractQuery } from '../contracts/contractCall'
+import { decodeOutput } from '../contracts/decodeOutput'
 import { BalanceFormatterOptions, formatBalance } from './formatBalance'
 
 export type PSP22BalanceData = {

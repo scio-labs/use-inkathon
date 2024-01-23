@@ -1,19 +1,15 @@
-import { TxButtonProps, useBalance, useInkathon, useTxButton } from '@poppyseed/lastic-sdk';
-import { ChangeEvent, useState } from 'react';
-import { Form, Grid, Input, InputOnChangeData } from 'semantic-ui-react';
+import { TxButtonProps, useBalance, useInkathon, useTxButton } from '@poppyseed/lastic-sdk'
+import { ChangeEvent, useState } from 'react'
+import { Form, Grid, Input, InputOnChangeData } from 'semantic-ui-react'
 
 export default function PurchaseInteractor() {
   const { api, activeSigner, activeAccount } = useInkathon()
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
 
-  const [param, setParam] = useState('');
+  const [param, setParam] = useState('')
 
   const handleInputChange = (_: ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-    setParam(data.value);
-  };
-
-  if (!api || !activeSigner || !activeAccount) {
-    return null;
+    setParam(data.value)
   }
 
   const txButtonProps: TxButtonProps = {
@@ -28,9 +24,13 @@ export default function PurchaseInteractor() {
     type: 'SIGNED-TX',
     activeAccount,
     activeSigner,
-  };
+  }
 
-  const { transaction, status, allParamsFilled } = useTxButton(txButtonProps);
+  const { transaction, status, allParamsFilled } = useTxButton(txButtonProps)
+
+  if (!api || !activeSigner || !activeAccount) {
+    return null
+  }
 
   return (
     <Grid.Column width={8}>
@@ -47,7 +47,9 @@ export default function PurchaseInteractor() {
           />
         </Form.Field>
         <Form.Field style={{ textAlign: 'center' }}>
-          <div>Using account: {activeAccount?.address}, {balanceFormatted}</div>
+          <div>
+            Using account: {activeAccount?.address}, {balanceFormatted}
+          </div>
           <button onClick={transaction} disabled={!allParamsFilled()}>
             Submit
           </button>
@@ -55,5 +57,5 @@ export default function PurchaseInteractor() {
         <div style={{ overflowWrap: 'break-word' }}>{status}</div>
       </Form>
     </Grid.Column>
-  );
+  )
 }

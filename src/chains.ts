@@ -261,7 +261,7 @@ export const kusama: SubstrateChain = {
       'wss://kusama-rpc.polkadot.io',
     )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://kusama.subscan.io`,
-  }
+  },
 }
 
 export const polkadot: SubstrateChain = {
@@ -274,7 +274,7 @@ export const polkadot: SubstrateChain = {
       'wss://rpc.polkadot.io',
     )}#/explorer`,
     [SubstrateExplorer.Subscan]: `https://polkadot.subscan.io`,
-  }
+  },
 }
 
 /**
