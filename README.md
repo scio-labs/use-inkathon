@@ -4,6 +4,8 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Built with ink!](https://raw.githubusercontent.com/paritytech/ink/master/.images/badge.svg)](https://use.ink)
+![TypeScript](https://img.shields.io/badge/TypeScript-000000?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-000000?logo=react&logoColor=white)
 
 This library provides typesafe React hooks and utility functions that simplify the process of working with Substrate-based networks and ink! smart contracts. It abstracts away the complexities of polkadot{.js} but still lets you access the full power of the underlying API.
 
@@ -79,6 +81,7 @@ At its core, this library serves as a **wrapper for polkadot{.js}, potentially s
   - [`usePSP22Balances`](https://scio-labs.github.io/use-inkathon/functions/usePSP22Balances.html)
   - [`useContract`](https://scio-labs.github.io/use-inkathon/functions/useContract.html)
   - [`useRegisteredContract`](https://scio-labs.github.io/use-inkathon/functions/useRegisteredContract.html) _(read more below)_
+  
 - Contract interaction helper functions with automatic upfront gas estimation, including:
   - [`contractTx`](https://scio-labs.github.io/use-inkathon/functions/contractTx.html)
   - [`contractQuery`](https://scio-labs.github.io/use-inkathon/functions/contractQuery.html)

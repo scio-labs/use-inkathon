@@ -8,14 +8,9 @@
   "search.useParentIgnoreFiles": true,
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
-    "source.organizeImports": "always",
-    "source.fixAll.eslint": "always"
-  },
-  "[javascriptreact][typescriptreact][javascript][typescript][markdown][html][css][scss][sass][json][jsonc][yaml]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "javascript.updateImportsOnFileMove.enabled": "always",
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "javascript.updateImportsOnFileMove.enabled": "always"
 }

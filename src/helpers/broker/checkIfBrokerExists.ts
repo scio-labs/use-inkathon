@@ -1,10 +1,10 @@
-import { ApiPromise } from '@polkadot/api'
+import { ApiPromise } from '@polkadot/api';
 
-export type CheckIfBrokerExistsType = boolean
+export type CheckIfBrokerExistsType = boolean;
 
 export const CheckIfBrokerExists = async (
-  api: ApiPromise | undefined,
+    api: ApiPromise | undefined,
 ): Promise<CheckIfBrokerExistsType> => {
-  if (!api) return false
-  return !!(api.tx.broker && api.tx.broker.purchase)
+    if (!api) return false;
+    return !!(api.tx.broker && api.tx.broker.purchase);
 }
