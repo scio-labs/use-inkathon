@@ -254,7 +254,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     }
   }, [api])
 
-  // Initialze
+  // Initialize
   useEffect(() => {
     if (isInitialized.current || isInitializing.current) return
     connectOnInit ? connect() : initialize()
