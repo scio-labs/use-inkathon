@@ -19,8 +19,12 @@ export const useContract = (
       setContract(undefined)
       return
     }
-    const contract = new ContractPromise(api, abi, address)
-    setContract(contract)
+    try {
+      const contract = new ContractPromise(api, abi, address)
+      setContract(contract)
+    } catch (error) {
+      console.error('Error during Contract initialization', error)
+    }
   }
   useEffect(() => {
     initialize()
