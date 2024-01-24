@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.7.0
+
+### Minor Changes
+
+- [#57](https://github.com/scio-labs/use-inkathon/pull/57) [`7d356d7`](https://github.com/scio-labs/use-inkathon/commit/7d356d745073ea27e3daf56af379cb9ba6811d28) Thanks [@wottpal](https://github.com/wottpal)! - Add support for type-safe contract-interactions via `typechain-polkadot`. A new hook `useRegisteredTypedContract` enables easy instantiation with automatic assignment of api instance, network-dependant contract address, and the connected signer. Currently, only queries (read-only) are supported with those instances. – See README.md for more information.
+
 ## 0.6.3
 
 ### Patch Changes
