@@ -26,8 +26,9 @@ Other projects include:
 
 1. [Getting started 🚀](#getting-started-)
 2. [Features ✨](#features-)
-3. [Contract Registry 🗳️](#contract-registry-️)
+3. [Contract Registry 🗳️](#contract-registry-️%EF%B8%8F)
    1. [How it works](#how-it-works)
+   2. [Typed Contracts](#typed-contracts)
 4. [Examples 📚](#examples-)
 5. [Package Development 🛠](#package-development-)
 
@@ -87,6 +88,7 @@ At its core, this library serves as a **wrapper for polkadot{.js}, potentially s
   - [`decodeOutput`](https://scio-labs.github.io/use-inkathon/functions/decodeOutput.html)
 - Constants definitions for Substrate-based chains, wallets, and assets
 - Works multichain with live & dynamic chain-switching out of the box
+- Full contract-level type-safety with [`typechain-polkadot`](https://github.com/Brushfam/typechain-polkadot) via [`useRegisteredTypedContract`](https://scio-labs.github.io/use-inkathon/functions/useRegisteredTypedContract.html)
 
 > [!NOTE]  
 > Checkout our [TypeDoc Documentation](https://scio-labs.github.io/use-inkathon/) for more details.
@@ -140,6 +142,25 @@ Then access the contract as above:
 ```ts
 const { contract } = useRegisteredContract('greeter')
 ```
+
+### Typed Contracts
+
+> [!NOTE]  
+> Make sure to also install `@727-ventures/typechain-types`, `bn.js`, and `@types/bn.js` as dependencies in your project. Find a complete setup & usage example in the [`ink!athon boilerplate`](https://github.com/scio-labs/inkathon).
+
+If you are using [`typechain-polkadot`](https://github.com/Brushfam/typechain-polkadot) to generate type-safe contracts, you can use the `useRegisteredTypedContract` hook instead:
+
+```ts
+import GreeterContract from '[…]/typed-contracts/contracts/greeter'
+
+// …
+
+const { typedContract } = useRegisteredTypedContract('greeter', GreeterContract)
+const result = await typedContract.query.greet()
+```
+
+> [!IMPORTANT]  
+> Currently, only queries are supported until [typechain-polkadot#138](https://github.com/Brushfam/typechain-polkadot/pull/138) is merged. Alternatively, we're considering switching to the [`prosopo/typechain-polkadot`](https://github.com/prosopo/typechain-polkadot) fork completely.
 
 ## Examples 📚
 

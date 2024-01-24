@@ -4,5 +4,6 @@ export * from './DeployedContract'
 export * from './SubstrateChain'
 export * from './SubstrateDeployment'
 export * from './SubstrateWallet'
+export * from './TypechainContractConstructor'
 export * from './UseInkathonProviderContext'
 // @endindex
