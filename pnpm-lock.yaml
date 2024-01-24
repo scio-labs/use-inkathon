@@ -20,6 +20,9 @@ importers:
       '@polkadot/extension-inject':
         specifier: '>=0.46'
         version: 0.46.6(@polkadot/api@10.11.1)(@polkadot/util@12.6.1)
+      '@polkadot/keyring':
+        specifier: '>=10'
+        version: 12.6.1(@polkadot/util-crypto@12.6.1)(@polkadot/util@12.6.1)
       '@polkadot/types':
         specifier: '>=10'
         version: 10.11.1
