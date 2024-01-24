@@ -36,21 +36,6 @@ export const alephzeroTestnet: SubstrateChain = {
   faucetUrls: ['https://faucet.test.azero.dev'],
 }
 
-/**
- * @deprecated Use `contracts` instead, which is the smart contracts parachain of Rococo.
- */
-export const rococo: SubstrateChain = {
-  network: 'rococo',
-  name: 'Rococo Contracts Testnet',
-  ss58Prefix: 42,
-  rpcUrls: ['wss://rococo-contracts-rpc.polkadot.io'],
-  explorerUrls: {
-    [SubstrateExplorer.Subscan]: `https://rococo.subscan.io`,
-  },
-  testnet: true,
-  faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
-}
-
 export const contracts: SubstrateChain = {
   network: 'contracts',
   name: 'Contracts on Rococo',
@@ -62,6 +47,11 @@ export const contracts: SubstrateChain = {
   testnet: true,
   faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
 }
+
+/**
+ * @deprecated Use `contracts` instead, which is the smart contracts parachain of Rococo.
+ */
+export const rococo: SubstrateChain = contracts
 
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
