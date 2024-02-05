@@ -14,9 +14,5 @@ export const useRegisteredContract = (contractId: string, networkId?: string) =>
 
   const deployment = getDeployment(deployments || [], contractId, networkId)
 
-  if (!deployment) {
-    throw new Error(`No deployment found for contractId ${contractId} on network ${networkId}`)
-  }
-
-  return useContract(deployment.abi, deployment.address)
+  return useContract(deployment?.abi, deployment?.address)
 }
