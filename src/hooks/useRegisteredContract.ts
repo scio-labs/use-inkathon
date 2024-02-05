@@ -9,7 +9,14 @@ import { useContract } from './useContract'
  */
 export const useRegisteredContract = (contractId: string, networkId?: string) => {
   const { deployments, activeChain } = useInkathon()
+
   networkId = networkId || activeChain?.network || ''
+
   const deployment = getDeployment(deployments || [], contractId, networkId)
-  return useContract(deployment?.abi, deployment?.address)
+
+  if (!deployment) {
+    throw new Error(`No deployment found for contractId ${contractId} on network ${networkId}`)
+  }
+
+  return useContract(deployment.abi, deployment.address)
 }

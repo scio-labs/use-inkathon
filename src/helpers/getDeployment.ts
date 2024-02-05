@@ -29,7 +29,6 @@ export const getDeploymentContract = (
   contractId: string,
   networkId: string,
 ) => {
-  if (!api) return undefined
   const deployment = getDeployment(deployments || [], contractId, networkId)
   if (!deployment) return undefined
   return new ContractPromise(api, deployment?.abi, deployment?.address)
