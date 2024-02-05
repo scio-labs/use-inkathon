@@ -14,4 +14,5 @@ export interface SubstrateChain {
 export enum SubstrateExplorer {
   Subscan = 'subscan',
   PolkadotJs = 'polkadotjs',
+  Other = 'other',
 }
