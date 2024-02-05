@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.8.1
+
+### Patch Changes
+
+- [`3dda3e1`](https://github.com/scio-labs/use-inkathon/commit/3dda3e1a2fbd873c74da8ae697561f8bf917678e) Thanks [@wottpal](https://github.com/wottpal)! - Revert to previous (silently failing) behavior when loading deployment metadata, due to it's async nature.
+
 ## 0.8.0
 
 ### Minor Changes
