@@ -136,6 +136,18 @@ export const phalaPOC6Testnet: SubstrateChain = {
   faucetUrls: ['https://phala.network/faucet'],
 }
 
+export const ternoaAlphanet: SubstrateChain = {
+  network: 'ternoa-alphanet',
+  name: 'Ternoa Alphanet',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://alphanet.ternoa.com'],
+  testnet: true,
+  faucetUrls: ['https://faucet.ternoa.network'],
+  explorerUrls: {
+    [SubstrateExplorer.Other]: `https://explorer-alphanet.ternoa.dev`,
+  },
+}
+
 /**
  * Live Canary Networks
  */
@@ -232,26 +244,38 @@ export const phala: SubstrateChain = {
   },
 }
 
+export const ternoa: SubstrateChain = {
+  network: 'ternoa',
+  name: 'Ternoa',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://mainnet.ternoa.com'],
+  explorerUrls: {
+    [SubstrateExplorer.Other]: `https://explorer.ternoa.com`,
+  },
+}
+
 /**
  * Exporting all chains separately
  */
 export const allSubstrateChains: SubstrateChain[] = [
-  development,
-  alephzeroTestnet,
-  rococo,
-  t0rnTestnet,
-  bitCountryAlphaTestnet,
   agungTestnet,
-  amplitudeTestnet,
-  phalaPOC6Testnet,
-  shibuya,
-  shiden,
-  amplitude,
-  khala,
   alephzero,
+  alephzeroTestnet,
+  amplitude,
+  amplitudeTestnet,
   astar,
+  bitCountryAlphaTestnet,
+  development,
+  khala,
   pendulum,
   phala,
+  phalaPOC6Testnet,
+  rococo,
+  shibuya,
+  shiden,
+  t0rnTestnet,
+  ternoa,
+  ternoaAlphanet,
 ]
 
 /**
