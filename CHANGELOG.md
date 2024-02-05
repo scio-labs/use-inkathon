@@ -1,5 +1,17 @@
 # @scio-labs/use-inkathon
 
+## 0.8.0
+
+### Minor Changes
+
+- [#59](https://github.com/scio-labs/use-inkathon/pull/59) [`7865a62`](https://github.com/scio-labs/use-inkathon/commit/7865a623c0df66be91881a8c7a4b178448baa7c0) Thanks [@peetzweg](https://github.com/peetzweg)! - throws Error when trying to access unavailable contract deployment
+
+- [#60](https://github.com/scio-labs/use-inkathon/pull/60) [`2e23a13`](https://github.com/scio-labs/use-inkathon/commit/2e23a13974e80a54e91a315e8d21b404610d6b2c) Thanks [@peetzweg](https://github.com/peetzweg)! - marks `rococo` chains data as deprecated and should be replaced with `contracts`, as `rococo` is the testnet relay chain not the smart contracts chain users interact with
+
+### Patch Changes
+
+- [#61](https://github.com/scio-labs/use-inkathon/pull/61) [`1c4abe8`](https://github.com/scio-labs/use-inkathon/commit/1c4abe87503b13e241c2c44342ab445761caf546) Thanks [@wottpal](https://github.com/wottpal)! - Add ternoa network (mainnet & testnet)
+
 ## 0.7.0
 
 ### Minor Changes
