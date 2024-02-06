@@ -56,6 +56,7 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest",
+    "test:ci": "vitest run",
     "coverage": "vitest run --coverage",
     "dev": "tsup --watch",
     "dev:react-example": "concurrently \"pnpm run dev\" \"pnpm run -F \"{examples/react-ts}\" dev\"",
