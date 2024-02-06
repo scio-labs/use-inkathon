@@ -8,6 +8,7 @@ import { SubstrateDeployment } from './SubstrateDeployment'
 export type UseInkathonProviderContextType = {
   isInitializing?: boolean
   isInitialized?: boolean
+  initialize: () => Promise<any>
   isConnecting?: boolean
   isConnected?: boolean
   error?: UseInkathonError
