@@ -274,6 +274,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       value={{
         isInitializing: isInitializing.current,
         isInitialized: isInitialized.current,
+        initialize,
         isConnecting,
         isConnected,
         error,
