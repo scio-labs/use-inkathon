@@ -1,43 +1,43 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Run Testsuite
+name: Testsuite
 
 on:
   pull_request:
     branches:
       - master
 
-      jobs:
-        release:
-          name: Release
-          runs-on: ubuntu-latest
-          strategy:
-            matrix:
-              node-version: [20]
-              pnpm-version: [8.11]
-          steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
-              with:
-                # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
-                fetch-depth: 0
-                submodules: true
+jobs:
+  release:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+        pnpm-version: [8.11]
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+          fetch-depth: 0
+          submodules: true
 
-            - name: Set up pnpm action ${{ matrix.pnpm-version }}
-              uses: pnpm/action-setup@v2
-              with:
-                version: ${{ matrix.pnpm-version }}
+      - name: Set up pnpm action ${{ matrix.pnpm-version }}
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ matrix.pnpm-version }}
 
-            - name: Set up Node ${{ matrix.node-version }}
-              uses: actions/setup-node@v3
-              with:
-                cache: 'pnpm'
-                node-version: ${{ matrix.node-version }}
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          cache: 'pnpm'
+          node-version: ${{ matrix.node-version }}
 
-            - name: Install Dependencies
-              run: pnpm install --frozen-lockfile
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
 
-            - name: Run Unit Tests
-              run: pnpm test:ci
+      - name: Run Unit Tests
+        run: pnpm test:ci
 
-            - name: Run Coverage Analysis
-              run: pnpm coverage
+      - name: Run Coverage Analysis
+        run: pnpm coverage
