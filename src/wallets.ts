@@ -60,7 +60,7 @@ export const talisman: SubstrateWallet = {
 export const nova: SubstrateWallet = {
   id: 'nova',
   name: 'Nova Wallet',
-  platforms: [SubstrateWalletPlatform.Android, SubstrateWalletPlatform.iOS],
+  platforms: [SubstrateWalletPlatform.Browser, SubstrateWalletPlatform.Android, SubstrateWalletPlatform.iOS],
   urls: {
     website: 'https://novawallet.io/',
     androidApp: 'https://play.google.com/store/apps/details?id=io.novafoundation.nova.market',
@@ -72,36 +72,6 @@ export const nova: SubstrateWallet = {
   ],
 }
 
-export const alephzeroSigner: SubstrateWallet = {
-  id: 'aleph-zero-signer',
-  name: 'Aleph Zero Signer',
-  platforms: [SubstrateWalletPlatform.Browser],
-  urls: {
-    website: 'https://alephzero.org/signer',
-    chromeExtension: 'https://chrome.google.com/webstore/detail/opbinaebpmphpefcimknblieddamhmol',
-    firefoxExtension: 'https://addons.mozilla.org/en-US/firefox/addon/aleph-zero-signer/',
-  },
-  logoUrls: [
-    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/aleph-zero-signer@128w.png',
-    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/aleph-zero-signer@512w.png',
-  ],
-}
-
-export const nightly: SubstrateWallet = {
-  id: 'Nightly',
-  name: 'Nightly Wallet',
-  platforms: [SubstrateWalletPlatform.Browser],
-  urls: {
-    website: 'https://wallet.nightly.app',
-    chromeExtension:
-      'https://chrome.google.com/webstore/detail/nightly/fiikommddbeccaoicoejoniammnalkfa?hl=en',
-    firefoxExtension: 'https://addons.mozilla.org/en-GB/firefox/addon/nightly-app/',
-  },
-  logoUrls: [
-    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightly@128w.png',
-    'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nightly@512w.png',
-  ],
-}
 
 export const nightlyConnect: SubstrateWallet = {
   id: 'NightlyConnect',
@@ -127,9 +97,6 @@ export const allSubstrateWallets: SubstrateWallet[] = [
   talisman,
   polkadotjs,
   nova,
-  alephzeroSigner,
-  nightly,
-  nightlyConnect,
 ]
 
 /**
@@ -155,9 +122,6 @@ export const isWalletInstalled = (wallet: SubstrateWallet) => {
     const novaIsInstalled = !!(injectedWindow as any).walletExtension?.isNovaWallet
     if (novaIsInstalled && wallet.id === polkadotjs.id) return false
     if (novaIsInstalled && wallet.id === nova.id) return true
-
-    // A special case for NightlyConnect, as it serves as a selector.
-    if (wallet.id === nightlyConnect.id) return true
 
     return !!injectedExtension
   } catch (e) {
