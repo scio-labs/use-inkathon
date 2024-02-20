@@ -1,4 +1,4 @@
-import { useBalance, useInkathon } from '@poppyseed/lastic-sdk'
+import { useBalance, useInkathon, useRelayBalance } from '@poppyseed/lastic-sdk'
 import { useEffect, useState } from 'react'
 import { TransferDialog } from './TransferDialog'
 
@@ -16,6 +16,7 @@ export function ConnectionStatus() {
 
   // Fetch & watch balance
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
+  const { balanceFormatted: relayBalanceFormatted } = useRelayBalance(activeAccount?.address, true)
 
   // Check whether the connected chain has pallet-contracts
   const [hasPalletContracts, setHasPalletContracts] = useState<boolean | undefined>(undefined)
@@ -80,6 +81,12 @@ export function ConnectionStatus() {
           <strong>Balance</strong>
           <small>
             <p>{balanceFormatted}</p>
+          </small>
+
+          {/* Relay Balance */}
+          <strong>Relay Balance</strong>
+          <small>
+            <p>{relayBalanceFormatted}</p>
           </small>
 
           <div className="grid">
