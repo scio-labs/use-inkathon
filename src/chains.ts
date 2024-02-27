@@ -72,6 +72,30 @@ export const rococoCoretime: SubstrateChain = {
   faucetUrls: ['https://matrix.to/#/#rococo-faucet:matrix.org'],
 }
 
+export const westend: SubstrateChain = {
+  network: 'westend',
+  name: 'Westend Relay Chain',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://westend-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://westend.subscan.io`,
+  },
+  testnet: true,
+  faucetUrls: ['https://matrix.to/#/#westend_faucet:matrix.org'],
+}
+
+export const westendCoretime: SubstrateChain = {
+  network: 'westend-coretime',
+  name: 'Westend Coretime Chain',
+  ss58Prefix: 42,
+  rpcUrls: ['wss://westend-coretime-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.Subscan]: `https://westend.subscan.io`,
+  },
+  testnet: true,
+  faucetUrls: ['https://matrix.to/#/#westend_faucet:matrix.org'],
+}
+
 export const shibuya: SubstrateChain = {
   network: 'shibuya',
   name: 'Shibuya Testnet',
@@ -286,6 +310,8 @@ export const allSubstrateChains: SubstrateChain[] = [
   rococo,
   rococoContracts,
   rococoCoretime,
+  westend,
+  westendCoretime,
   t0rnTestnet,
   bitCountryAlphaTestnet,
   agungTestnet,
