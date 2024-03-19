@@ -52,6 +52,7 @@ export interface UseInkathonProviderProps extends PropsWithChildren {
   connectOnInit?: boolean
   deployments?: Promise<SubstrateDeployment[]>
   apiOptions?: ApiOptions
+  supportedWallets?: SubstrateWallet[]
 }
 export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   children,
@@ -60,6 +61,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   connectOnInit,
   deployments: _deployments,
   apiOptions,
+  supportedWallets = allSubstrateWallets,
 }) => {
   // Check if default chain was provided
   if (
@@ -182,7 +184,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
     try {
       // Determine installed wallets
-      const wallets = allSubstrateWallets.filter((w) => isWalletInstalled(w))
+      const wallets = supportedWallets.filter((w) => isWalletInstalled(w))
       if (!wallets?.length) {
         const message = 'No Substrate-compatible extension detected'
         setError({
@@ -290,6 +292,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         setActiveAccount,
         lastActiveAccount,
         deployments,
+        supportedWallets,
       }}
     >
       {children}
