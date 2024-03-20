@@ -28,6 +28,7 @@ export type UseInkathonProviderContextType = {
   setActiveAccount?: Dispatch<SetStateAction<InjectedAccount | undefined>>
   lastActiveAccount?: InjectedAccount
   deployments?: SubstrateDeployment[]
+  supportedWallets?: SubstrateWallet[]
 }
 
 export interface UseInkathonError {
