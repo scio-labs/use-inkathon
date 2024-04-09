@@ -5,3 +5,4 @@ LICENSE
 dist
 docs
 src/metadata
+.changeset
