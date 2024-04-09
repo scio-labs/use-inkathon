@@ -1,5 +1,13 @@
 # @scio-labs/use-inkathon
 
+## 0.9.0
+
+### Minor Changes
+
+- [`ca1c28b`](https://github.com/scio-labs/use-inkathon/commit/ca1c28b636312ae3eab4c4cde4e9d19655a5207c) Thanks [@wottpal](https://github.com/wottpal)! - Add option to pass `supportedWallets` to the provider to only allow a subset of `allSubstrateWallets` or pass custom wallets.
+
+- [`4a1ec00`](https://github.com/scio-labs/use-inkathon/commit/4a1ec00723db67b1cc9f1c6c793d6f846238ff51) Thanks [@wottpal](https://github.com/wottpal)! - Prevent NightlyConnect to pop up on init when no other wallet is available
+
 ## 0.8.1
 
 ### Patch Changes
