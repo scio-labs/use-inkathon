@@ -171,6 +171,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     chain?: SubstrateChain,
     wallet?: SubstrateWallet,
     lastActiveAccountAddress?: string,
+    isInitialConnect?: boolean,
   ) => {
     setError(undefined)
     setIsConnecting(true)
@@ -184,7 +185,12 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
 
     try {
       // Determine installed wallets
-      const wallets = supportedWallets.filter((w) => isWalletInstalled(w))
+      const wallets = supportedWallets.filter((w) => {
+        if (!isWalletInstalled(w)) return false
+        // Prevent NightlyConnect to pop up on init when no other wallet is available
+        if (isInitialConnect && w.id === nightlyConnect.id) return false
+        return true
+      })
       if (!wallets?.length) {
         const message = 'No Substrate-compatible extension detected'
         setError({
@@ -259,7 +265,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Initialize
   useEffect(() => {
     if (isInitialized.current || isInitializing.current) return
-    connectOnInit ? connect() : initialize()
+    connectOnInit ? connect(undefined, undefined, undefined, true) : initialize()
     return () => {
       unsubscribeAccounts.current?.()
     }
