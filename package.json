@@ -1,7 +1,7 @@
 {
   "name": "@poppyseed/lastic-sdk",
   "author": "Lastic <hi@lastic.xyz> (https://lastic.xyz)",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Typesafe React Hooks abstracting functionality of polkadot.js, created for Lastic website",
   "homepage": "https://lastic.xyz",
   "license": "GPL-3.0",
@@ -66,7 +66,8 @@
     "typedoc": "typedoc src/index.ts --titleLink \"https://github.com/scio-labs/use-inkathon\"",
     "changeset:version": "pnpm run typedoc && changeset version",
     "changeset:publish": "pnpm run build && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "pre-commit": "pnpm version patch --no-git-tag-version && git add package.json"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
