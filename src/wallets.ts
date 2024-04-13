@@ -60,7 +60,11 @@ export const talisman: SubstrateWallet = {
 export const nova: SubstrateWallet = {
   id: 'nova',
   name: 'Nova Wallet',
-  platforms: [SubstrateWalletPlatform.Browser, SubstrateWalletPlatform.Android, SubstrateWalletPlatform.iOS],
+  platforms: [
+    SubstrateWalletPlatform.Browser,
+    SubstrateWalletPlatform.Android,
+    SubstrateWalletPlatform.iOS,
+  ],
   urls: {
     website: 'https://novawallet.io/',
     androidApp: 'https://play.google.com/store/apps/details?id=io.novafoundation.nova.market',
@@ -71,7 +75,6 @@ export const nova: SubstrateWallet = {
     'https://github.com/scio-labs/use-inkathon/raw/main/assets/wallet-logos/nova@512w.png',
   ],
 }
-
 
 export const nightlyConnect: SubstrateWallet = {
   id: 'NightlyConnect',
@@ -92,12 +95,7 @@ export const nightlyConnect: SubstrateWallet = {
 /**
  * Exporting all wallets separately
  */
-export const allSubstrateWallets: SubstrateWallet[] = [
-  subwallet,
-  talisman,
-  polkadotjs,
-  nova,
-]
+export const allSubstrateWallets: SubstrateWallet[] = [subwallet, talisman, polkadotjs, nova]
 
 /**
  * Returns wallet (if existent) for given identifier (`id` field).
