@@ -1,7 +1,7 @@
 {
   "name": "@poppyseed/lastic-sdk",
   "author": "Lastic <hi@lastic.xyz> (https://lastic.xyz)",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "description": "Typesafe React Hooks abstracting functionality of polkadot.js, created for Lastic website",
   "homepage": "https://lastic.xyz",
   "license": "GPL-3.0",
@@ -65,7 +65,9 @@
     "lint:format": "prettier . --write",
     "typedoc": "typedoc src/index.ts --titleLink \"https://github.com/scio-labs/use-inkathon\"",
     "changeset:version": "pnpm run typedoc && changeset version",
-    "changeset:publish": "pnpm run build && changeset publish"
+    "changeset:publish": "pnpm run build && changeset publish",
+    "prepare": "husky",
+    "pre-commit": "pnpm version patch --no-git-tag-version && git add package.json"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
@@ -100,6 +102,7 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.33.2",
+    "husky": "^9.0.11",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.4",
     "simple-git-hooks": "^2.9.0",
@@ -108,29 +111,29 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@polkadot/api": "^10.11.2",
-    "@polkadot/api-contract": "^10.11.2",
-    "@polkadot/extension-dapp": "^0.46.6",
-    "@polkadot/extension-inject": "^0.46.6",
-    "@polkadot/types": "^10.11.2",
+    "@changesets/cli": "^2.27.1",
+    "@polkadot/api": "^10.12.6",
+    "@polkadot/api-contract": "^10.12.6",
+    "@polkadot/extension-dapp": "^0.46.9",
+    "@polkadot/extension-inject": "^0.46.9",
+    "@polkadot/types": "^10.12.6",
     "@polkadot/util": "^12.6.2",
     "@poppyseed/lastic-sdk": "link:",
-    "@types/node": "^20.10.0",
-    "@types/react": "^18.2.38",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.78",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "concurrently": "^8.2.2",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-react": "^7.33.2",
-    "lint-staged": "^15.1.0",
-    "prettier": "^3.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.34.1",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "simple-git-hooks": "^2.9.0",
-    "tsup": "^8.0.1",
-    "typedoc": "^0.25.3",
-    "typescript": "^5.3.2"
+    "simple-git-hooks": "^2.11.1",
+    "tsup": "^8.0.2",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.5"
   }
 }
