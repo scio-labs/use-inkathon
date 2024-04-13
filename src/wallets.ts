@@ -1,10 +1,8 @@
 import { SubstrateWallet, SubstrateWalletPlatform } from '@/types'
 import type {
-  InjectedAccount,
   InjectedExtension,
-  InjectedWindow,
+  InjectedWindow
 } from '@polkadot/extension-inject/types'
-import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 /**
  * Defined Substrate Wallet Constants
@@ -135,34 +133,7 @@ export const enableWallet = async (wallet: SubstrateWallet, appName: string) => 
 
   try {
     if (typeof window === 'undefined') return undefined
-    const injectedWindow = window as InjectedWindow
-
-    // NightlyConnect is a selector, it needs a special case to handle the connection
-    if (wallet.id === nightlyConnect.id) {
-      let adapter: any
-      try {
-        adapter = await getNightlyConnectAdapter(appName)
-        await adapter.connect()
-        const injectedExtension: InjectedExtension = {
-          accounts: {
-            ...adapter.accounts,
-            // A special case that probably results from the way packages are bundled
-            subscribe: (cb: (accounts: InjectedAccount[]) => void | Promise<void>) => {
-              const unsub = adapter.accounts.subscribe(cb)
-              adapter.accounts._triggerSubs()
-              return unsub
-            },
-          },
-          signer: adapter.signer,
-          name: wallet.id,
-          version: '0.1.10',
-        }
-        return injectedExtension
-      } catch (e) {
-        await adapter?.disconnect().catch(() => {})
-        throw new Error('Error while enabling NightlyConnect')
-      }
-    }
+    const injectedWindow = window as unknown as InjectedWindow
 
     const injectedWindowProvider =
       injectedWindow?.injectedWeb3?.[wallet.id === nova.id ? polkadotjs.id : wallet.id]

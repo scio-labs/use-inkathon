@@ -12,8 +12,7 @@ import {
   allSubstrateWallets,
   enableWallet,
   getSubstrateWallet,
-  isWalletInstalled,
-  nightlyConnect,
+  isWalletInstalled
 } from '@/wallets'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { ApiOptions } from '@polkadot/api/types'
@@ -29,7 +28,6 @@ import {
   useState,
 } from 'react'
 import { getSubstrateChain } from './chains'
-import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
 const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 
@@ -259,10 +257,6 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       await provider?.disconnect()
       await api?.disconnect()
       return
-    }
-    if (activeExtension.current?.name === nightlyConnect.id) {
-      const adapter = await getNightlyConnectAdapter(appName)
-      await adapter?.disconnect()
     }
     setIsConnected(false)
     updateAccounts([])
