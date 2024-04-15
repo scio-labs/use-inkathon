@@ -288,6 +288,19 @@ export const kusama: SubstrateChain = {
   },
 }
 
+export const kusamaCoretime: SubstrateChain = {
+  network: 'kusama-coretime',
+  name: 'Kusama Coretime',
+  ss58Prefix: 2,
+  rpcUrls: ['wss://kusama-coretime-rpc.polkadot.io'],
+  explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
+      'wss://kusama-coretime-rpc.polkadot.io',
+    )}#/explorer`,
+    [SubstrateExplorer.Subscan]: `https://coretime-kusama.subscan.io`,
+  },
+}
+
 export const polkadot: SubstrateChain = {
   network: 'polkadot',
   name: 'Polkadot',
@@ -324,6 +337,7 @@ export const allSubstrateChains: SubstrateChain[] = [
   alephzero,
   astar,
   kusama,
+  kusamaCoretime,
   polkadot,
   pendulum,
   phala,
