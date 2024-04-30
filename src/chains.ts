@@ -36,11 +36,15 @@ export const alephzeroTestnet: SubstrateChain = {
   faucetUrls: ['https://faucet.test.azero.dev'],
 }
 
-export const popNetwork: SubstrateChain = {
-  network: 'pop-network',
+export const popNetworkTestnet: SubstrateChain = {
+  network: 'pop-network-testnet',
   name: 'Pop Network',
   ss58Prefix: 42,
-  rpcUrls: ['wss://rpc1.paseo.popnetwork.xyz', 'wss://rpc2.paseo.popnetwork.xyz'],
+  rpcUrls: [
+    'wss://rpc1.paseo.popnetwork.xyz',
+    'wss://rpc2.paseo.popnetwork.xyz',
+    'wss://rpc3.paseo.popnetwork.xyz',
+  ],
   explorerUrls: {
     [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc1.paseo.popnetwork.xyz`,
   },
