@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.10.0
+
+### Minor Changes
+
+- [#70](https://github.com/scio-labs/use-inkathon/pull/70) [`31f6089`](https://github.com/scio-labs/use-inkathon/commit/31f60899fa788f62c4a4bb1c12ed4931d474f0c4) Thanks [@peetzweg](https://github.com/peetzweg)! - aadds smart contract capable Pop Network to defined chains
+
 ## 0.9.0
 
 ### Minor Changes
