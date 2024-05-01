@@ -292,6 +292,7 @@ export const allSubstrateChains: SubstrateChain[] = [
   t0rnTestnet,
   ternoa,
   ternoaAlphanet,
+  popNetworkTestnet,
 ]
 
 /**
