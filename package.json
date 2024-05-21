@@ -1,7 +1,7 @@
 {
   "name": "@poppyseed/lastic-sdk",
   "author": "Lastic <hi@lastic.xyz> (https://lastic.xyz)",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Typesafe React Hooks abstracting functionality of polkadot.js, created for Lastic website",
   "homepage": "https://lastic.xyz",
   "license": "GPL-3.0",
@@ -110,7 +110,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@changesets/cli": "^2.27.1",
+    "@changesets/cli": "^2.27.3",
     "@polkadot/api": "^11.0.3",
     "@polkadot/api-contract": "^11.0.3",
     "@polkadot/extension-dapp": "^0.46.9",
@@ -118,8 +118,8 @@
     "@polkadot/types": "^11.0.3",
     "@polkadot/util": "^12.6.2",
     "@poppyseed/lastic-sdk": "link:",
-    "@types/node": "^20.12.11",
-    "@types/react": "^18.3.1",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.2",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "concurrently": "^8.2.2",
