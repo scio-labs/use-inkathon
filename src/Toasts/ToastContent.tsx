@@ -18,22 +18,47 @@ const ToastContent = ({ className, toast }: ToastContentProps) => {
     window.open(link, '_blank');
   }, [link]);
 
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'row' as const,
+    alignItems: 'center',
+  };
+
+  const iconContainerStyle = {
+    display: 'flex',
+    marginRight: '1rem',
+  };
+
+  const linkIconStyle = {
+    display: 'flex',
+    cursor: 'pointer',
+    paddingLeft: '1rem',
+  };
+
+  const canceledIconStyle = {
+    color: '#FBBF24', // Tailwind 'text-yellow-500'
+  };
+
+  const errorIconStyle = {
+    color: '#EF4444', // Tailwind 'text-red-500'
+  };
+
   return (
-    <div className={`flex flex-row items-center ${className}`} data-cy="notification-wrapper">
-      <div className="iconContainer mr-4 flex">
+    <div style={containerStyle} className={className} data-cy="notification-wrapper">
+      <div style={iconContainerStyle}>
         {type === 'success' ? (
           <HiOutlineCheckCircle data-cy="notification-icon-success" size={24} />
         ) : type === 'loading' ? (
           <CircularProgress data-cy="notification-icon-loading" size={24} />
         ) : type === 'canceled' ? (
-          <ErrorOutlineIcon className="text-yellow-500" data-cy="notification-icon-canceled" size={24} />
+          <ErrorOutlineIcon style={canceledIconStyle} data-cy="notification-icon-canceled" size={24} />
         ) : (
-          <ErrorOutlineIcon className="text-red-500" data-cy="notification-icon-error" size={24} />
+          <ErrorOutlineIcon style={errorIconStyle} data-cy="notification-icon-error" size={24} />
         )}
       </div>
-      <p className="titleContainer">{title}</p>
+      <p>{title}</p>
       {!!link && (
-        <div className="linkIcon flex cursor-pointer pl-4" onClick={onOpenLink}>
+        <div style={linkIconStyle} onClick={onOpenLink}>
           <LaunchIcon size={20} />
         </div>
       )}

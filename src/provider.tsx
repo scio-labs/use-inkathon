@@ -1,3 +1,4 @@
+import Snackbar from '@/Toasts/Snackbar'
 import { accountArraysAreEqual, accountsAreEqual, initPolkadotJs } from '@/helpers'
 import { registerDeployments } from '@/registry'
 import {
@@ -342,7 +343,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
         addToast, 
         removeToast 
       }}
-    >
+    > 
+      <Snackbar />
       {children}
 =    </UseInkathonProviderContext.Provider>
   )

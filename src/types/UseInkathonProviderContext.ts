@@ -1,4 +1,3 @@
-import { ToastType } from '@/Toasts/ToastContent'
 import { SubstrateChain, SubstrateWallet } from '@/types'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { InjectedAccount, InjectedExtension } from '@polkadot/extension-inject/types'
@@ -14,6 +13,7 @@ export type Toast = {
   type: ToastType
 }
 
+export type ToastType = 'success' | 'error' | 'loading' | 'canceled';
 
 export type UseInkathonProviderContextType = {
   isInitializing?: boolean
