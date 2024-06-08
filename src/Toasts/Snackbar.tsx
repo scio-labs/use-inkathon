@@ -1,4 +1,5 @@
 import { useInkathon } from '@/provider';
+import { Stack } from '@mui/material';
 import ToastBar from './ToastBar';
 
 interface Props {
@@ -17,13 +18,17 @@ const Snackbar = ({ className }: Props) => {
     flexDirection: 'column' as const,
     gap: '0.5rem',
   };
-  console.log("toasts");
-
   return (
     <div style={containerStyle} className={className}>
-      {toasts.map((toast) => (
-        <ToastBar toast={toast} key={toast.id} />
-      ))}
+      <Stack
+        className={className}
+        flexDirection="column"
+        gap={1}
+      >
+          {toasts.map((toast) => (
+            <ToastBar toast={toast} key={toast.id} />
+          ))}
+      </Stack>
     </div>
   );
 };

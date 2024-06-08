@@ -21,9 +21,11 @@ const txResHandler = (
   if (status.isInBlock) {
     setStatus(`Included at block hash ${status.asInBlock.toHex()}`)
     console.log('Included at block hash', status.asInBlock.toHex())
+    addToast({ title: `Included at block hash ${status.asInBlock.toHex()}`, type: 'loading' })
   } else if (status.isFinalized) {
     setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
     console.log('Finalized at block hash', status.asFinalized.toHex())
+    addToast({ title: `❤️️ Transaction successful! tx hash: ${txHash} , Block hash: ${status.asFinalized.toString()}`, type: 'success' })
   }
 
   // status.isFinalized
