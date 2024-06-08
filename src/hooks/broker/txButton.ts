@@ -1,3 +1,4 @@
+import { Toast } from '@/types'
 import { signedTx, unsignedTx } from '@/utils'
 import { ApiPromise } from '@polkadot/api'
 import { InjectedAccount } from '@polkadot/extension-inject/types'
@@ -7,6 +8,7 @@ import { useState } from 'react'
 export interface TxButtonProps {
   api: ApiPromise | undefined
   setStatus: (status: string | null) => void
+  addToast: (toast: Omit<Toast, 'id'>) => void
   attrs: {
     palletRpc: string
     callable: string
@@ -26,6 +28,7 @@ interface UseTxButtonResult {
 
 export const useTxButton = ({
   api,
+  addToast,
   attrs,
   type,
   activeAccount,
@@ -56,12 +59,13 @@ export const useTxButton = ({
     // Call the appropriate transaction function based on the type
     try {
       if (isSigned()) {
-        await signedTx(api, attrs, setStatus, setUnsub, activeAccount, activeSigner)
+        await signedTx(api, attrs, setStatus, addToast, setUnsub, activeAccount, activeSigner)
       } else if (isUnsigned()) {
-        await unsignedTx(api, attrs, setStatus, setUnsub)
+        await unsignedTx(api, attrs, setStatus, addToast, setUnsub)
       }
     } catch (error) {
       setStatus(`Transaction Failed: ${error}`)
+      addToast({ title: `Transaction Failed: ${error}`, type: 'error' })
       console.error(error)
     }
   }

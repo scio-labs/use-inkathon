@@ -279,7 +279,7 @@ export const kusama: SubstrateChain = {
   network: 'kusama',
   name: 'Kusama',
   ss58Prefix: 2,
-  rpcUrls: ['wss://kusama-rpc.polkadot.io'],
+  rpcUrls: ['wss://rpc.ibp.network/kusama'],
   explorerUrls: {
     [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
       'wss://kusama-rpc.polkadot.io',
@@ -292,7 +292,7 @@ export const kusamaCoretime: SubstrateChain = {
   network: 'kusama-coretime',
   name: 'Kusama Coretime',
   ss58Prefix: 2,
-  rpcUrls: ['wss://kusama-coretime-rpc.polkadot.io'],
+  rpcUrls: ['wss://sys.ibp.network/coretime-kusama'],
   explorerUrls: {
     [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
       'wss://kusama-coretime-rpc.polkadot.io',

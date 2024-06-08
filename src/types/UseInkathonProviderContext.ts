@@ -1,9 +1,19 @@
+import { ToastType } from '@/Toasts/ToastContent'
 import { SubstrateChain, SubstrateWallet } from '@/types'
 import { ApiPromise, HttpProvider, WsProvider } from '@polkadot/api'
 import { InjectedAccount, InjectedExtension } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
 import { Dispatch, SetStateAction } from 'react'
 import { SubstrateDeployment } from './SubstrateDeployment'
+
+export type Toast = {
+  id: number
+  title?: string
+  link?: string
+  duration?: number
+  type: ToastType
+}
+
 
 export type UseInkathonProviderContextType = {
   isInitializing?: boolean
@@ -32,6 +42,10 @@ export type UseInkathonProviderContextType = {
   setActiveAccount?: Dispatch<SetStateAction<InjectedAccount | undefined>>
   lastActiveAccount?: InjectedAccount
   deployments?: SubstrateDeployment[]
+  toasts: Toast[]
+  setToasts: (toasts: Toast[]) => void
+  addToast: (toast: Omit<Toast, 'id'>) => void
+  removeToast: (id: Toast['id']) => void
 }
 
 export interface UseInkathonError {

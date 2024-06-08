@@ -1,3 +1,4 @@
+import { Toast } from '@/types'
 import { ApiPromise, SubmittableResult } from '@polkadot/api'
 import { InjectedAccount } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
@@ -24,6 +25,7 @@ const signedTx = async (
   api: ApiPromise,
   { palletRpc, callable, inputParams, paramFields }: TransactionParams,
   setStatus: Dispatch<SetStateAction<string | null>>,
+  addToast: (toast: Omit<Toast, 'id'>) => void,
   setUnsub: Dispatch<SetStateAction<any>>,
   activeAccount: InjectedAccount,
   activeSigner: Signer,
@@ -41,9 +43,9 @@ const signedTx = async (
 
   const unsub = await txExecute
     .signAndSend(address, signerOptions, (result: SubmittableResult) =>
-      txResHandler(setStatus, api, result),
+      txResHandler(setStatus, api, addToast, result),
     )
-    .catch((err: Error) => txErrHandler(setStatus, err))
+    .catch((err: Error) => txErrHandler(setStatus, addToast, err))
 
   setUnsub(() => unsub)
 }
@@ -52,6 +54,7 @@ const unsignedTx = async (
   api: ApiPromise,
   { palletRpc, callable, inputParams, paramFields }: TransactionParams,
   setStatus: Dispatch<SetStateAction<string | null>>,
+  addToast: (toast: Omit<Toast, 'id'>) => void,
   setUnsub: Dispatch<SetStateAction<any>>, // Replace 'any' with a specific type if possible
 ) => {
   const transformed = transformParams(paramFields, inputParams)
@@ -61,8 +64,8 @@ const unsignedTx = async (
     : api.tx[palletRpc][callable]()
 
   const unsub = await txExecute
-    .send((result: SubmittableResult) => txResHandler(setStatus, api, result))
-    .catch((err: Error) => txErrHandler(setStatus, err))
+    .send((result: SubmittableResult) => txResHandler(setStatus, api, addToast, result))
+    .catch((err: Error) => txErrHandler(setStatus, addToast, err))
 
   setUnsub(() => unsub)
 }

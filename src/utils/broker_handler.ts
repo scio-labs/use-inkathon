@@ -1,3 +1,4 @@
+import { Toast } from '@/types'
 import { ApiPromise, SubmittableResult } from '@polkadot/api'
 import { DispatchError } from '@polkadot/types/interfaces'
 import { bnFromHex } from '@polkadot/util'
@@ -6,14 +7,28 @@ import { Dispatch, SetStateAction } from 'react'
 const txResHandler = (
   setStatus: Dispatch<SetStateAction<string | null>>,
   api: ApiPromise,
+  addToast: (toast: Omit<Toast, 'id'>) => void,
   result: SubmittableResult,
 ) => {
   const { events, status } = result
   const txHash = result.txHash.toString()
 
-  status.isFinalized
-    ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
-    : setStatus(`Current transaction status: ${status.type}`)
+  if (status.isBroadcast) {
+    setStatus(`Broadcasted ${txHash}`)
+    addToast({ title: `Tx broadcasted`, type: 'loading' })
+  }
+
+  if (status.isInBlock) {
+    setStatus(`Included at block hash ${status.asInBlock.toHex()}`)
+    console.log('Included at block hash', status.asInBlock.toHex())
+  } else if (status.isFinalized) {
+    setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+    console.log('Finalized at block hash', status.asFinalized.toHex())
+  }
+
+  // status.isFinalized
+  //   ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+  //   : setStatus(`Current transaction status: ${status.type}`)
 
   // Loop through Vec<EventRecord> to display all events
   events.forEach(({ event: { data, method, section } }) => {
@@ -46,16 +61,27 @@ const txResHandler = (
         errorInfo = dispatchError.toString()
       }
       setStatus(`😞 Transaction Failed! ${section}.${method}::${errorInfo}`)
+      addToast({ title: `😞 Transaction Failed! ${section}.${method}::${errorInfo}`, type: 'error' })
     } else if (section + ':' + method === 'system:ExtrinsicSuccess') {
-      setStatus(
-        `❤️️ Transaction successful! tx hash: ${txHash} , Block hash: ${status.asFinalized.toString()}`,
-      )
+      if (status.isFinalized) {
+        // setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
+        // console.log('Finalized at block hash', status.asFinalized.toHex())
+      
+        setStatus(
+          `❤️️ Transaction successful! tx hash: ${txHash} , Block hash: ${status.asFinalized.toString()}`,
+        )
+      }
     }
   })
 }
 
-const txErrHandler = (setStatus: Dispatch<SetStateAction<string | null>>, err: any) => {
+const txErrHandler = (
+  setStatus: Dispatch<SetStateAction<string | null>>,
+  addToast: (toast: Omit<Toast, 'id'>) => void,
+  err: any
+) => {
   setStatus(`😞 Transaction Failed: ${err.toString()}`)
+  addToast({ title: `😞 Transaction Failed: ${err.toString()}`, type: 'canceled' })
 }
 
 const queryResHandler = (setStatus: Dispatch<SetStateAction<string | null>>, result: any) => {

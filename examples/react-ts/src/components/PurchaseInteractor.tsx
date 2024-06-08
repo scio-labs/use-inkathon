@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from 'react'
 import { Form, Grid, Input, InputOnChangeData } from 'semantic-ui-react'
 
 export default function PurchaseInteractor() {
-  const { api, activeSigner, activeAccount } = useInkathon()
+  const { api, activeSigner, activeAccount, addToast } = useInkathon()
   const { balanceFormatted } = useBalance(activeAccount?.address, true)
 
   const [param, setParam] = useState('')
@@ -15,6 +15,7 @@ export default function PurchaseInteractor() {
   const txButtonProps: TxButtonProps = {
     api,
     setStatus: (status: string | null) => console.log('tx status:', status),
+    addToast: addToast,
     attrs: {
       palletRpc: 'broker',
       callable: 'purchase',
