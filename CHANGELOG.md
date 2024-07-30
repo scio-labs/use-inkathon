@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.11.0
+
+### Minor Changes
+
+- [`b134501`](https://github.com/scio-labs/use-inkathon/commit/b13450119d4f941f5b6c59ff28c9be164efb1fd3) Thanks [@wottpal](https://github.com/wottpal)! - Allow to pass signer options (e.g. `nonce`) in `contractTx` & `deployContract`
+
 ## 0.10.0
 
 ### Minor Changes
