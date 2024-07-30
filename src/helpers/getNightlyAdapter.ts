@@ -7,7 +7,9 @@ export const getNightlyConnectAdapter = async (
   appName?: string,
   appIcon?: string,
   appOrigin?: string,
-  persisted = true,
+  connectionOptions = {
+    disableEagerConnect: true,
+  } as Parameters<typeof NightlyConnectAdapter.build>[1],
 ) => {
   if (_adapter) return _adapter
 
@@ -21,7 +23,7 @@ export const getNightlyConnectAdapter = async (
         appMetadata: { name, icon, description },
         network: 'AlephZero',
       },
-      persisted,
+      connectionOptions,
     )
   } catch (e) {
     return undefined
