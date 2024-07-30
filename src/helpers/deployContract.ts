@@ -2,6 +2,7 @@ import { DeployedContract } from '@/types'
 import { ApiPromise } from '@polkadot/api'
 import { CodePromise } from '@polkadot/api-contract'
 import { ContractOptions } from '@polkadot/api-contract/types'
+import { SignerOptions } from '@polkadot/api/types/submittable'
 import { EventRecord, SignedBlock } from '@polkadot/types/interfaces'
 import { IKeyringPair } from '@polkadot/types/types'
 import { stringCamelCase } from '@polkadot/util'
@@ -17,7 +18,8 @@ export const deployContract = async (
   wasm: Uint8Array | string | Buffer,
   constructorMethod = 'new',
   args = [] as unknown[],
-  options = {} as ContractOptions,
+  contractOptions = {} as Partial<ContractOptions>,
+  signerOptions = {} as Partial<SignerOptions>,
 ): Promise<DeployedContract> => {
   return new Promise<{
     address: string
@@ -28,8 +30,9 @@ export const deployContract = async (
     const code = new CodePromise(api, abi, wasm)
     const gasLimit = getMaxGasLimit(api)
     const constructorFn = code.tx[stringCamelCase(constructorMethod)]
-    const unsub = await constructorFn({ gasLimit, ...options }, ...args).signAndSend(
+    const unsub = await constructorFn({ gasLimit, ...contractOptions }, ...args).signAndSend(
       account,
+      signerOptions,
       async ({ events, contract, status }: any) => {
         if (status?.isInBlock) {
           unsub?.()

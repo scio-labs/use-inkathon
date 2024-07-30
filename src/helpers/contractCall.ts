@@ -1,6 +1,7 @@
 import { ApiPromise } from '@polkadot/api'
 import { ContractPromise } from '@polkadot/api-contract'
 import { ContractCallOutcome, ContractOptions } from '@polkadot/api-contract/types'
+import { SignerOptions } from '@polkadot/api/types/submittable'
 import { EventRecord } from '@polkadot/types/interfaces'
 import { Callback, IKeyringPair, ISubmittableResult } from '@polkadot/types/types'
 import { BN, stringCamelCase } from '@polkadot/util'
@@ -78,6 +79,7 @@ export const contractTx = async (
   options = {} as ContractOptions,
   args = [] as unknown[],
   statusCb?: Callback<ISubmittableResult>,
+  signerOptions = {} as Partial<SignerOptions>,
 ): Promise<ContractTxResult> => {
   // Check if account has sufficient balance
   const hasSufficientBalance = await checkIfBalanceSufficient(api, account, options?.value)
@@ -108,7 +110,7 @@ export const contractTx = async (
 
       const tx = contract.tx[stringCamelCase(method)]({ ...options, gasLimit }, ...args)
 
-      const unsub = await tx.signAndSend(account, async (result) => {
+      const unsub = await tx.signAndSend(account, signerOptions, async (result) => {
         statusCb?.(result)
 
         const isFinalized = result?.status?.[finalStatus]
