@@ -60,7 +60,7 @@ export function decodeOutput(
     const errorText = isErr(output)
       ? typeof output.Err === 'object'
         ? JSON.stringify(output.Err, null, 2)
-        : output.Err?.toString() ?? 'Error'
+        : (output.Err?.toString() ?? 'Error')
       : output !== 'Ok'
         ? output?.toString() || 'Error'
         : 'Error'
@@ -68,8 +68,8 @@ export function decodeOutput(
     const okText = isOk(r)
       ? typeof output === 'object'
         ? JSON.stringify(output, null, '\t')
-        : output?.toString() ?? '()'
-      : JSON.stringify(output, null, '\t') ?? '()'
+        : (output?.toString() ?? '()')
+      : (JSON.stringify(output, null, '\t') ?? '()')
 
     decodedOutput = isError ? errorText : okText
   } else if (result.isErr) {
