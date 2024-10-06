@@ -270,6 +270,18 @@ export const ternoa: SubstrateChain = {
   },
 }
 
+export const zeroCanary: SubstrateChain = {
+  network: 'zeroCanary',
+  name: 'Zero Canary',
+  ss58Prefix: 25,
+  rpcUrls: ['wss://rpc-1.kusama.node.zero.io','wss://rpc-1.gamedao.net'],
+  explorerUrls: {
+    [SubstrateExplorer.PolkadotJs]: `https://polkadot.js.org/apps/?rpc=${encodeURIComponent(
+      'wss://rpc-1.gamedao.net',
+    )}#/explorer`,
+  },
+}
+
 /**
  * Exporting all chains separately
  */
@@ -293,6 +305,7 @@ export const allSubstrateChains: SubstrateChain[] = [
   ternoa,
   ternoaAlphanet,
   popNetworkTestnet,
+  zeroCanary,
 ]
 
 /**
