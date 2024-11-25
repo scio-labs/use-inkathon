@@ -84,8 +84,18 @@ const parseBalanceData = (
 
   // Calculate the reducible balance (see: https://substrate.stackexchange.com/a/3009/3470)
   // (https://wiki.polkadot.network/docs/learn-guides-accounts#query-account-data-in-polkadot-js)
-  const frozenBalance: BN = new BN(data?.frozen || 0)
-  const reducibleBalance = freeBalance.sub(frozenBalance.sub(reservedBalance))
+  let reducibleBalance = new BN(0)
+
+  if (data?.frozen) {
+    const frozenBalance: BN = new BN(data?.frozen || 0)
+    reducibleBalance = freeBalance.sub(frozenBalance.sub(reservedBalance))
+  } else {
+    const miscFrozenBalance: BN = new BN(data?.miscFrozen || 0)
+    const feeFrozenBalance: BN = new BN(data?.feeFrozen || 0)
+    reducibleBalance = freeBalance.sub(
+      miscFrozenBalance.gt(feeFrozenBalance) ? miscFrozenBalance : feeFrozenBalance,
+    )
+  }
 
   // Format the balance
   const freeBalanceFormatted = formatBalance(api, freeBalance, formatterOptions)
