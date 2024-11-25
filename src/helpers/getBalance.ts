@@ -35,7 +35,6 @@ export const getBalance = async (
   // Query the chain and parse data
   const result: any = await api.query.system.account(address)
   const balanceData = parseBalanceData(api, result?.data, formatterOptions)
-
   return balanceData
 }
 
@@ -84,11 +83,9 @@ const parseBalanceData = (
   const balance = reservedBalance.add(freeBalance)
 
   // Calculate the reducible balance (see: https://substrate.stackexchange.com/a/3009/3470)
-  const miscFrozenBalance: BN = new BN(data?.miscFrozen || 0)
-  const feeFrozenBalance: BN = new BN(data?.feeFrozen || 0)
-  const reducibleBalance = freeBalance.sub(
-    miscFrozenBalance.gt(feeFrozenBalance) ? miscFrozenBalance : feeFrozenBalance,
-  )
+  // (https://wiki.polkadot.network/docs/learn-guides-accounts#query-account-data-in-polkadot-js)
+  const frozenBalance: BN = new BN(data?.frozen || 0)
+  const reducibleBalance = freeBalance.sub(frozenBalance.sub(reservedBalance))
 
   // Format the balance
   const freeBalanceFormatted = formatBalance(api, freeBalance, formatterOptions)
