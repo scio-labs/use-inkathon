@@ -1,5 +1,11 @@
 # @scio-labs/use-inkathon
 
+## 0.11.1
+
+### Patch Changes
+
+- [#84](https://github.com/scio-labs/use-inkathon/pull/84) [`dd1c172`](https://github.com/scio-labs/use-inkathon/commit/dd1c172df12f02f1ffe15b359afe216890610a93) Thanks [@bgibers](https://github.com/bgibers)! - Fix frozen balance
+
 ## 0.11.0
 
 ### Minor Changes
