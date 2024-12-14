@@ -31,6 +31,9 @@ import {
 import { getSubstrateChain } from './chains'
 import { getNightlyConnectAdapter } from './helpers/getNightlyAdapter'
 
+export const LS_ACTIVE_ACCOUNT_ADDRESS = 'activeAccountAddress'
+export const LS_ACTIVE_EXTENSION_ID = 'activeExtensionId'
+
 const UseInkathonProviderContext = createContext<UseInkathonProviderContextType | null>(null)
 
 /**
@@ -87,7 +90,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   const [api, setApi] = useState<ApiPromise>()
   const [provider, setProvider] = useState<WsProvider | HttpProvider>()
   const [accounts, setAccounts] = useState<InjectedAccount[]>([])
-  const [activeAccount, setActiveAccount] = useState<InjectedAccount>()
+  const [activeAccount, _setActiveAccount] = useState<InjectedAccount>()
   const [lastActiveAccount, setLastActiveAccount] = useState<InjectedAccount>()
   const activeExtension = useRef<InjectedExtension>()
   const activeSigner = useRef<Signer>()
@@ -138,6 +141,30 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     return _api
   }
 
+  // Set active account with local storage persistence
+  const setActiveAccount: React.Dispatch<React.SetStateAction<InjectedAccount | undefined>> = (
+    account,
+  ) => {
+    if (typeof account === 'function') {
+      _setActiveAccount((prevAccount) => {
+        const newAccount = account(prevAccount)
+        if (newAccount) {
+          localStorage.setItem(LS_ACTIVE_ACCOUNT_ADDRESS, newAccount.address)
+        } else {
+          localStorage.removeItem(LS_ACTIVE_ACCOUNT_ADDRESS)
+        }
+        return newAccount
+      })
+    } else {
+      _setActiveAccount(account)
+      if (account) {
+        localStorage.setItem(LS_ACTIVE_ACCOUNT_ADDRESS, account.address)
+      } else {
+        localStorage.removeItem(LS_ACTIVE_ACCOUNT_ADDRESS)
+      }
+    }
+  }
+
   // Updates account list and active account
   const updateAccounts = (
     injectedAccounts: InjectedAccount[],
@@ -148,6 +175,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     const _lastAccount = lastActiveAccountAddress
       ? { address: lastActiveAccountAddress }
       : lastActiveAccount
+
     const newAccount =
       newAccounts.find((a) => accountsAreEqual(a, _lastAccount)) || newAccounts?.[0]
 
@@ -207,6 +235,7 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
       // Enable wallet
       const extension = await enableWallet(_wallet, appName)
       activeExtension.current = extension
+      localStorage.setItem(LS_ACTIVE_EXTENSION_ID, _wallet.id)
       activeSigner.current = extension?.signer as Signer
 
       // Query & keep listening to injected accounts
@@ -235,6 +264,8 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
     if (disconnectApi) {
       await provider?.disconnect()
       await api?.disconnect()
+      localStorage.removeItem(LS_ACTIVE_EXTENSION_ID)
+      localStorage.removeItem(LS_ACTIVE_ACCOUNT_ADDRESS)
       return
     }
     if (activeExtension.current?.name === nightlyConnect.id) {
@@ -265,7 +296,20 @@ export const UseInkathonProvider: FC<UseInkathonProviderProps> = ({
   // Initialize
   useEffect(() => {
     if (isInitialized.current || isInitializing.current) return
-    connectOnInit ? connect(undefined, undefined, undefined, true) : initialize()
+
+    const activeExtensionId = localStorage.getItem(LS_ACTIVE_EXTENSION_ID) || undefined
+    const activeAccountAddress = localStorage.getItem(LS_ACTIVE_ACCOUNT_ADDRESS) || undefined
+    const userWantsConnection = activeExtensionId && activeAccountAddress
+
+    let activeExtension: SubstrateWallet | undefined
+
+    if (activeExtensionId) {
+      activeExtension = allSubstrateWallets.find((w) => w.id === activeExtensionId)
+    }
+
+    connectOnInit || userWantsConnection
+      ? connect(undefined, activeExtension, activeAccountAddress, true)
+      : initialize()
     return () => {
       unsubscribeAccounts.current?.()
     }
